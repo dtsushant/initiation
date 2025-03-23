@@ -1,0 +1,25 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Backend",
+      "program": "${workspaceFolder}/backend/src/main.ts",
+      "preLaunchTask": "npm: start:backend",
+      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "console": "integratedTerminal"
+    },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "Launch Frontend",
+      "program": "${workspaceFolder}/frontend/src/main.tsx",
+      "preLaunchTask": "npm: start:frontend",
+      "outFiles": ["${workspaceFolder}/frontend/dist/**/*.js"],
+      "runtimeArgs": ["-r", "ts-node/register"],
+      "console": "integratedTerminal"
+    }
+  ]
+}
