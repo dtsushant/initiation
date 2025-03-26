@@ -6,6 +6,7 @@ import ormConfig from '../mikro-orm.config';
 import { UserModule } from './features/user/user.module';
 import { MikroORM } from '@mikro-orm/postgresql';
 import { UserController } from './features/user/user.controller';
+import { CategoryModule } from './features/category/category.module';
 
 
 // @Module({
@@ -16,7 +17,11 @@ import { UserController } from './features/user/user.controller';
 // export class AppModule {}
 @Module({
   controllers: [AppController],
-  imports: [MikroOrmModule.forRoot(ormConfig),  UserModule],
+  imports: [
+    MikroOrmModule.forRoot(ormConfig),
+    UserModule,
+    CategoryModule
+  ],
   providers: [AppService],
 })
 export class AppModule implements NestModule, OnModuleInit {

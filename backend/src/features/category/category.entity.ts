@@ -1,4 +1,4 @@
-import { Entity, PrimaryKey, Property, ManyToOne, OneToMany } from '@mikro-orm/core';
+import { Entity, PrimaryKey, Property, ManyToOne, OneToMany, EntityDTO } from '@mikro-orm/core';
 import { BaseEntity } from '../../shared/base.entity';
 
 @Entity({ schema: "shared" })
@@ -20,4 +20,7 @@ export class Category extends BaseEntity {
 
     @OneToMany(() => Category, category => category.parentCategory)
     children?: Category[];
+}
+
+export interface CategoryDTO extends EntityDTO<Category> {
 }

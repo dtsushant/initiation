@@ -13,7 +13,7 @@ import {
 } from '@mikro-orm/core';
 import { UserRepository } from './user.repository';
 
-@Entity()
+@Entity({schema:"iam"})
 export class User {
   [EntityRepositoryType]?: UserRepository;
 
