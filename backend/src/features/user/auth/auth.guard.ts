@@ -7,8 +7,8 @@ import {
   import { Reflector } from '@nestjs/core';
   import { Request } from 'express';
   import * as jwt from 'jsonwebtoken';
-import { UserService } from '../../features/user/user.service';
-import { IUserData } from '../../features/user/user.interface';
+import { UserService } from '../user.service';
+import { IUserData } from '../user.interface';
   
   @Injectable()
   export class JwtAuthGuard implements CanActivate {

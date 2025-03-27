@@ -11,8 +11,8 @@ export class InitialMigration extends Migration {
           );
         // Create Shared schema and Merchant, Category tables
         this.addSql('CREATE SCHEMA IF NOT EXISTS "shared";');
-        this.addSql('CREATE TABLE "shared"."merchant" ("id" SERIAL PRIMARY KEY, "createdDate" TIMESTAMP NOT NULL, "createdBy" VARCHAR(255) NOT NULL, "lastUpdatedBy" VARCHAR(255), "lastUpdatedDate" TIMESTAMP, "approvedBy" VARCHAR(255));');
-        this.addSql('CREATE TABLE "shared"."category" ("code" VARCHAR(255) PRIMARY KEY, "label" VARCHAR(255), "description" VARCHAR(255), "level" INTEGER DEFAULT 0, "parent_category_code" VARCHAR(255), FOREIGN KEY ("parent_category_code") REFERENCES "shared"."category" ("code") ON DELETE SET NULL);');
+        this.addSql('CREATE TABLE "shared"."merchant" ("id" SERIAL PRIMARY KEY, "created_date" TIMESTAMP NOT NULL, "created_by" VARCHAR(255) NOT NULL, "last_updated_by" VARCHAR(255), "last_updated_date" TIMESTAMP, "approved_by" VARCHAR(255));');
+        this.addSql('CREATE TABLE "shared"."category" ("code" VARCHAR(255) PRIMARY KEY, "label" VARCHAR(255), "description" VARCHAR(255), "level" INTEGER DEFAULT 0, "parent_category_code" VARCHAR(255),"created_date" TIMESTAMP NOT NULL, "created_by" VARCHAR(255) NOT NULL, "last_updated_by" VARCHAR(255), "last_updated_date" TIMESTAMP, "approved_by" VARCHAR(255), FOREIGN KEY ("parent_category_code") REFERENCES "shared"."category" ("code") ON DELETE SET NULL);');
     }
 
     async down(): Promise<void> {

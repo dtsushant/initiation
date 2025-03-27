@@ -9,6 +9,7 @@ export class AuthMiddleware implements NestMiddleware {
   constructor(private readonly userService: UserService) {}
 
   async use(req: Request & { user?: IUserData & { id?: number } }, res: Response, next: NextFunction) {
+    console.log("using the auth middleware ");
     const authHeaders = req.headers.authorization;
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];

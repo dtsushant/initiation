@@ -1,11 +1,14 @@
-import { Controller, Get, Post, Body, Put, UsePipes, Delete, Param, HttpException, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Put, UsePipes, Delete, Param, HttpException, Query, UseGuards, Req } from '@nestjs/common';
 import { User } from './user.decorator';
 import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { IUserRO } from './user.interface';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
-import { JwtAuthGuard } from '../../shared/auth/auth.guard';
+import { JwtAuthGuard } from './auth/auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { Request } from 'express';
+
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -87,5 +90,21 @@ export class UserController {
   @Get('users')
   async findAll(@Query() query: Record<string, string>) {
     return this.userService.findAllWithPagination(query);
+  }
+
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    console.log("helo hello hello");
+    // Initiates Google OAuth2 login
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  googleAuthRedirect(@Req() req:Request) {
+    return {
+      message: 'User info from Google',
+      user: req.user,
+    };
   }
 }

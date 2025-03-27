@@ -1,21 +1,20 @@
-import { Property, PrimaryKey } from '@mikro-orm/core';
+import { Property, PrimaryKey, ManyToOne } from '@mikro-orm/core';
+import { User } from '../features/user/user.entity';
 
 export abstract class BaseEntity {
-    @PrimaryKey()
-    id!: string; // Changed to string to match Merchant entity
-
+   
     @Property({ type: 'date' })
-    createdDate!: Date;
+    createdDate: Date = new Date;
 
-    @Property({ nullable: false })
-    createdBy!: string;
+    @ManyToOne(() => User,{fieldName: 'created_by',nullable:false})
+    createdBy!: User;
 
-    @Property({ nullable: true })
-    lastUpdatedBy?: string;
+    @ManyToOne(() => User,{fieldName: 'last_updated_by',nullable:true})
+    lastUpdatedBy?: User;
 
-    @Property({ type: 'date', nullable: true })
+    @Property({ type: 'date', nullable: true, onUpdate: () => new Date()  })
     lastUpdatedDate?: Date;
 
-    @Property({ nullable: true })
-    approvedBy?: string;
+    @ManyToOne(() => User,{fieldName: 'approved_by',nullable:true})
+    approvedBy?: User;
 }

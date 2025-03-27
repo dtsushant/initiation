@@ -1,12 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import dotenv from "dotenv";
+import session = require('express-session');
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  
+  app.enableCors({
+    origin: '*', 
+    credentials: true,
+  }); 
+  app.use(
+    session({
+      secret: process.env.SESSION_SECRET!,
+      resave: false,
+      saveUninitialized: false,
+    }),
+  );
 
   const config = new DocumentBuilder()
     .setTitle('API Documentation')

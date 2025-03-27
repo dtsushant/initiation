@@ -1,8 +1,11 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, UseGuards, UsePipes } from '@nestjs/common';
 import { Category, CategoryDTO } from './category.entity';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryService } from './category.service';
+import { JwtAuthGuard } from '../user/auth/auth.guard';
+import { ValidationPipe } from '../../shared/pipes/validation.pipes';
+import { User } from '../user/user.decorator';
 
 @ApiBearerAuth()
 @ApiTags('categories')
@@ -17,9 +20,12 @@ export class CategoryController {
         return [];
     }
 
+
+    @UseGuards(JwtAuthGuard)
+    @UsePipes(new ValidationPipe())
     @Post("/save")
-    async create(@Body() category: CreateCategoryDto): Promise<CategoryDTO> {
+    async create(@User('id') userId: number,@Body() category: CreateCategoryDto): Promise<CategoryDTO> {
         // Logic to create a new category
-        throw new Error('Method not implemented.');
+        return this.categoryService.save(userId, category);
     }
 }
