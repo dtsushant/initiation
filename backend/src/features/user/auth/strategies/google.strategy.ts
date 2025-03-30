@@ -12,6 +12,7 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
       callbackURL: process.env.GOOGLE_CALLBACK_URL!,
       scope: ['profile', 'email'],
     });
+    console.log(process.env.GOOGLE_CALLBACK_URL);
     console.log('GoogleStrategy initialized 🚀');
 
   }
