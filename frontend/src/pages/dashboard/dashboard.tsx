@@ -2,17 +2,17 @@ import React, { memo, useEffect, useState } from 'react';
 import { Page } from '/@/components/common/Page';
 import { Breadcrumbs } from '/@/components/common/ui/Breadcrumbs';
 import { StatsCardSection } from './components/StatsCardSection';
-import { RecentDealsTable } from './components/RecentDealsTable';
-import { useDealTableColumns } from './hooks/useDealTableColumns';
+import { useCategoryTableColumns } from './hooks/useCategoryTableColumns.tsx';
 import { MOCK_DATA } from './mockData';
 import { PageHeader } from '/@/components/common/ui/PageHeader';
 import { Button } from 'antd';
 import { Link } from 'react-router-dom';
 import { PlusCircleOutlined } from '@ant-design/icons';
 import { TableShimmer } from '/@/components/common/ui/shimmer/TableShimmer';
+import {RecentDealsTable} from "./components/RecentDealsTable.tsx";
 
 export const DashboardPage = memo(() => {
-  const columns = useDealTableColumns();
+  const columns = useCategoryTableColumns();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +30,6 @@ export const DashboardPage = memo(() => {
               className="bg-primary hover:bg-brightorange-6 hover:border-brightorange-6 mr-4 h-10"
               icon={<PlusCircleOutlined className="text-[1rem]" />}
             >
-              New Campaign
             </Button>
           </Link>
         }

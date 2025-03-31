@@ -150,14 +150,6 @@ body.dark::-webkit-scrollbar {
   background-repeat: no-repeat;
   background-position: center;
 }
-
-#root {
-  @apply fixed h-full w-full;
-}
-
-/* .ant-layout-content {
-  @apply overflow-auto scrollbar-hide;
-} 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
@@ -165,7 +157,22 @@ body.dark::-webkit-scrollbar {
 .scrollbar-hide {
   -ms-overflow-style: none;
   scrollbar-width: none;
-}*/
+}
+#root {
+  @apply fixed h-full w-full;
+}
+
+.ant-layout-content {
+  overflow: auto;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+
+.ant-layout-content::-webkit-scrollbar {
+  display: none;             /* Chrome/Safari */
+}
+
+
 
 input {
   font-size: 14px !important;

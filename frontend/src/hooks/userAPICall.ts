@@ -2,35 +2,35 @@ import { createHttpBase } from '/@/utils/httpBaseUtils';
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-interface ApiCallProps {
+interface ApiCallProps<TRequest = unknown, TResponse = unknown> {
   endpoint: string;
   method: 'GET' | 'POST' | 'PUT' | 'DELETE';
-  payload?: unknown;
+  payload?: TRequest;
   queryParams?:
     | string
     | string[][]
     | Record<string, string>
     | URLSearchParams
     | undefined;
-  onSuccess?: (data: unknown) => void;
+  onSuccess?: (data: TResponse) => void;
   onError?: (error: unknown) => void;
 }
 
-function useApiCall({
+function useApiCall<TRequest = unknown, TResponse = unknown>({
   endpoint,
   method,
   payload,
   queryParams,
   onSuccess,
   onError,
-}: ApiCallProps) {
+}: ApiCallProps<TRequest, TResponse>)  {
   const [loading, setLoading] = useState(false);
-  const [response, setResponse] = useState<unknown>(null);
+  const [response, setResponse] = useState<TResponse | null>(null);
   const [error, setError] = useState<string>('');
   const [refetch, setRefetch] = useState(false);
   const navigate = useNavigate();
 
-  const makeApiCall = async (bodyPayload?: unknown) => {
+  const makeApiCall =  async (bodyPayload?: TRequest): Promise<TResponse | void> => {
     setLoading(true);
     setError('');
     const controller = new AbortController();
@@ -55,9 +55,10 @@ function useApiCall({
 
       const res = await apiMethods[method]();
 
-      if (res.status === 200) {
+      if (res.status === 200 || res.status === 201) {
         setResponse(res.data);
         if (onSuccess) onSuccess(res.data);
+        return res.data as TResponse;
       }
     } catch (err: any) {
       if (err.name === 'AbortError') return;
@@ -74,7 +75,7 @@ function useApiCall({
     }
   }, [endpoint, payload, queryParams, refetch]);
 
-  return { loading, response, error, refetch: () => setRefetch(!refetch) };
+  return { loading, response, error, refetch: () => setRefetch(!refetch),makeApiCall };
 }
 
 export default useApiCall;

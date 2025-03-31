@@ -1,8 +1,8 @@
 import React from 'react';
-import { InputField } from './InputField';
-import { SelectField } from './SelectField';
-import { CheckboxField } from './CheckboxField';
-import { UploadField } from './UploadField';
+import { InputField } from './InputField.tsx';
+import { SelectField } from './SelectField.tsx';
+import { CheckboxField } from './CheckboxField.tsx';
+import { UploadField } from './UploadField.tsx';
 
 export const FormField: React.FC<MerchantBaseFieldProps> = (props) => {
   switch (props.type) {

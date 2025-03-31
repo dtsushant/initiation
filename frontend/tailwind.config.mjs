@@ -1,11 +1,15 @@
 import scrollbar from 'tailwind-scrollbar';
+import sb from 'tailwind-scrollbar-hide';
 
 /** @type {import('tailwindcss').Config} */
 export default {
   darkMode: "class",
   important: true,
   content: ["./src/**/*.{ts,tsx}", "./src/styles/**/*.css"],
-  plugins: [scrollbar()],
+  plugins: [
+    sb(),
+    scrollbar()
+  ],
   attributify: true,
   theme: {
     screens: {

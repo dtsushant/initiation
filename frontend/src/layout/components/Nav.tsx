@@ -9,20 +9,26 @@ import { ConfirmationModal } from '/@/components/common/modal/ConfirmationModal'
 import { useAuth } from '/@/context/AuthContext';
 import { findParentRoute } from '/@/utils/helper.';
 import { routes } from '/@/routes';
-import logo from '/@/assets/dealsNewLogo.svg';
-import smallLogo from '/@/assets/dealsNewSmallLogo.svg';
+import logo from '/@/assets/initiationSmallLogo.svg';
+import smallLogo from '/@/assets/initiationNewSmallLogo.svg';
 import { CollapsedProvider } from '/@/context/CollapsedContext';
 
 export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const isDesktop = useIsDesktop();
-  const [collapsed, { set: setCollapsed }] = useToggle(!isDesktop);
+  const [collapsed, setCollapsedRaw] = useToggle(!isDesktop);
   const [confirmationModalVisible, setConfirmationModalVisible] =
     useState(false);
   const { user, logout } = useAuth();
 
   const menuRoutes = propRoutes || routes;
+
+  const setCollapsed = (val: boolean) => {
+    return setCollapsedRaw(val);
+  }
+
+
 
   const activeMenuItem = useMemo(() => {
     if (menuRoutes.some((route) => route.path === pathname)) {
@@ -52,19 +58,21 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
     hideConfirmationModal();
   }, [logout]);
 
-  const menus = authorizedRoutes.map(({ path, label, icon }) => ({
+  const menus = authorizedRoutes.map(({ path, label, icon,children }) => ({
     key: path,
     label,
     icon,
+    children: children?.map(({ path: childPath, label: childLabel }) => ({
+      key: childPath,
+      label: childLabel,
+    })),
   }));
 
   useEffect(() => {
     setCollapsed(!isDesktop);
-  }, [isDesktop, setCollapsed]);
+  }, [isDesktop]);
 
-  useEffect(() => {
-    onCollapse(collapsed);
-  }, [collapsed, onCollapse]);
+
 
   const showConfirmationModal = useCallback(() => {
     setConfirmationModalVisible(true);
@@ -89,6 +97,7 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
             <img
               src={collapsed ? smallLogo : logo}
               alt="Logo"
+              height={30}
               width={collapsed ? 30 : 140}
               className={`h-12 ${collapsed ? 'cursor-pointer mx-auto' : ''}`}
               onClick={collapsed ? () => setCollapsed(!collapsed) : undefined}

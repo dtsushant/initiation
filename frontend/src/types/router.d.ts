@@ -3,5 +3,5 @@ declare interface RouteConfig {
   path: string;
   icon: React.ReactNode;
   element: React.ReactNode;
-  children?: Omit<RouteConfig, 'label' | 'icon'>[];
+  children?: Omit<RouteConfig, | 'icon'>[];
 }

@@ -2,18 +2,19 @@ import React, { useMemo } from 'react';
 import { Space, Tag } from 'antd';
 import type { TableColumnsType } from 'antd';
 import { EyeOutlined } from '@ant-design/icons';
+import {CategoryData} from "../../../types/dashboard";
 
-export const useDealTableColumns = () => {
-  return useMemo<TableColumnsType<DealData>>(
+export const useCategoryTableColumns = () => {
+  return useMemo<TableColumnsType<CategoryData>>(
     () => [
       {
         title: 'S.N.',
         key: 'sn',
         align: 'center',
-        render: (_: any, __: DealData, index: number) => `${index + 1}`,
+        render: (_: any, __: CategoryData, index: number) => `${index + 1}`,
       },
       {
-        title: 'Deal Name',
+        title: 'Category Name',
         dataIndex: 'name',
         key: 'name',
         render: (text: string) => <span>{text}</span>,

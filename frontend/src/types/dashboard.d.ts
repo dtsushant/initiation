@@ -1,4 +1,6 @@
-declare interface DealData {
+import {TableColumnsType} from "antd";
+
+declare interface CategoryData {
   key: string;
   name: string;
   merchant: string;
@@ -8,8 +10,8 @@ declare interface DealData {
 }
 
 declare interface RecentDealsTableProps {
-  columns: TableColumnsType<DealData>;
-  data: DealData[];
+  columns: TableColumnsType<CategoryData>;
+  data: CategoryData[];
 }
 
 declare const dashboardContainerVariants: {

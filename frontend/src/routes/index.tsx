@@ -1,18 +1,15 @@
 import React from 'react';
 import {
-  DashboardOutlined,
+  DashboardOutlined, ProductOutlined,
   ScanOutlined,
-  ShopOutlined,
   TagsOutlined,
 } from '@ant-design/icons';
 import { DashboardPage } from '../pages/dashboard';
-import { MerchantsPage } from '../pages/merchants/merchant-list';
-import { AddMerchantPage } from '../pages/merchants/add-merchant';
-import { DealsPage } from '../pages/deals';
-import { AddCampaignPage } from '../pages/deals/add-campaign';
-import { DealsDetailPage } from '../pages/deals/details';
-import { MerchantDetailPage } from '../pages/merchants/details';
-import { RedeemDealsPage } from '../pages/redeem-deals';
+import {CategoryPage} from "../pages/categories";
+import {AddCategoryPage} from "../pages/categories/components/add-category";
+import {RuleDocumentPage} from "../pages/rules";
+import {InventoryPage} from "../pages/inventories";
+
 
 export const routes: RouteConfig[] = [
   {
@@ -22,42 +19,28 @@ export const routes: RouteConfig[] = [
     element: <DashboardPage />,
   },
   {
-    label: 'Merchants',
-    path: '/merchants',
-    icon: <ShopOutlined />,
-    element: <MerchantsPage />,
+    label: 'Category',
+    path: '/categories',
+    icon: <ProductOutlined />,
+    element: <CategoryPage />,
     children: [
       {
-        path: '/merchants/add',
-        element: <AddMerchantPage />,
-      },
-      {
-        path: '/merchants/details',
-        element: <MerchantDetailPage />,
-      },
+        path: '/categories/add',
+        label:'Add Category',
+        element: <AddCategoryPage />,
+      }
     ],
   },
   {
-    label: 'Deals & Campaigns',
-    path: '/deals',
+    label: 'Rules',
+    path: '/rules',
     icon: <TagsOutlined />,
-    element: <DealsPage />,
-
-    children: [
-      {
-        path: '/deals/add-new-campaign',
-        element: <AddCampaignPage />,
-      },
-      {
-        path: '/deals/details',
-        element: <DealsDetailPage />,
-      },
-    ],
+    element: <RuleDocumentPage />
   },
   {
-    label: 'Redeem Deals',
-    path: '/redeem-deals',
+    label: 'Inventories',
+    path: '/inventories',
     icon: <ScanOutlined />,
-    element: <RedeemDealsPage />,
+    element: <InventoryPage />,
   },
 ];

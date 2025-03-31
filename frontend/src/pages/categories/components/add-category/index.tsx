@@ -3,17 +3,17 @@ import { motion } from 'framer-motion';
 import { Page } from '/@/components/common/Page';
 import { Breadcrumbs } from '/@/components/common/ui/Breadcrumbs';
 import { PageHeader } from '/@/components/common/ui/PageHeader';
-import CustomFormBuilder from './form/FormBuilder';
+import CustomFormBuilder from './form/FormBuilder.tsx';
 
-export const AddCampaignPage = memo(() => {
+export const AddCategoryPage = memo(() => {
   return (
-    <Page headerLess title="New Campaign">
-      <PageHeader title="New Campaign" actions={null} />
+    <Page headerLess title="Add Merchant">
+      <PageHeader title="Add Merchant" actions={null} />
       <Breadcrumbs
         items={[
           { title: 'Home', path: '/dashboard' },
-          { title: 'Deals & Campaigns', path: '/deals' },
-          { title: 'New Campaign' },
+          { title: 'Merchants', path: '/merchants' },
+          { title: 'Add Merchant' },
         ]}
       />
       <div className="px-6 space-y-6 bg-white rounded-md min-h-full pb-6 py-3">
@@ -28,4 +28,4 @@ export const AddCampaignPage = memo(() => {
     </Page>
   );
 });
-AddCampaignPage.displayName = 'AddCampaignPage';
+AddCategoryPage.displayName = 'AddCategoryPage';

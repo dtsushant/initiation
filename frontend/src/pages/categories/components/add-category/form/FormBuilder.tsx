@@ -1,8 +1,8 @@
 import React from 'react';
 import { Form, Button, Divider } from 'antd';
 import { motion } from 'framer-motion';
-import { FormField } from './fields/FormField';
-import { MerchantFormConfig } from './config/MerchantFormConfig';
+import { FormField } from './fields/FormField.tsx';
+import { MerchantFormConfig } from './config/MerchantFormConfig.ts';
 import { showToast } from '/@/utils/toast';
 import { useNavigate } from 'react-router-dom';
 

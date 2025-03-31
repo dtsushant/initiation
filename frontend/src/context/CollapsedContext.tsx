@@ -16,6 +16,7 @@ export const CollapsedProvider: React.FC<{
 };
 
 export const useCollapsed = () => {
+  console.log("hwer we are ")
   const context = useContext(CollapsedContext);
   if (!context) {
     throw new Error('useCollapsed must be used within a CollapsedProvider');

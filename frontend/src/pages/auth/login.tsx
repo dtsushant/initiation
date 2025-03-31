@@ -9,7 +9,7 @@ import {
   EyeOutlined,
 } from '@ant-design/icons';
 import { motion } from 'framer-motion';
-import logo from '../../assets/dealsNewLogo.svg';
+import logo from '../../assets/initiationLogo.svg';
 import { ForgotPasswordModal } from '/@/components/common/modal/ForgotPasswordModal';
 import { setLocalStorage } from '/@/utils/storage';
 import { JWT_TOKEN } from '/@/constants';
@@ -22,23 +22,34 @@ interface LoginRequestDetail {
   password: string;
 }
 
+interface LoginResponseDetail {
+  user:{
+    bio:string;
+    email:string;
+    image:string;
+    username:string;
+    token:string;
+  }
+}
+
 export const LoginPage = memo(() => {
   const navigate = useNavigate();
   const location = useLocation();
   const redirectPath = location.state?.from || '/dashboard';
-  const [form] = Form.useForm();
-  const [loginDetail, setLoginDetail] = useState<LoginRequestDetail | null>(
-    null
-  );
+  const [ form] = Form.useForm();
+  // const [loginDetail, setLoginDetail] = useState<LoginRequestDetail | null>(
+  //   null
+  // );
   const [formFocused, setFormFocused] = useState<string | null>(null);
   const [forgotPasswordVisible, setForgotPasswordVisible] = useState(false);
 
   const onFinish = (values: { email: string; password: string }) => {
-    setLoginDetail({
-      email: values.email,
-      password: values.password,
-    });
+    makeApiCall({ user: values });
   };
+
+  // const onFinish = (values: { email: string; password: string }) => {
+  //   loginUser({ user: values }); // call API directly
+  // };
 
   const handleFocus = (field: string) => {
     setFormFocused(field);
@@ -56,12 +67,14 @@ export const LoginPage = memo(() => {
     setForgotPasswordVisible(false);
   };
 
-  const { loading } = useApiCall({
+  const { loading,makeApiCall } = useApiCall<LoginRequestDetail,LoginResponseDetail>({
     endpoint: 'users/users/login',
     method: 'POST',
-    payload: {user:loginDetail},
-    onSuccess: (data: any) => {
-      setLocalStorage(JWT_TOKEN, data?.token);
+    onSuccess: (data:LoginResponseDetail) => {
+      console.log("the data",data);
+      const token = data?.user.token;
+      console.log('the token',token)
+      setLocalStorage(JWT_TOKEN, token);
       navigate(redirectPath, { replace: true });
     },
     onError: (error: any) => {
@@ -87,7 +100,7 @@ export const LoginPage = memo(() => {
               animate={{ scale: 1 }}
               transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
             >
-              <img src={logo} alt="Logo" className="h-16" />
+              <img src={logo} height="100" alt="Logo" className="h-16" />
             </motion.div>
 
             <motion.h1
