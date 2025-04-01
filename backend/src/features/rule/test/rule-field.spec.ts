@@ -2,6 +2,7 @@ import {getRuleFieldMeta, RuleField, RuleInput} from "../../../lib/rule/rule-fie
 import {BasePricingInput, BasePricingOutput} from "../document/base-pricing.rule";
 import {BaseRuleInput} from "../../../lib/rule/rule-base";
 import {Comparator} from "../../../lib/rule/rule.enum";
+import {flattenRuleMetadata} from "../../../lib/rule/utils/rule.utils";
 
 describe('RuleField metadata extraction', () => {
     it('should extract values using getter string from metadata', () => {
@@ -17,8 +18,13 @@ describe('RuleField metadata extraction', () => {
 
         const testInput = new ComplexInput()
 
-        console.log(testInput.getFieldMetadata());
+       // console.log(JSON.stringify(testInput.getFieldMetadata(), null, 2));
+;
+        const metadata = testInput.getFieldMetadata();
+        console.log("the meta unflattened",metadata);
+        const flattened = flattenRuleMetadata(testInput.getFieldMetadata())
 
+        console.log(flattened)
         /*for (const [key, meta] of Object.entries(metadata)) {
             // eslint-disable-next-line no-eval
             const extractedValue = eval(meta.getter);
@@ -48,6 +54,8 @@ class CustomerInfo extends BaseRuleInput {
 class ItemInput extends BaseRuleInput {
     @RuleField({ name: 'SKU' }) sku!: string;
     @RuleField({ name: 'Quantity' }) quantity!: number;
+    @RuleField({ name: 'Customer',fnType:() => CustomerInfo }) customer!: CustomerInfo[];
+
     constructor() {
         super();
     }
@@ -60,7 +68,7 @@ class ComplexInput extends BaseRuleInput {
     @RuleField({ fnType:() => CustomerInfo,name: 'Customer'})
     customer!: CustomerInfo;
 
-    @RuleField({  name: 'Tags'})
+    @RuleField({ name: 'Tags', fnType: () => String })
     tags!: string[];
 
     @RuleField({ fnType:() => ItemInput,name: 'Items' })

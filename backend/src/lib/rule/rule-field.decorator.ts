@@ -1,16 +1,20 @@
 // rule-field.decorator.ts
 import 'reflect-metadata';
-import {Comparator} from "./rule.enum";
-import {getDefaultComparatorsForType} from "./utils/rule.utils";
+import {Comparator, getDefaultComparatorsForType} from "./rule.enum";
 
 export const RULE_INPUT_META_KEY = Symbol('rule:input-meta');
 export const RULE_OUTPUT_META_KEY = Symbol('rule:output-meta');
 export const RULE_FIELDS_KEY = Symbol('rule:fields');
 
+
+type RuleValidatorFn = (value: any) => boolean | string;
+
 export interface CommonRuleFieldMetadata {
     name: string;
     getter: string;
     type: string;
+    fnType?: () => new () => any;
+    validate?: RuleValidatorFn;
 }
 
 export interface RuleInputFieldMetadata extends CommonRuleFieldMetadata {
@@ -21,18 +25,17 @@ export interface RuleInputFieldMetadata extends CommonRuleFieldMetadata {
 
 export interface RuleOutputFieldMetadata extends CommonRuleFieldMetadata {
     setter: string;
+    fields?: Record<string, RuleOutputFieldMetadata>;
 }
 
 
 type RuleFieldDecoratorOptions =
-    |  (Partial<Pick<RuleInputFieldMetadata, 'name' | 'valueToCompare'>> & {
+    |  (Partial<Pick<RuleInputFieldMetadata, 'name' | 'valueToCompare'|'fnType'>> & {
     comparators?: Comparator[];
     inputOnly?: true;
-    fnType?: () => new () => any;
 })
-    | (Partial<Pick<RuleOutputFieldMetadata, 'name'>> & {
+    | (Partial<Pick<RuleOutputFieldMetadata, 'name'|'fnType'>> & {
     inputOnly?: false;
-    fnType?: () => new () => any;
 });
 
 
@@ -74,11 +77,13 @@ type RuleFieldMetadata = RuleInputFieldMetadata | RuleOutputFieldMetadata;
 export function RuleField(options: RuleFieldDecoratorOptions): PropertyDecorator {
     return (target, propertyKey) => {
         const key = propertyKey.toString();
+       // console.log("the key decorated",key);
 
         // Use typeFn if provided; fallback to reflect-metadata
         const reflectedType = Reflect.getMetadata('design:type', target, propertyKey);
         const resolvedType = options.fnType?.() ?? reflectedType;
         const inferredType = resolvedType?.name?.toLowerCase?.() ?? 'unknown';
+        console.log("reflected, resolved and inferred",key,reflectedType,resolvedType,inferredType);
 
         // If type is complex and typeFn is missing, warn or throw
         const isComplexType = inferredType === 'object' || inferredType === 'array';
@@ -91,7 +96,7 @@ export function RuleField(options: RuleFieldDecoratorOptions): PropertyDecorator
 
         const base: CommonRuleFieldMetadata = {
             name: options.name ?? key,
-            type: inferredType,
+            type: reflectedType?.name?.toLowerCase?.() ?? 'unknown',
             getter: `this.${key}`,
         };
 
@@ -104,14 +109,9 @@ export function RuleField(options: RuleFieldDecoratorOptions): PropertyDecorator
             ...base,
             comparators: (options as any).comparators ?? getDefaultComparatorsForType(inferredType),
             valueToCompare: (options as any).valueToCompare,
-            setter: `this.${propertyKey.toString()} = value`, // This will be ignored by input types
+            setter: `this.${propertyKey.toString()} = value`,
+            fnType: (options as any).fnType
         };
-
-        /*if ('comparators' in options || 'valueToCompare' in options || options.inputOnly === true) {
-            fieldMeta.comparators =
-                (options as any).comparators ?? getDefaultComparatorsForType(inferredType);
-            fieldMeta.valueToCompare = (options as any).valueToCompare;
-        }*/
 
         const existing: Record<string, RuleFieldMetadata> =
             Reflect.getMetadata(RULE_FIELDS_KEY, target.constructor) || {};
