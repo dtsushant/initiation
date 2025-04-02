@@ -1,8 +1,8 @@
-import {getRuleFieldMeta, RuleField, RuleInput} from "../../../lib/rule/rule-field.decorator";
+import {getRuleFieldMeta, RuleField, RuleInput, RuleOutput} from "../../../lib/rule/rule-field.decorator";
 import {BasePricingInput, BasePricingOutput} from "../document/base-pricing.rule";
-import {BaseRuleInput} from "../../../lib/rule/rule-base";
+import {BaseRuleInput, BaseRuleOutput} from "../../../lib/rule/rule-base";
 import {Comparator} from "../../../lib/rule/rule.enum";
-import {flattenRuleMetadata} from "../../../lib/rule/utils/rule.utils";
+import {flattenRuleMetadata, normalizeInputMetadata, normalizeOutputMetadata} from "../../../lib/rule/utils/rule.utils";
 
 describe('RuleField metadata extraction', () => {
     it('should extract values using getter string from metadata', () => {
@@ -16,13 +16,15 @@ describe('RuleField metadata extraction', () => {
 
         console.log(output.getFieldMetadata())*/
 
-        const testInput = new ComplexInput()
+        const testInput = new ComplexInput();
 
        // console.log(JSON.stringify(testInput.getFieldMetadata(), null, 2));
 ;
         const metadata = testInput.getFieldMetadata();
-        console.log("the meta unflattened",metadata);
-        const flattened = flattenRuleMetadata(testInput.getFieldMetadata())
+      //  console.log("the meta unflattened",metadata);
+         console.log(JSON.stringify(metadata, null, 2));
+
+        const flattened = flattenRuleMetadata(metadata);
 
         console.log(flattened)
         /*for (const [key, meta] of Object.entries(metadata)) {
@@ -65,6 +67,25 @@ class ItemInput extends BaseRuleInput {
     source: 'API',
 })
 class ComplexInput extends BaseRuleInput {
+    @RuleField({ fnType:() => CustomerInfo,name: 'Customer'})
+    customer!: CustomerInfo;
+
+    @RuleField({ name: 'Tags', fnType: () => String })
+    tags!: string[];
+
+    @RuleField({ fnType:() => ItemInput,name: 'Items' })
+    items!: ItemInput[];
+
+    constructor() {
+        super();
+    }
+}
+
+@RuleOutput({
+    name: 'Complex Output',
+    destination: 'API',
+})
+class ComplexOutput extends BaseRuleOutput {
     @RuleField({ fnType:() => CustomerInfo,name: 'Customer'})
     customer!: CustomerInfo;
 

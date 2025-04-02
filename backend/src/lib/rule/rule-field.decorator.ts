@@ -20,12 +20,12 @@ export interface CommonRuleFieldMetadata {
 export interface RuleInputFieldMetadata extends CommonRuleFieldMetadata {
     comparators: Comparator[];
     valueToCompare: any;
-    fields?: Record<string, RuleInputFieldMetadata>;
+    nested?: Record<string, RuleInputFieldMetadata>;
 }
 
 export interface RuleOutputFieldMetadata extends CommonRuleFieldMetadata {
     setter: string;
-    fields?: Record<string, RuleOutputFieldMetadata>;
+    nested?: Record<string, RuleOutputFieldMetadata>;
 }
 
 
@@ -39,40 +39,9 @@ type RuleFieldDecoratorOptions =
 });
 
 
-type RuleFieldMetadata = RuleInputFieldMetadata | RuleOutputFieldMetadata;
-
-/*export function RuleField(options: RuleFieldDecoratorOptions): PropertyDecorator {
-    return (target, propertyKey) => {
-        const type = Reflect.getMetadata('design:type', target, propertyKey);
-        const inferredType = type?.name?.toLowerCase?.() ?? 'unknown';
-
-        const base: CommonRuleFieldMetadata = {
-            name: options.name ?? propertyKey.toString(),
-            type: inferredType,
-            getter: `this.${propertyKey.toString()}`,
-        };
-
-        // Always assume input field unless overridden at runtime
-        const fieldMeta: RuleFieldMetadata = {
-            ...base,
-            comparators: (options as any).comparators ?? getDefaultComparatorsForType(inferredType),
-            valueToCompare: (options as any).valueToCompare,
-            setter: `this.${propertyKey.toString()} = value`, // This will be ignored by input types
-        };
-
-        const existing: Record<string, RuleFieldMetadata> =
-            Reflect.getMetadata(RULE_FIELDS_KEY, target.constructor) || {};
-
-        Reflect.defineMetadata(
-            RULE_FIELDS_KEY,
-            {
-                ...existing,
-                [propertyKey.toString()]: fieldMeta,
-            },
-            target.constructor
-        );
-    };
-}*/
+export type RuleFieldMetadata = (RuleInputFieldMetadata | RuleOutputFieldMetadata) & {
+    fields?: Record<string, RuleFieldMetadata>;
+};
 
 export function RuleField(options: RuleFieldDecoratorOptions): PropertyDecorator {
     return (target, propertyKey) => {
@@ -83,7 +52,6 @@ export function RuleField(options: RuleFieldDecoratorOptions): PropertyDecorator
         const reflectedType = Reflect.getMetadata('design:type', target, propertyKey);
         const resolvedType = options.fnType?.() ?? reflectedType;
         const inferredType = resolvedType?.name?.toLowerCase?.() ?? 'unknown';
-        console.log("reflected, resolved and inferred",key,reflectedType,resolvedType,inferredType);
 
         // If type is complex and typeFn is missing, warn or throw
         const isComplexType = inferredType === 'object' || inferredType === 'array';

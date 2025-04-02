@@ -1,7 +1,7 @@
 // rule-base.ts
 import {getRuleFields, getRuleInputMeta, getRuleOutputMeta, RULE_INPUT_META_KEY} from './rule-field.decorator';
 import {RuleInput, RuleOutput} from "./rule.interface";
-import {extractInputMetadata, extractOutputMetadata} from "./utils/rule.utils";
+import {extractRuleFieldMetadata, normalizeInputMetadata, normalizeOutputMetadata} from "./utils/rule.utils";
 
 export abstract class BaseRuleInput implements RuleInput {
 
@@ -11,7 +11,9 @@ export abstract class BaseRuleInput implements RuleInput {
     }
 
     public getFieldMetadata() {
-        return extractInputMetadata(this);
+        return normalizeInputMetadata(
+            extractRuleFieldMetadata(this)
+        );
     }
     private validateRuleFields() {
         const decorated = getRuleFields(this);
@@ -44,7 +46,9 @@ export abstract class BaseRuleOutput implements RuleOutput {
     }
 
     public getFieldMetadata() {
-        return extractOutputMetadata(this);
+        return normalizeOutputMetadata(
+            extractRuleFieldMetadata(this)
+        );
     }
     private validateRuleFields() {
         const decorated = getRuleFields(this);
