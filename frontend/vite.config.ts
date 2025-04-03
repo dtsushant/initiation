@@ -26,7 +26,10 @@ import viteCompression from 'vite-plugin-compression'
 const baseConfig: UserConfig = {
   plugins: [react(), checker({ typescript: true }), viteCompression()],
   resolve: {
-    alias: [{ find: '/@', replacement: resolve(__dirname, './src') }],
+    alias: [
+        { find: '/@', replacement: resolve(__dirname, './src') },
+        { find: '@shared', replacement: resolve(__dirname, '../packages/shared/src') }
+    ],
   },
 }
 

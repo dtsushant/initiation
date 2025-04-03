@@ -88,7 +88,10 @@
       "**/*.(t|j)s"
     ],
     "coverageDirectory": "../coverage",
-    "testEnvironment": "node"
+    "testEnvironment": "node",
+    "moduleNameMapper": {
+      "^@shared/(.*)$": "<rootDir>/../../packages/shared/src/$1"
+    }
   },
   "mikro-orm": {
     "useTsNode": true,

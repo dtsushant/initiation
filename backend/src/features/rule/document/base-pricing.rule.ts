@@ -1,7 +1,7 @@
 import {BaseRuleInput, BaseRuleOutput} from "../../../lib/rule/rule-base";
 import {RuleField, RuleInput, RuleOutput} from "../../../lib/rule/rule-field.decorator";
-import {RuleDocument, RuleMeta, RuleProcess} from "../../../lib/rule/rule.interface";
 import {Comparator} from "../../../lib/rule/rule.enum";
+import {RuleDefinition} from "../../../lib/rule/rule.interface";
 
 @RuleInput({
     name: 'BasePricingInput',
@@ -17,12 +17,6 @@ export class BasePricingInput extends BaseRuleInput {
 
     @RuleField({name:'True Statement'})
     isTrue!: boolean;
-
-    /*constructor(amount: number, currency: string) {
-        super();
-        this.amount = amount;
-        this.currency = currency;
-    }*/
 
     constructor() {
         super();
@@ -47,13 +41,10 @@ export class BasePricingOutput extends BaseRuleOutput {
     }
 }
 
-// RuleDocument<T, U> expects T extends RuleInput, U extends RuleOutput
-export interface BasePricingRuleDocument<
+export class PricingRuleDocument<
     T extends BasePricingInput = BasePricingInput,
     U extends BasePricingOutput = BasePricingOutput
-> extends RuleDocument<T, U> {
-    meta: RuleMeta;
-    process: RuleProcess;
-    input: T;
-    output?: U;
+> implements RuleDefinition<T, U> {
+
+
 }

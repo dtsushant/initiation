@@ -7,6 +7,7 @@ import { UserModule } from './features/user/user.module';
 import { MikroORM } from '@mikro-orm/postgresql';
 import { UserController } from './features/user/user.controller';
 import { CategoryModule } from './features/category/category.module';
+import {RuleModule} from "./features/rule/rule.module";
 
 
 // @Module({
@@ -20,7 +21,8 @@ import { CategoryModule } from './features/category/category.module';
   imports: [
     MikroOrmModule.forRoot(ormConfig),
     UserModule,
-    CategoryModule
+    CategoryModule,
+    RuleModule,
   ],
   providers: [AppService],
 })

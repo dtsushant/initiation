@@ -20,6 +20,7 @@
   "type": "commonjs",
   "dependencies": {
     "@nestjs/swagger": "^11.0.7",
+    "date-fns": "^4.1.0",
     "dotenv": "^16.4.7",
     "jest": "^29.7.0"
   },
