@@ -84,160 +84,135 @@ export const LoginPage = memo(() => {
 
   return (
     <Page headerLess title="Login">
-      <div className="flex justify-center items-center h-full custom-background">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-          className="max-w-[400px] md:min-w-[440px] p-8 mb-4 rounded-xl shadow-md relative overflow-hidden bg-neutral-1"
-        >
-          <div className="absolute -top-12 -right-12 w-32 h-32 rounded-full opacity-5 bg-primary" />
-          <div className="absolute -bottom-12 -left-12 w-32 h-32 rounded-full opacity-5 bg-emeraldgreen-6" />
-          <div className="relative">
-            <motion.div
-              className="flex justify-center"
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
-            >
-              <img src={logo} height="100" alt="Logo" className="h-16" />
-            </motion.div>
+      <div className="flex min-h-screen overflow-hidden">
+        {/* Left Column - Logo with animation */}
+        <div className="w-1/2 bg-blue-600 flex items-center justify-center p-8">
+          <motion.div
+            className="flex justify-center mb-6"
+            initial={{ scale: 0.8 }}
+            animate={{ scale: 1 }}
+            transition={{ delay: 0.2, type: 'spring', stiffness: 150 }}
+          >
+            <img src={logo} alt="Logo" className="h-28 drop-shadow-lg" />
+          </motion.div>
+        </div>
 
+        {/* Right Column - Login Form */}
+        <div className="w-1/2 bg-neutral-100 flex items-center justify-center p-4 formbackground">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.5 }}
+            className="max-w-[400px] w-full p-8 rounded-xl shadow-md relative overflow-hidden bg-white"
+          >
             <motion.h1
               className="text-2xl font-bold mb-6 text-center text-gray-800"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.4 }}
             >
-              Login to your account
+              Welcome back 👋
             </motion.h1>
 
             <Form
               form={form}
               name="login"
-              initialValues={{ remember: false }}
               onFinish={onFinish}
               layout="vertical"
-              className="space-y-8"
+              initialValues={{ remember: false }}
               size="large"
+              className="space-y-6"
             >
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.6 }}
+              {/* Email */}
+              <Form.Item
+                name="email"
+                rules={[
+                  { required: true, message: 'Please enter your email.' },
+                  { type: 'email', message: 'Invalid email' },
+                ]}
               >
-                <Form.Item
-                  name="email"
-                  rules={[
-                    { required: true, message: 'Required' },
-                    { type: 'email', message: 'Invalid email' },
-                  ]}
-                  className="mb-6"
-                >
-                  <Input
-                    autoComplete="off"
-                    prefix={
-                      <MailOutlined
-                        className={`mr-2 ${
-                          formFocused === 'email'
-                            ? 'text-primary'
-                            : 'text-gray-400'
+                <Input
+                  autoComplete="off"
+                  prefix={
+                    <MailOutlined
+                      className={`mr-2 ${formFocused === 'email' ? 'text-primary' : 'text-gray-400'
                         }`}
-                      />
-                    }
-                    className={`h-12 rounded-lg transition-all duration-300 ${
-                      formFocused === 'email'
-                        ? 'border-brightorange-2 shadow-sm shadow-orange-100'
-                        : 'border-gray-300 hover:border-brightorange-2 transition-colors'
+                    />
+                  }
+                  className={`h-12 rounded-lg transition-all duration-300 ${formFocused === 'email'
+                      ? 'border-blue-500 shadow-sm shadow-blue-200'
+                      : 'border-gray-300 hover:border-blue-500'
                     }`}
-                    placeholder="Email address"
-                    onFocus={() => handleFocus('email')}
-                    onBlur={handleBlur}
-                  />
-                </Form.Item>
-              </motion.div>
+                  placeholder="Email"
+                  onFocus={() => handleFocus('email')}
+                  onBlur={handleBlur}
+                />
+              </Form.Item>
 
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ delay: 0.7 }}
+              {/* Password */}
+              <Form.Item
+                name="password"
+                rules={[{ required: true, message: 'Please enter your password.' }]}
               >
-                <Form.Item
-                  name="password"
-                  rules={[{ required: true, message: 'Required' }]}
-                  className="mb-6"
-                >
-                  <Input.Password
-                    prefix={
-                      <LockOutlined
-                        className={`mr-2 ${
-                          formFocused === 'password'
-                            ? 'text-primary'
-                            : 'text-gray-400'
+                <Input.Password
+                  prefix={
+                    <LockOutlined
+                      className={`mr-2 ${formFocused === 'password'
+                          ? 'text-primary'
+                          : 'text-gray-400'
                         }`}
-                      />
-                    }
-                    className={`h-12 rounded-lg transition-all duration-300 ${
-                      formFocused === 'password'
-                        ? 'border-brightorange-2 shadow-sm shadow-orange-100'
-                        : 'border-gray-300 hover:border-brightorange-2 transition-colors'
+                    />
+                  }
+                  className={`h-12 rounded-lg transition-all duration-300 ${formFocused === 'password'
+                      ? 'border-blue-500 shadow-sm shadow-blue-200'
+                      : 'border-gray-300 hover:border-blue-500'
                     }`}
-                    placeholder="Password"
-                    iconRender={(visible) =>
-                      visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                    }
-                    onFocus={() => handleFocus('password')}
-                    onBlur={handleBlur}
-                  />
-                </Form.Item>
-              </motion.div>
+                  placeholder="Password"
+                  iconRender={(visible) =>
+                    visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
+                  }
+                  onFocus={() => handleFocus('password')}
+                  onBlur={handleBlur}
+                />
+              </Form.Item>
 
-              <motion.div
-                className="flex justify-between items-center mb-6"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                transition={{ delay: 0.8 }}
-              >
+              {/* Remember Me + Forgot Password */}
+              <div className="flex justify-between items-center">
                 <Form.Item name="remember" valuePropName="checked" noStyle>
-                  <Checkbox className="text-neutral-11 custom-checkbox">
-                    Remember me
-                  </Checkbox>
+                  <Checkbox>Remember me</Checkbox>
                 </Form.Item>
                 <div
-                  className="text-sm text-blue-7 transition-colors duration-300 cursor-pointer hover:text-blue-5"
+                  className="text-sm text-blue-600 cursor-pointer hover:underline"
                   onClick={showForgotPasswordModal}
                 >
                   Forgot password?
                 </div>
-              </motion.div>
+              </div>
 
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.9 }}
-              >
-                <Form.Item className="mb-0">
-                  <Button
-                    type="primary"
-                    htmlType="submit"
-                    className={`w-full h-12 rounded-lg text-base font-medium flex items-center justify-center bg-primary text-white transition-all duration-300 transform hover:bg-brightorange-6 hover:scale-[1.02] hover:shadow-md`}
-                    loading={loading}
-                    disabled={loading}
-                    icon={loading ? null : <LoginOutlined className="mr-2" />}
-                  >
-                    {loading ? 'Please wait...' : 'Login'}
-                  </Button>
-                </Form.Item>
-              </motion.div>
+              {/* Submit Button */}
+              <Form.Item className="mb-0">
+                <Button
+                  type="primary"
+                  htmlType="submit"
+                  className="w-full h-12 rounded-lg text-base font-medium flex items-center justify-center bg-primary text-white hover:bg-blue-700 transition-all"
+                  loading={loading}
+                  disabled={loading}
+                  icon={!loading && <LoginOutlined className="mr-2" />}
+                >
+                  {loading ? 'Please wait...' : 'Login'}
+                </Button>
+              </Form.Item>
             </Form>
-          </div>
-        </motion.div>
+          </motion.div>
+        </div>
       </div>
+
       <ForgotPasswordModal
         isVisible={forgotPasswordVisible}
         onClose={hideForgotPasswordModal}
       />
     </Page>
+
   );
 });
 

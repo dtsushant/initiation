@@ -152,6 +152,9 @@ body.dark::-webkit-scrollbar {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
 }
+.formbackground {
+ background-color: rgb(99, 98, 98);
+}
 
 .scrollbar-hide {
   -ms-overflow-style: none;
