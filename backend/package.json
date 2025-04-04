@@ -90,7 +90,8 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@shared/(.*)$": "<rootDir>/../../packages/shared/src/$1"
+      "^@shared/(.*)$": "<rootDir>/../../packages/shared/src/$1",
+      "^@rule-ui/(.*)$": "<rootDir>/../../packages/rule-ui/src/$1"
     }
   },
   "mikro-orm": {

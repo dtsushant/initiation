@@ -13,7 +13,8 @@
     "typeRoots": ["./node_modules/@types", "./src/types"],
     "baseUrl": ".",
     "paths": {
-      "@shared/*": ["packages/shared/src/*"]
+      "@shared/*": ["packages/shared/src/*"],
+      "@rule-ui/*": ["packages/rule-ui/src/*"],
     }
   },
   "exclude": ["node_modules", "dist"]

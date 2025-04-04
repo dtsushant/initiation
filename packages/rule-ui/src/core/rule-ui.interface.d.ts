@@ -1,5 +1,4 @@
 import {FieldType} from "./rule-ui.enum";
-import {RuleInput, RuleOutput, SubProcess} from "../rule/rule.interface";
 
 export interface RuleMeta {
     id: string;
@@ -45,5 +44,5 @@ export interface RuleDocument{
     meta: RuleMeta;
     input: RuleUIInput;
     output: RuleUIOutput;
-    processes: RuleProcess[];
+    processes?: RuleProcess[];
 }
