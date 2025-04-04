@@ -146,7 +146,6 @@ body.dark::-webkit-scrollbar {
 }
 
 .custom-background {
-  background-image: url('../assets/background.svg');
   background-repeat: no-repeat;
   background-position: center;
 }
