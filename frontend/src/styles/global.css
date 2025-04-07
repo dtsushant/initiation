@@ -146,12 +146,14 @@ body.dark::-webkit-scrollbar {
 }
 
 .custom-background {
-  background-image: url('../assets/background.svg');
   background-repeat: no-repeat;
   background-position: center;
 }
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+.formbackground {
+ background-color: rgb(99, 98, 98);
 }
 
 .scrollbar-hide {
