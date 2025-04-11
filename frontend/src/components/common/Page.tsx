@@ -1,35 +1,35 @@
-import { Skeleton, Spin } from 'antd';
-import React, { memo } from 'react';
-import {  Title, Meta } from 'react-head';
-import { PageHeader } from './ui/PageHeader';
+import { Skeleton, Spin } from "antd";
+import React, { memo } from "react";
+import { Title, Meta } from "react-head";
+import { PageHeader } from "./ui/PageHeader";
 
 const Page = memo<PageProps>((props) => {
   const { title, header, children, loading, headerLess } = props;
 
   const documentTitle = loading ? (
     <Spin size="small" />
-  ) : typeof title === 'string' ? (
+  ) : typeof title === "string" ? (
     `Deals - ${title}`
-  ) : typeof title === 'number' || typeof title === 'boolean' ? (
+  ) : typeof title === "number" || typeof title === "boolean" ? (
     String(title)
   ) : (
-    'Deals - Never Pay Full Price Again'
+    "Initiation - Let' Begin "
   );
 
   return (
     <>
       {documentTitle && (
         <>
-        <Title>{documentTitle}</Title>
-        <Meta name="description" content="Awesome page" />
-      </>
+          <Title>{documentTitle}</Title>
+          <Meta name="description" content="Awesome page" />
+        </>
       )}
 
       {headerLess ? null : React.isValidElement(header) ? (
         header
       ) : (
         <PageHeader
-          title={loading ? 'Loading...' : (title?.toString() ?? 'Deals')}
+          title={loading ? "Loading..." : (title?.toString() ?? "Initiation")}
         />
       )}
 
@@ -39,6 +39,6 @@ const Page = memo<PageProps>((props) => {
     </>
   );
 });
-Page.displayName = 'Page';
+Page.displayName = "Page";
 
 export { Page };

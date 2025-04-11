@@ -1,6 +1,24 @@
-import { Controller, Get, Post, Body, Put, UsePipes, Delete, Param, HttpException, Query, UseGuards, Req } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Put,
+  UsePipes,
+  Delete,
+  Param,
+  HttpException,
+  Query,
+  UseGuards,
+  Req,
+} from '@nestjs/common';
 import { User } from './user.decorator';
-import { ApiBearerAuth, ApiBody, ApiExtraModels, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiExtraModels,
+  ApiTags,
+} from '@nestjs/swagger';
 import { UserService } from './user.service';
 import { IUserRO } from './user.interface';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
@@ -9,14 +27,14 @@ import { JwtAuthGuard } from './auth/auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 
-
 @ApiBearerAuth()
 @ApiTags('user')
-@ApiExtraModels(LoginUserDto,CreateUserDto)
+@ApiExtraModels(LoginUserDto, CreateUserDto)
 @Controller('users')
 export class UserController {
-    constructor(private readonly userService: UserService) {}
+  constructor(private readonly userService: UserService) {}
 
+  @UseGuards(JwtAuthGuard)
   @Get('user')
   async findMe(@User('email') email: string): Promise<IUserRO> {
     return this.userService.findByEmail(email);
@@ -35,7 +53,10 @@ export class UserController {
   })
   @UseGuards(JwtAuthGuard)
   @Put('user')
-  async update(@User('id') userId: number, @Body('user') userData: UpdateUserDto) {
+  async update(
+    @User('id') userId: number,
+    @Body('user') userData: UpdateUserDto,
+  ) {
     return this.userService.update(userId, userData);
   }
 
@@ -95,13 +116,13 @@ export class UserController {
   @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth() {
-    console.log("helo hello hello");
+    console.log('helo hello hello');
     // Initiates Google OAuth2 login
   }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
-  googleAuthRedirect(@Req() req:Request) {
+  googleAuthRedirect(@Req() req: Request) {
     return {
       message: 'User info from Google',
       user: req.user,

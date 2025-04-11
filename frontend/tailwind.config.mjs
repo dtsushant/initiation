@@ -1,14 +1,10 @@
-import scrollbar from 'tailwind-scrollbar';
-import sb from 'tailwind-scrollbar-hide';
-
 /** @type {import('tailwindcss').Config} */
+
 export default {
   darkMode: "class",
   important: true,
-  content: ["./src/**/*.{ts,tsx}", "./src/styles/**/*.css"],
+  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html","./src/**/*.css"],
   plugins: [
-    sb(),
-    scrollbar()
   ],
   attributify: true,
   theme: {
@@ -162,3 +158,4 @@ export default {
     },
   },
 };
+

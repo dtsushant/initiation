@@ -27,7 +27,10 @@
   "devDependencies": {
     "@types/jest": "^29.5.14",
     "concurrently": "^9.1.2",
+    "eslint": "^9.24.0",
     "jest-cli": "^29.7.0",
+    "prettier": "^3.5.3",
+    "simple-git-hooks": "^2.12.1",
     "ts-jest": "^29.3.0",
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
@@ -35,5 +38,14 @@
     "tsconfig-paths": "^4.2.0",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.28.0"
+  },
+  "simple-git-hooks": {
+    "pre-commit": "npx lint-staged"
+  },
+  "lint-staged": {
+    "*.{ts,tsx,js,jsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ]
   }
 }
