@@ -1,9 +1,10 @@
 import { Action, configureStore } from "@reduxjs/toolkit";
 import app from "/@/components/app/App.slice";
 import login from "/@/pages/auth/Login.slice";
+import category from "/@/pages/categories/Category.slice";
 
 export const store = configureStore({
-  reducer: { app, login },
+  reducer: { app, login, category },
   devTools: {
     name: "Initiation",
   },

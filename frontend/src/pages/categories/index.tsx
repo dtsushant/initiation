@@ -1,1 +1,1 @@
-export { CategoryPage } from './components/category.tsx';
+export { CategoryPage } from "./components/CategoryPage";

@@ -1,34 +1,55 @@
-import React, { memo, useCallback, useEffect, useState, useMemo } from 'react';
-import { Layout, Menu, Divider } from 'antd';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { LogoutOutlined, MenuFoldOutlined } from '@ant-design/icons';
-import { useIsDesktop } from '/@/hooks/useIsDeskTop';
-import { UserProfile } from './UserProfile';
-import { useToggle } from 'react-use';
-import { ConfirmationModal } from '/@/components/common/modal/ConfirmationModal';
-import { useAuth } from '/@/context/AuthContext';
-import { findParentRoute } from '/@/utils/helper.';
-import { routes } from '/@/routes';
-import logo from '/@/assets/initiationSmallLogo.svg';
-import smallLogo from '/@/assets/initiationNewSmallLogo.svg';
-import { CollapsedProvider } from '/@/context/CollapsedContext';
+import React, { useCallback, useEffect, useMemo } from "react";
+import { Layout, Menu, Divider } from "antd";
+import { useLocation, useNavigate } from "react-router-dom";
+import { LogoutOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { UserProfile } from "./UserProfile";
+import { ConfirmationModal } from "/@/components/common/modal/ConfirmationModal";
+import { findParentRoute } from "/@/utils/helper.";
+import { routes } from "/@/routes";
+import logo from "/@/assets/initiationSmallLogo.svg";
+import smallLogo from "/@/assets/initiationNewSmallLogo.svg";
+import { CollapsedProvider } from "/@/context/CollapsedContext";
+import { useStore } from "/@/store/store.hook.ts";
+import {
+  AppState,
+  logout,
+  setConfirmationModalVisible,
+  setIsDesktop,
+  toggleCollapse,
+} from "/@/components/app/App.slice.ts";
+import { store } from "/@/store";
+import axios from "axios";
 
-export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
+export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
+  const {
+    app: { user, collapsed, isDesktop, confirmationModalVisible },
+  } = useStore<{ app: AppState }>((state) => ({
+    app: state.app,
+  }));
+  useEffect(() => {
+    const update = () => {
+      store.dispatch(setIsDesktop(window.innerWidth >= 1024));
+    };
+    window.addEventListener("resize", update);
+    update();
+
+    return () => window.removeEventListener("resize", update);
+  }, []);
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const isDesktop = useIsDesktop();
-  const [collapsed, setCollapsedRaw] = useToggle(!isDesktop);
-  const [confirmationModalVisible, setConfirmationModalVisible] =
-    useState(false);
-  const { user, logout } = useAuth();
+
+  function _logout() {
+    delete axios.defaults.headers.Authorization;
+    localStorage.removeItem("token");
+    store.dispatch(logout());
+    location.hash = "/";
+  }
 
   const menuRoutes = propRoutes || routes;
 
   const setCollapsed = (val: boolean) => {
-    return setCollapsedRaw(val);
-  }
-
-
+    return store.dispatch(toggleCollapse(val));
+  };
 
   const activeMenuItem = useMemo(() => {
     if (menuRoutes.some((route) => route.path === pathname)) {
@@ -44,21 +65,23 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
 
   const handleClick = useCallback(
     ({ key }: { key: string }) => {
-      pathname !== key && navigate(key);
+      if (pathname !== key) {
+        navigate(key);
+      }
     },
-    [navigate, pathname]
+    [navigate, pathname],
   );
 
-  const handleLogOut = useCallback(() => {
+  const handleLogOut = () => {
     showConfirmationModal();
-  }, []);
+  };
 
-  const onOk = useCallback(() => {
-    logout();
+  const onOk = () => {
+    _logout();
     hideConfirmationModal();
-  }, [logout]);
+  };
 
-  const menus = authorizedRoutes.map(({ path, label, icon,children }) => ({
+  const menus = authorizedRoutes.map(({ path, label, icon, children }) => ({
     key: path,
     label,
     icon,
@@ -72,15 +95,13 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
     setCollapsed(!isDesktop);
   }, [isDesktop]);
 
+  const showConfirmationModal = () => {
+    store.dispatch(setConfirmationModalVisible(true));
+  };
 
-
-  const showConfirmationModal = useCallback(() => {
-    setConfirmationModalVisible(true);
-  }, []);
-
-  const hideConfirmationModal = useCallback(() => {
-    setConfirmationModalVisible(false);
-  }, []);
+  const hideConfirmationModal = () => {
+    store.dispatch(setConfirmationModalVisible(false));
+  };
 
   return (
     <CollapsedProvider value={{ isCollapsed: collapsed }}>
@@ -99,7 +120,7 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
               alt="Logo"
               height={30}
               width={collapsed ? 30 : 140}
-              className={`h-12 ${collapsed ? 'cursor-pointer mx-auto' : ''}`}
+              className={`h-12 ${collapsed ? "cursor-pointer mx-auto" : ""}`}
               onClick={collapsed ? () => setCollapsed(!collapsed) : undefined}
             />
           </div>
@@ -129,13 +150,13 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
           <Divider className="w-full" />
           <div
             className={`w-full flex ${
-              collapsed ? 'flex-col items-center' : 'justify-between'
+              collapsed ? "flex-col items-center" : "justify-between"
             }`}
           >
             {user && (
               <UserProfile
                 user={{
-                  name: user.name,
+                  name: user.email,
                   // role removed from props
                 }}
                 collapsed={collapsed}
@@ -155,5 +176,5 @@ export const Nav = memo<NavProps>(({ routes: propRoutes, onCollapse }) => {
       </Layout.Sider>
     </CollapsedProvider>
   );
-});
-Nav.displayName = 'Nav';
+};
+Nav.displayName = "Nav";

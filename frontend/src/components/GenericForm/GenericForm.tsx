@@ -18,14 +18,8 @@ export interface GenericFormProps {
 
 export const GenericForm: FC<GenericFormProps> = ({
   fields,
-  disabled,
-  formObject,
-  submitButtonText,
+
   errors,
-  onChange,
-  onSubmit,
-  onAddItemToList,
-  onRemoveListItem,
 }) => (
   <Fragment>
     <Errors errors={errors} />

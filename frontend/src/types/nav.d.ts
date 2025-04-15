@@ -5,5 +5,4 @@ interface NavProps {
     icon: React.ReactNode;
     roles?: string[];
   }>;
-  onCollapse: (collapsed: boolean) => void;
 }

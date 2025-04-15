@@ -1,19 +1,19 @@
-import React, { memo } from 'react';
-import { motion } from 'framer-motion';
-import { Page } from '/@/components/common/Page';
-import { Breadcrumbs } from '/@/components/common/ui/Breadcrumbs';
-import { PageHeader } from '/@/components/common/ui/PageHeader';
-import CustomFormBuilder from './form/FormBuilder.tsx';
+import React, { memo } from "react";
+import { motion } from "framer-motion";
+import { Page } from "/@/components/common/Page";
+import { Breadcrumbs } from "/@/components/common/ui/Breadcrumbs";
+import { PageHeader } from "/@/components/common/ui/PageHeader";
+import CustomFormBuilder from "./form/FormBuilder.tsx";
 
 export const AddCategoryPage = memo(() => {
   return (
-    <Page headerLess title="Add Merchant">
-      <PageHeader title="Add Merchant" actions={null} />
+    <Page headerLess title="Add Category">
+      <PageHeader title="Add Category" actions={null} />
       <Breadcrumbs
         items={[
-          { title: 'Home', path: '/dashboard' },
-          { title: 'Merchants', path: '/merchants' },
-          { title: 'Add Merchant' },
+          { title: "Home", path: "/dashboard" },
+          { title: "Categories", path: "/categories" },
+          { title: "Add Category" },
         ]}
       />
       <div className="px-6 space-y-6 bg-white rounded-md min-h-full pb-6 py-3">
@@ -28,4 +28,5 @@ export const AddCategoryPage = memo(() => {
     </Page>
   );
 });
-AddCategoryPage.displayName = 'AddCategoryPage';
+
+AddCategoryPage.displayName = "AddCategoryPage";

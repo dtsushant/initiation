@@ -17,12 +17,14 @@
     "allowJs": true,
     /* Linting */
     "strict": true,
+    "noImplicitAny": true,
     "esModuleInterop": true,
     "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
     "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
     "paths": {
       "/@/*": ["src/*"],
       "@shared/*": ["../packages/shared/src/*"],
@@ -30,7 +32,7 @@
       "@rule-ui/*": ["../packages/rule-ui/src/*"],
     }
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
 
 

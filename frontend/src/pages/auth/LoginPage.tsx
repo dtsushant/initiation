@@ -38,14 +38,10 @@ export function LoginPage() {
   const loading = false;
 
   const showForgotPasswordModal = () => {
-    console.log(user);
-    console.log(forgotPasswordVisible);
     store.dispatch(updateForgotPasswordVisible(true));
   };
 
   const hideForgotPasswordModal = () => {
-    console.log(forgotPasswordVisible);
-
     store.dispatch(updateForgotPasswordVisible(false));
   };
 
