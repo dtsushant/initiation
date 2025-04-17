@@ -1,5 +1,5 @@
 import React, { JSX } from "react";
-import { Form, Input } from "antd";
+import { Form, Input, Switch, TreeSelect } from "antd";
 import type { NamePath } from "antd/es/form/interface";
 import { GenericFormField } from "/@/types/genericFormField.tsx";
 
@@ -10,12 +10,16 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
     label,
     fieldType,
     rules,
-    value,
     placeholder,
     disabled,
     lg,
     inputProps,
     textAreaProps,
+    treeData,
+    initialValue,
+    maxLength,
+    minLength,
+    onChange,
   } = props;
   const inputRenderMap: Record<
     GenericFormField["fieldType"],
@@ -27,7 +31,6 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
           <Input.Password
             placeholder={placeholder}
             disabled={disabled}
-            value={value}
             {...inputProps}
           />
         );
@@ -37,8 +40,9 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
           type={type}
           placeholder={placeholder}
           disabled={disabled}
-          value={value}
           className={`form-control${lg ? " form-control-lg" : ""}`}
+          {...(maxLength !== undefined && { maxLength: maxLength })}
+          {...(minLength !== undefined && { minLength: minLength })}
           {...inputProps}
         />
       );
@@ -48,9 +52,29 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
       <Input.TextArea
         placeholder={placeholder}
         disabled={disabled}
-        value={value}
         rows={4}
         {...textAreaProps}
+      />
+    ),
+    switch: () => (
+      <Switch
+        disabled={disabled}
+        onChange={(checked) => onChange(name, checked)}
+      />
+    ),
+
+    select: () => <Switch disabled={disabled} />,
+
+    treeSelect: () => (
+      <TreeSelect
+        showSearch
+        style={{ width: "100%" }}
+        dropdownStyle={{ maxHeight: 400, overflow: "auto" }}
+        placeholder={placeholder}
+        allowClear
+        treeDefaultExpandAll
+        treeData={treeData}
+        onChange={(val) => onChange(name, val)}
       />
     ),
 
@@ -59,7 +83,6 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
         type={type}
         placeholder={`List input for ${placeholder}`}
         disabled={disabled}
-        value={value}
         className={`form-control${lg ? " form-control-lg" : ""}`}
         {...inputProps}
       />
@@ -69,7 +92,12 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
   const renderInput = inputRenderMap[fieldType];
 
   return (
-    <Form.Item name={name as NamePath} label={label} rules={rules}>
+    <Form.Item
+      name={name as NamePath}
+      label={label}
+      rules={rules}
+      initialValue={initialValue}
+    >
       {renderInput()}
     </Form.Item>
   );

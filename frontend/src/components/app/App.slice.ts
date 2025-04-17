@@ -4,17 +4,11 @@ import { User } from "/@/types/auth.ts";
 export interface AppState {
   user: User | null;
   loading: boolean;
-  collapsed: boolean;
-  isDesktop: boolean;
-  confirmationModalVisible: boolean;
 }
 
 const initialState: AppState = {
   user: null,
   loading: true,
-  collapsed: false,
-  isDesktop: window.innerWidth >= 1024,
-  confirmationModalVisible: false,
 };
 
 const slice = createSlice({
@@ -32,29 +26,9 @@ const slice = createSlice({
     endLoad: (state) => {
       state.loading = false;
     },
-    toggleCollapse: (state, { payload }: PayloadAction<boolean>) => {
-      state.collapsed = payload;
-    },
-    setIsDesktop: (state, { payload }: PayloadAction<boolean>) => {
-      state.isDesktop = payload;
-    },
-    setConfirmationModalVisible: (
-      state,
-      { payload }: PayloadAction<boolean>,
-    ) => {
-      state.confirmationModalVisible = payload;
-    },
   },
 });
 
-export const {
-  loadUser,
-  logout,
-  endLoad,
-  initializeApp,
-  toggleCollapse,
-  setIsDesktop,
-  setConfirmationModalVisible,
-} = slice.actions;
+export const { loadUser, logout, endLoad, initializeApp } = slice.actions;
 
 export default slice.reducer;

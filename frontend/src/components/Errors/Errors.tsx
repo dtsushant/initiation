@@ -1,23 +1,27 @@
 import { GenericErrors } from "/@/types/error.ts";
+import { showToast } from "/@/utils/toast.ts";
 
-export function Errors({ errors }: { errors: GenericErrors }) {
-  return (
-    <ul className="error-messages">
-      {Object.entries(errors).flatMap(([field, fieldErrors]) => {
-        if (typeof fieldErrors === "string") {
-          return (
-            <li key={`${field}-${fieldErrors}`}>
-              {field} {fieldErrors}
-            </li>
-          );
-        }
+export function Errors({
+  errors,
+  clearError,
+}: {
+  errors: GenericErrors;
+  clearError?: () => void;
+}) {
+  if (errors) {
+    Object.entries(errors).forEach(([field, fieldErrors]) => {
+      if (typeof fieldErrors === "string") {
+        showToast.error(`${field}: ${fieldErrors}`);
+      } else if (Array.isArray(fieldErrors)) {
+        fieldErrors.forEach((error) => {
+          showToast.error(`${field}: ${error}`);
+        });
+      }
+    });
+    if (Object.keys(errors).length !== 0 && clearError) {
+      clearError();
+    }
+  }
 
-        return Object.values(fieldErrors).map((error) => (
-          <li key={`${field}-${error}`}>
-            {field} {error}
-          </li>
-        ));
-      })}
-    </ul>
-  );
+  return null;
 }

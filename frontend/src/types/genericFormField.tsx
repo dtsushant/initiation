@@ -1,24 +1,51 @@
-import { InputProps } from "antd";
+import { InputProps, TreeSelectProps } from "antd";
 import type { Rule } from "antd/es/form";
 import { TextAreaProps } from "antd/es/input";
+import { NamePath } from "antd/es/form/interface";
 
-export interface GenericFormField {
-  name: string;
+type CommonFormField = {
+  name: NamePath;
   label: string;
-  value: string;
   type: string;
   placeholder: string;
-  rows?: number;
-  fieldType: "input" | "textarea" | "list";
-  listName?: string;
   lg: boolean;
+  initialValue?: string | boolean;
   rules?: Rule[];
-  inputProps?: InputProps;
-  textAreaProps?: TextAreaProps;
-}
+  listName?: string;
+  onChange: (name: NamePath, value: string | boolean) => void;
+};
+
+export type GenericFormField =
+  | (CommonFormField & {
+      fieldType: "input";
+      inputProps?: InputProps;
+      maxLength?: number;
+      minLength?: number;
+    })
+  | (CommonFormField & {
+      fieldType: "textarea";
+      textAreaProps?: TextAreaProps;
+      rows?: number;
+    })
+  | (CommonFormField & {
+      fieldType: "treeSelect";
+      treeSelectProps?: TreeSelectProps;
+      treeData: TreeSelectProps["treeData"];
+    })
+  | (CommonFormField & {
+      fieldType: "list";
+    })
+  | (CommonFormField & {
+      fieldType: "switch";
+      valuePropName: "checked";
+      initialValue: boolean;
+    })
+  | (CommonFormField & {
+      fieldType: "select";
+    });
 
 export function buildGenericFormField(
-  data: Partial<GenericFormField> & { name: string },
+  data: Partial<GenericFormField> & { name: NamePath },
 ): GenericFormField {
   return {
     type: "text",
@@ -26,5 +53,5 @@ export function buildGenericFormField(
     fieldType: "input",
     lg: true,
     ...data,
-  };
+  } as GenericFormField;
 }

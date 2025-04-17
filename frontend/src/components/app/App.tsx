@@ -27,8 +27,10 @@ message.config({
 
 export function App() {
   const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
+  axios.defaults.baseURL = "/api";
 
   const userIsLogged = !!user;
+  console.log("rendering the app");
   return (
     <Suspense fallback={<Spin size="large" />}>
       <ConfigProvider

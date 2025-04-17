@@ -27,6 +27,7 @@ import {
 } from "@ant-design/icons";
 import { Button, Checkbox, Form } from "antd";
 import { ForgotPasswordModal } from "/@/components/common/modal/ForgotPasswordModal.tsx";
+import { NamePath } from "antd/es/form/interface";
 
 export function LoginPage() {
   const { errors, loginIn, user, focusField, forgotPasswordVisible } =
@@ -55,7 +56,11 @@ export function LoginPage() {
             animate={{ scale: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 150 }}
           >
-            <img src={logo} alt="Logo" className="h-28 drop-shadow-lg" />
+            <img
+              src={logo as string}
+              alt="Logo"
+              className="h-28 drop-shadow-lg"
+            />
           </motion.div>
         </div>
 
@@ -92,9 +97,10 @@ export function LoginPage() {
               errors={errors}
               onChange={onUpdateField}
               onSubmit={signIn}
+              clearError={clearError}
               fields={[
                 buildGenericFormField({
-                  name: "email",
+                  name: "email" as NamePath,
                   placeholder: "Email",
                   rules: [
                     { required: true, message: "Please enter your email." },
@@ -118,7 +124,7 @@ export function LoginPage() {
                   },
                 }),
                 buildGenericFormField({
-                  name: "password",
+                  name: "password" as NamePath,
                   placeholder: "Password",
                   type: "password",
                   inputProps: {
@@ -171,32 +177,6 @@ export function LoginPage() {
             </Form.Item>
           </Form>
         </div>
-
-        {/*<Form.Item
-                name="password"
-                rules={[{ required: true, message: 'Please enter your password.' }]}
-            >
-                <Input.Password
-                    prefix={
-                        <LockOutlined
-                            className={`mr-2 ${formFocused === 'password'
-                                ? 'text-primary'
-                                : 'text-gray-400'
-                            }`}
-                        />
-                    }
-                    className={`h-12 rounded-lg transition-all duration-300 ${formFocused === 'password'
-                        ? 'border-blue-500 shadow-sm shadow-blue-200'
-                        : 'border-gray-300 hover:border-blue-500'
-                    }`}
-                    placeholder="Password"
-                    iconRender={(visible) =>
-                        visible ? <EyeOutlined /> : <EyeInvisibleOutlined />
-                    }
-                    onFocus={() => handleFocus('password')}
-                    onBlur={handleBlur}
-                />
-            </Form.Item>*/}
       </div>
       <ForgotPasswordModal
         isVisible={forgotPasswordVisible}
@@ -204,6 +184,10 @@ export function LoginPage() {
       />
     </Page>
   );
+}
+
+function clearError() {
+  store.dispatch(updateErrors({}));
 }
 
 function onUpdateField(name: string, value: string) {
@@ -230,10 +214,7 @@ async function signIn() {
   });
 }
 
-async function handleFormChange(
-  changedValues: Partial<LoginState["user"]>,
-  allValues: LoginState["user"],
-) {
+async function handleFormChange(changedValues: Partial<LoginState["user"]>) {
   for (const [name, value] of Object.entries(changedValues)) {
     store.dispatch(
       updateField({ name: name as keyof LoginState["user"], value }),

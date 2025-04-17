@@ -14,18 +14,21 @@ export interface GenericFormProps {
   onSubmit: (ev: React.FormEvent) => void;
   onAddItemToList?: (name: string) => void;
   onRemoveListItem?: (name: string, index: number) => void;
+  clearError?: () => void;
 }
 
 export const GenericForm: FC<GenericFormProps> = ({
   fields,
-
+  clearError,
   errors,
-}) => (
-  <Fragment>
-    <Errors errors={errors} />
+}) => {
+  return (
+    <Fragment>
+      <Errors errors={errors} clearError={clearError} />
 
-    {fields.map((field) => {
-      return <FormGroup key={field.name} props={field} />;
-    })}
-  </Fragment>
-);
+      {fields.map((field) => {
+        return <FormGroup key={field.name} props={field} />;
+      })}
+    </Fragment>
+  );
+};

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Category } from "/@/types/category.ts";
 import { useStore } from "/@/store/store.hook.ts";
 import {
@@ -7,6 +7,10 @@ import {
   setExpanded,
 } from "/@/pages/categories/Category.slice.ts";
 import { store } from "/@/store";
+import { CategoryForm } from "/@/pages/categories/components/category-form/CategoryForm.tsx";
+import { Button } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { useNavigate, useParams } from "react-router-dom";
 
 interface CategoryGridProps {
   categories: Category[];
@@ -77,9 +81,20 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
   }>((state) => ({
     category: state.category,
   }));
+  const { slug } = useParams<{ slug: string }>();
 
-  const handleSelect = (code: Category) => {
-    store.dispatch(selectCategory(code));
+  const navigate = useNavigate();
+  useEffect(() => {
+    console.log("triggered");
+    if (!selectedCategory) {
+      const cat = findCategoryByCode(categories, slug);
+      store.dispatch(selectCategory(cat));
+    }
+  }, [slug]);
+
+  const handleSelect = (cat: Category | undefined) => {
+    store.dispatch(selectCategory(cat));
+    navigate(`/categories/${cat ? cat.code : ""}`);
   };
 
   return (
@@ -92,14 +107,23 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
           expanded={expanded}
         />
       </div>
+      <div className="px-6 w-4/5 p-6 space-y-6 bg-white rounded-md min-h-full pb-6 py-3">
+        <div className="flex justify-end mb-4">
+          {selectedCategory ? (
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white"
+              onClick={() => handleSelect(undefined)}
+            >
+              Add New Category
+            </Button>
+          ) : (
+            <></>
+          )}
+        </div>
 
-      {/* Details section (80%) */}
-      <div className="w-4/5 p-6">
-        {selectedCategory ? (
-          <CategoryDetails category={selectedCategory} />
-        ) : (
-          <p className="text-gray-500">Select a category to see details</p>
-        )}
+        <CategoryForm category={selectedCategory} allCategory={categories} />
       </div>
     </div>
   );
@@ -141,22 +165,20 @@ const CategoryTree: React.FC<CategoryTreeProps> = ({
   return <div>{categories.map((cat) => renderTree(cat))}</div>;
 };
 
-const CategoryDetails: React.FC<{ category: Category }> = ({ category }) => (
-  <div>
-    <h2 className="text-xl font-bold">{category.label || category.code}</h2>
-    <p>
-      <strong>Code:</strong> {category.code}
-    </p>
-    <p>
-      <strong>Description:</strong> {category.description || "N/A"}
-    </p>
-    <p>
-      <strong>Level:</strong> {category.level}
-    </p>
-    <p>
-      <strong>Parent:</strong> {category.parentCategoryCode || "None"}
-    </p>
-  </div>
-);
+function findCategoryByCode(
+  categories: Category[],
+  code: string | undefined,
+): Category | undefined {
+  for (const category of categories) {
+    if (category.code === code) {
+      return category;
+    }
+    if (category.children) {
+      const found = findCategoryByCode(category.children, code);
+      if (found) return found;
+    }
+  }
+  return undefined;
+}
 
 export default CategoryGrid;

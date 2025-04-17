@@ -10,21 +10,26 @@ import logo from "/@/assets/initiationSmallLogo.svg";
 import smallLogo from "/@/assets/initiationNewSmallLogo.svg";
 import { CollapsedProvider } from "/@/context/CollapsedContext";
 import { useStore } from "/@/store/store.hook.ts";
+import { AppState, logout } from "/@/components/app/App.slice.ts";
+import { store } from "/@/store";
+import axios from "axios";
 import {
-  AppState,
-  logout,
+  NavState,
   setConfirmationModalVisible,
   setIsDesktop,
   toggleCollapse,
-} from "/@/components/app/App.slice.ts";
-import { store } from "/@/store";
-import axios from "axios";
+} from "/@/layout/components/Nav.slice.ts";
 
 export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
   const {
-    app: { user, collapsed, isDesktop, confirmationModalVisible },
-  } = useStore<{ app: AppState }>((state) => ({
+    app: { user },
+    nav: { collapsed, isDesktop, confirmationModalVisible },
+  } = useStore<{
+    app: AppState;
+    nav: NavState;
+  }>((state) => ({
     app: state.app,
+    nav: state.nav,
   }));
   useEffect(() => {
     const update = () => {

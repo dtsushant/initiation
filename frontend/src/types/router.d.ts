@@ -3,5 +3,6 @@ declare interface RouteConfig {
   path: string;
   icon: React.ReactNode;
   element: React.ReactNode;
-  children?: Omit<RouteConfig, | 'icon'>[];
+  hasSlug?: boolean;
+  children?: Omit<RouteConfig, "icon">[];
 }
