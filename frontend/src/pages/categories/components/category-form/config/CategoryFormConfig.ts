@@ -16,7 +16,6 @@ type CategoryFormProps = {
 export const CategoryFormConfig = (
   categoryFormProps: CategoryFormProps,
 ): GenericFormField[] => {
-  console.log("form re-render");
   const fields: GenericFormField[] = [];
   const { selectedCategory } = categoryFormProps;
   if (!selectedCategory) {
@@ -48,7 +47,6 @@ export const CategoryFormConfig = (
               if (value.length !== 6) {
                 return Promise.resolve();
               }
-              console.log("hello hello hello category");
               const category = await getCategory(value);
               if (category) {
                 return Promise.reject(
@@ -62,7 +60,6 @@ export const CategoryFormConfig = (
       }),
     );
   }
-  console.log("the label", selectedCategory?.label);
 
   fields.push(
     buildGenericFormField({
@@ -70,6 +67,7 @@ export const CategoryFormConfig = (
       label: "Category Label",
       fieldType: "input",
       initialValue: selectedCategory?.label,
+      rules: [{ required: true, message: "Code is required" }],
     }),
     buildGenericFormField({
       name: "description" as NamePath,

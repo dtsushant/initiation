@@ -1,34 +1,36 @@
 import React, { useEffect } from "react";
 import { motion } from "framer-motion";
-import { Category, CategorySelectTree } from "/@/types/category.ts";
-import { Form } from "antd";
+import {
+  Category,
+  CategoryFormFields,
+  CategorySelectTree,
+} from "/@/types/category.ts";
+import { Button, Form } from "antd";
 import { store } from "/@/store";
 import { GenericForm } from "/@/components/GenericForm/GenericForm.tsx";
 import { useStoreWithInitializer } from "/@/store/store.hook.ts";
-import categoryForm, {
+import {
   CategoryFormField,
-  CategoryFormFields,
   CategoryFormState,
-  CategoryFormValue,
   isAutoGenerateCode,
   resetForm,
   selectedCategory,
+  updateField,
+  startSubmitting,
 } from "/@/pages/categories/components/category-form/CategoryForm.slice.ts";
 import { CategoryFormConfig } from "/@/pages/categories/components/category-form/config/CategoryFormConfig.ts";
+import { saveCategory } from "/@/services/category.service.ts";
+import { LoginOutlined } from "@ant-design/icons";
 
 export const CategoryForm: React.FC<{
   category: Category | undefined;
   allCategory: Category[];
 }> = ({ category, allCategory }) => {
-  const {
-    form: categoryFormValue,
-    autoGenerateCode,
-    submitting,
-    error,
-  } = useStoreWithInitializer<CategoryFormState>(
-    ({ categoryForm }) => categoryForm,
-    load,
-  );
+  const { autoGenerateCode, submitting } =
+    useStoreWithInitializer<CategoryFormState>(
+      ({ categoryForm }) => categoryForm,
+      load,
+    );
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -61,7 +63,12 @@ export const CategoryForm: React.FC<{
           </p>
         </div>
       )}
-      <Form form={form} layout="vertical" onValuesChange={handleValuesChange}>
+      <Form
+        form={form}
+        layout="vertical"
+        onFinish={submit}
+        onValuesChange={handleValuesChange}
+      >
         <GenericForm
           fields={CategoryFormConfig({
             categorySelectTree: buildCategorySelectTree(allCategory),
@@ -72,6 +79,18 @@ export const CategoryForm: React.FC<{
             selectedCategory: category,
           })}
         />
+        <Form.Item className="mb-0">
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="w-full h-12 rounded-lg text-base font-medium flex items-center justify-center bg-primary text-white hover:bg-blue-700 transition-all"
+            loading={submitting}
+            disabled={submitting}
+            icon={!submitting && <LoginOutlined className="mr-2" />}
+          >
+            {submitting ? "Please wait..." : "Submit"}
+          </Button>
+        </Form.Item>
       </Form>
     </motion.div>
   );
@@ -87,12 +106,19 @@ const buildCategorySelectTree = (
   }));
 };
 
-const handleValuesChange = (
-  changedValues: Partial<CategoryFormField>,
-  allValues: CategoryFormField,
-) => {
-  console.log("Changed:", changedValues);
-  console.log("All values:", allValues);
+const handleValuesChange = (changedValues: Partial<CategoryFormField>) => {
+  for (const [name, value] of Object.entries(changedValues)) {
+    store.dispatch(
+      updateField({ name: name as keyof CategoryFormFields, value }),
+    );
+  }
 };
+
+async function submit() {
+  if (store.getState().categoryForm.submitting) return;
+  store.dispatch(startSubmitting());
+  console.log(store.getState().categoryForm.form);
+  const result = await saveCategory(store.getState().categoryForm.form);
+}
 
 CategoryForm.displayName = "CategoryForm";

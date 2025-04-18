@@ -18,6 +18,13 @@ export interface Category {
   children?: Category[];
 }
 
+export interface CategoryFormFields {
+  code: string;
+  label: string;
+  description: string;
+  parentCategoryCode?: string;
+}
+
 export interface CategorySelectTree {
   title: string;
   value: string;

@@ -59,7 +59,7 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
     switch: () => (
       <Switch
         disabled={disabled}
-        onChange={(checked) => onChange(name, checked)}
+        onChange={(checked) => onChange && onChange(name, checked)}
       />
     ),
 
@@ -74,7 +74,7 @@ export const FormGroup: React.FC<{ props: GenericFormField }> = ({ props }) => {
         allowClear
         treeDefaultExpandAll
         treeData={treeData}
-        onChange={(val) => onChange(name, val)}
+        onChange={(val) => onChange && onChange(name, val)}
       />
     ),
 

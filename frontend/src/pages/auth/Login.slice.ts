@@ -1,24 +1,24 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { GenericErrors } from "/@/types/error.ts";
+import {
+  createFormReducers,
+  createInitialFormState,
+  FormState,
+} from "/@/types/formstate.slice";
 
-export interface LoginState {
-  user: {
-    email: string;
-    password: string;
-  };
-  errors: GenericErrors;
-  loginIn: boolean;
+interface LoginUser {
+  email: string;
+  password: string;
+}
+export interface LoginState extends FormState<LoginUser> {
   focusedField: string;
   forgotPasswordVisible: boolean;
 }
 
 const initialState: LoginState = {
-  user: {
+  ...createInitialFormState<LoginUser>({
     email: "",
     password: "",
-  },
-  errors: {},
-  loginIn: false,
+  }),
   focusedField: "",
   forgotPasswordVisible: false,
 };
@@ -27,25 +27,8 @@ const slice = createSlice({
   name: "login",
   initialState,
   reducers: {
+    ...createFormReducers<LoginUser>(),
     initializeLogin: () => initialState,
-    updateField: (
-      state,
-      {
-        payload: { name, value },
-      }: PayloadAction<{ name: keyof LoginState["user"]; value: string }>,
-    ) => {
-      state.user[name] = value;
-    },
-    updateErrors: (
-      state,
-      { payload: errors }: PayloadAction<GenericErrors>,
-    ) => {
-      state.errors = errors;
-      state.loginIn = false;
-    },
-    startLoginIn: (state) => {
-      state.loginIn = true;
-    },
     updateForgotPasswordVisible: (
       state,
       { payload }: PayloadAction<boolean>,
@@ -65,7 +48,7 @@ export const {
   initializeLogin,
   updateField,
   updateErrors,
-  startLoginIn,
+  startSubmitting,
   updateForgotPasswordVisible,
   updateFocus,
   blurField,

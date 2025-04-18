@@ -4,7 +4,7 @@ import {
   blurField,
   initializeLogin,
   LoginState,
-  startLoginIn,
+  startSubmitting,
   updateErrors,
   updateField,
   updateFocus,
@@ -30,13 +30,17 @@ import { ForgotPasswordModal } from "/@/components/common/modal/ForgotPasswordMo
 import { NamePath } from "antd/es/form/interface";
 
 export function LoginPage() {
-  const { errors, loginIn, user, focusField, forgotPasswordVisible } =
-    useStoreWithInitializer(
-      ({ login }) => login,
-      dispatchOnCall(initializeLogin()),
-    );
+  const {
+    errors,
+    submitting,
+    form: user,
+    focusField,
+    forgotPasswordVisible,
+  } = useStoreWithInitializer(
+    ({ login }) => login,
+    dispatchOnCall(initializeLogin()),
+  );
   const [form] = Form.useForm();
-  const loading = false;
 
   const showForgotPasswordModal = () => {
     store.dispatch(updateForgotPasswordVisible(true));
@@ -91,7 +95,7 @@ export function LoginPage() {
             onValuesChange={handleFormChange}
           >
             <GenericForm
-              disabled={loginIn}
+              disabled={submitting}
               formObject={user}
               submitButtonText="Sign in"
               errors={errors}
@@ -168,11 +172,11 @@ export function LoginPage() {
                 type="primary"
                 htmlType="submit"
                 className="w-full h-12 rounded-lg text-base font-medium flex items-center justify-center bg-primary text-white hover:bg-blue-700 transition-all"
-                loading={loading}
-                disabled={loading}
-                icon={!loading && <LoginOutlined className="mr-2" />}
+                loading={submitting}
+                disabled={submitting}
+                icon={!submitting && <LoginOutlined className="mr-2" />}
               >
-                {loading ? "Please wait..." : "Login"}
+                {submitting ? "Please wait..." : "Login"}
               </Button>
             </Form.Item>
           </Form>
@@ -192,15 +196,15 @@ function clearError() {
 
 function onUpdateField(name: string, value: string) {
   store.dispatch(
-    updateField({ name: name as keyof LoginState["user"], value }),
+    updateField({ name: name as keyof LoginState["form"], value }),
   );
 }
 
 async function signIn() {
-  if (store.getState().login.loginIn) return;
-  store.dispatch(startLoginIn());
+  if (store.getState().login.submitting) return;
+  store.dispatch(startSubmitting());
 
-  const { email, password } = store.getState().login.user;
+  const { email, password } = store.getState().login.form;
   const result = await login(email, password);
 
   result.match({
@@ -214,10 +218,10 @@ async function signIn() {
   });
 }
 
-async function handleFormChange(changedValues: Partial<LoginState["user"]>) {
+async function handleFormChange(changedValues: Partial<LoginState["form"]>) {
   for (const [name, value] of Object.entries(changedValues)) {
     store.dispatch(
-      updateField({ name: name as keyof LoginState["user"], value }),
+      updateField({ name: name as keyof LoginState["form"], value }),
     );
   }
 }
