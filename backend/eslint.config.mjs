@@ -33,3 +33,33 @@ export default tseslint.config(
     },
   },
 );
+
+/*
+// backend/eslint.config.js
+import baseConfig from '../eslint.config.js';
+import globals from 'globals';
+import tseslint from 'typescript-eslint';
+
+export default tseslint.config(
+    {
+      extends: baseConfig,
+    },
+    {
+      files: ['**!/!*.ts', '**!/!*.tsx'],
+      languageOptions: {
+        parser: tseslint.parser,
+        parserOptions: {
+          projectService: true,
+          tsconfigRootDir: import.meta.dirname,
+        },
+        globals: {
+          ...globals.node,
+          ...globals.jest,
+        },
+      },
+      rules: {
+        '@typescript-eslint/no-explicit-any': 'off', // ✅ override
+      },
+    }
+);
+*/

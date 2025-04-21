@@ -4,8 +4,8 @@
     "outDir": "./dist",
     "rootDir": "./src",
     "emitDecoratorMetadata": true,
-    "experimentalDecorators": true
+    "experimentalDecorators": true,
   },
-  "include": ["src/**/*", "mikro-orm.config.ts"],
+  "include": ["src", "mikro-orm.config.ts"],
   "exclude": ["node_modules", "dist"]
 }
