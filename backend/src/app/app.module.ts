@@ -1,28 +1,27 @@
-import { MiddlewareConsumer, Module, NestModule, OnModuleInit } from '@nestjs/common';
+import {
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  OnModuleInit,
+} from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
-import ormConfig from '../mikro-orm.config';
-import { UserModule } from './features/user/user.module';
+import ormConfig from '../../mikro-orm.config';
 import { MikroORM } from '@mikro-orm/postgresql';
-import { UserController } from './features/user/user.controller';
-import { CategoryModule } from './features/category/category.module';
-import {RuleModule} from "./features/rule/rule.module";
+import { XingineInspectorService } from '../lib/xingine-nest/xingine-inspector.service';
+import { moduleMap } from './app.config';
+import { XingineModule } from '../lib/xingine-nest/xingine.module';
 
-
-// @Module({
-//   imports: [],
-//   controllers: [AppController],
-//   providers: [AppService],
-// })
-// export class AppModule {}
 @Module({
   controllers: [AppController],
   imports: [
-    MikroOrmModule.forRoot(ormConfig),
-    UserModule,
-    CategoryModule,
-    RuleModule,
+    MikroOrmModule.forRoot({
+      ...ormConfig,
+      registerRequestContext: false,
+    }),
+    XingineModule,
+    ...moduleMap,
   ],
   providers: [AppService],
 })

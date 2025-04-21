@@ -1,1 +1,1 @@
-export { InventoryPage } from './components/inventory.tsx';
+export { InventoryPage } from "./components/InventoryPage";

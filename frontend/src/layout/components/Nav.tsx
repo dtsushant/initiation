@@ -1,7 +1,11 @@
 import React, { useCallback, useEffect, useMemo } from "react";
 import { Layout, Menu, Divider } from "antd";
 import { useLocation, useNavigate } from "react-router-dom";
-import { LogoutOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import {
+  LogoutOutlined,
+  MenuFoldOutlined,
+  ProductOutlined,
+} from "@ant-design/icons";
 import { UserProfile } from "./UserProfile";
 import { ConfirmationModal } from "/@/components/common/modal/ConfirmationModal";
 import { findParentRoute } from "/@/utils/helper.";
@@ -10,7 +14,7 @@ import logo from "/@/assets/initiationSmallLogo.svg";
 import smallLogo from "/@/assets/initiationNewSmallLogo.svg";
 import { CollapsedProvider } from "/@/context/CollapsedContext";
 import { useStore } from "/@/store/store.hook.ts";
-import { AppState, logout } from "/@/components/app/App.slice.ts";
+import { logout } from "/@/components/app/App.slice.ts";
 import { store } from "/@/store";
 import axios from "axios";
 import {
@@ -19,16 +23,19 @@ import {
   setIsDesktop,
   toggleCollapse,
 } from "/@/layout/components/Nav.slice.ts";
+import { componentRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
+import { CategoryPage } from "/@/pages/categories";
 
 export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
+  console.log("loading nav");
   const {
-    app: { user },
+    //  app: { allowedModule },
     nav: { collapsed, isDesktop, confirmationModalVisible },
   } = useStore<{
-    app: AppState;
+    //  app: AppState;
     nav: NavState;
   }>((state) => ({
-    app: state.app,
+    //  app: state.app,
     nav: state.nav,
   }));
   useEffect(() => {
@@ -50,7 +57,8 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
     location.hash = "/";
   }
 
-  const menuRoutes = propRoutes || routes;
+  const r = routes();
+  const menuRoutes = propRoutes || r;
 
   const setCollapsed = (val: boolean) => {
     return store.dispatch(toggleCollapse(val));
@@ -121,7 +129,7 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
         <div className="sticky top-0 z-[1] flex h-[70px] w-full select-none items-center bg-white">
           <div className="flex items-center justify-start w-full">
             <img
-              src={collapsed ? smallLogo : logo}
+              src={collapsed ? (smallLogo as string) : (logo as string)}
               alt="Logo"
               height={30}
               width={collapsed ? 30 : 140}
@@ -158,11 +166,10 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
               collapsed ? "flex-col items-center" : "justify-between"
             }`}
           >
-            {user && (
+            {store.getState().app.user && (
               <UserProfile
                 user={{
-                  name: user.email,
-                  // role removed from props
+                  name: store.getState().app.user.email,
                 }}
                 collapsed={collapsed}
               />
@@ -182,4 +189,5 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
     </CollapsedProvider>
   );
 };
+
 Nav.displayName = "Nav";

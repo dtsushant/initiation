@@ -13,7 +13,7 @@ import {
 } from '@mikro-orm/core';
 import { UserRepository } from './user.repository';
 
-@Entity({schema:"iam"})
+@Entity({ schema: 'iam' })
 export class User {
   [EntityRepositoryType]?: UserRepository;
 
@@ -36,9 +36,20 @@ export class User {
   @Property({ hidden: true, fieldName: 'password' })
   password: string;
 
+  /*@ManyToMany({
+    entity: () => User,
+    inversedBy: (u) => u.followed,
+    owner: true,
+    pivotTable: 'user_to_follower',
+    joinColumn: 'follower',
+    inverseJoinColumn: 'following',
+    hidden: true,
+  })
+  followers = new Collection<User>(this);*/
 
   @ManyToMany({
     entity: () => User,
+    //entity: "user",
     inversedBy: (u) => u.followed,
     owner: true,
     pivotTable: 'user_to_follower',
@@ -59,8 +70,12 @@ export class User {
 
   toJSON(user?: User) {
     const o = wrap<User>(this).toObject() as UserDTO;
-    o.image = this.image || 'https://static.productionready.io/images/smiley-cyrus.jpg';
-    o.following = user && user.followers?.isInitialized() ? user.followers.contains(this) : false; // TODO or followed?
+    o.image =
+      this.image || 'https://static.productionready.io/images/smiley-cyrus.jpg';
+    o.following =
+      user && user.followers?.isInitialized()
+        ? user.followers.contains(this)
+        : false; // TODO or followed?
 
     return o;
   }

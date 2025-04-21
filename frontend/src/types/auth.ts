@@ -16,6 +16,10 @@ export const userDecoder: Decoder<User> = object({
   token: string,
 });
 
+export const userResponseDecoder: Decoder<{ user: User }> = object({
+  user: userDecoder,
+});
+
 export interface UserSettings extends PublicUser {
   email: string;
   password: string | null;

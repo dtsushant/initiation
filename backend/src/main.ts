@@ -1,18 +1,19 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import dotenv from "dotenv";
-import session = require('express-session');
+import { AppModule } from './app/app.module';
+import dotenv from 'dotenv';
+import session from 'express-session';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as process from 'process';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+
   app.enableCors({
-    origin: '*', 
+    origin: '*',
     credentials: true,
-  }); 
+  });
   app.use(
     session({
       secret: process.env.SESSION_SECRET!,
@@ -34,3 +35,40 @@ async function bootstrap() {
 }
 
 bootstrap();
+
+/*
+{
+  "compilerOptions": {
+    "target": "es6",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "typeRoots": ["./node_modules/@types", "./src/types"],
+    "baseUrl": ".",
+    "paths": {
+      "@shared/!*": ["packages/shared/src/!*"],
+      "@rule-ui/!*": ["packages/rule-ui/src/!*"],
+      "@xingine/!*": ["packages/xingine/src/!*"],
+    }
+  },
+  "exclude": ["node_modules", "dist"]
+}
+
+
+{
+  "extends": "../tsconfig.json",
+  "compilerOptions": {
+    "outDir": "./dist",
+    "rootDir": "./src",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true
+  },
+  "include": ["src/!**!/!*", "mikro-orm.config.ts"],
+"exclude": ["node_modules", "dist"]
+}*/

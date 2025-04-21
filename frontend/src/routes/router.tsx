@@ -21,7 +21,7 @@ export function Router() {
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
-        {routes.flatMap((route) => {
+        {routes().flatMap((route) => {
           const baseRoute = (
             <Route key={route.path} path={route.path} element={route.element} />
           );
@@ -36,7 +36,7 @@ export function Router() {
 
           return [baseRoute, slugRoute].filter(Boolean);
         })}
-        {routes.flatMap((route) =>
+        {routes().flatMap((route) =>
           (route.children || []).map((child) => (
             <Route key={child.path} path={child.path} element={child.element} />
           )),

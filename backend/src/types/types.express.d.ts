@@ -1,9 +1,8 @@
-
 // types/express.d.ts
-import { UserDTO } from '../features/user/user.entity';
+import { IUserData } from '../features/user/user.interface';
 
 declare module 'express' {
   interface Request {
-    user?: UserDTO;
+    user?: IUserData;
   }
 }

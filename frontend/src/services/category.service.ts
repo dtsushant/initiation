@@ -1,11 +1,13 @@
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import {
   Category,
   categoryDecoder,
   CategoryFormFields,
 } from "/@/types/category.ts";
-import { Result } from "@hqoss/monads";
-import { GenericErrors } from "/@/types/error.ts";
+import { Err, Ok, Result } from "@hqoss/monads";
+import { GenericErrors, genericErrorsDecoder } from "/@/types/error.ts";
+import { Decoder, object } from "decoders";
+import { User, userDecoder } from "/@/types/auth.ts";
 
 export async function getCategory(
   categoryCode: string,
@@ -35,4 +37,22 @@ export async function saveCategory(
   form: CategoryFormFields,
 ): Promise<Result<Category, GenericErrors>> {
   throw Error("Not implemented");
+}
+
+export async function saveForm<T, U>(
+  form: T,
+  baseUrl: string,
+  decoder: Decoder<U>,
+): Promise<Result<U, GenericErrors>> {
+  try {
+    const { data } = await axios.get(baseUrl);
+
+    return Ok(decoder.verify(data));
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    const err = object({ errors: genericErrorsDecoder }).verify(
+      axiosError.response?.data,
+    ).errors;
+    return Err<User, GenericErrors>(err);
+  }
 }

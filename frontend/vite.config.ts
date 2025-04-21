@@ -63,6 +63,10 @@ export default ({ mode }: ConfigEnv) => {
           find: "@rule-ui",
           replacement: resolve(__dirname, "../packages/rule-ui/src"),
         },
+        {
+          find: "@xingine",
+          replacement: resolve(__dirname, "../packages/xingine/src"),
+        },
       ],
     },
     server: {

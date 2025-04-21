@@ -10,8 +10,7 @@ import {
   updateFocus,
   updateForgotPasswordVisible,
 } from "/@/pages/auth/login.slice.ts";
-import { login } from "/@/services/auth.service.ts";
-import { loadUserIntoApp } from "/@/types/auth.ts";
+import { loadUserIntoApp, userResponseDecoder } from "/@/types/auth.ts";
 import { GenericForm } from "/@/components/GenericForm/GenericForm.tsx";
 import { buildGenericFormField } from "/@/types/genericFormField.tsx";
 import React from "react";
@@ -28,6 +27,7 @@ import {
 import { Button, Checkbox, Form } from "antd";
 import { ForgotPasswordModal } from "/@/components/common/modal/ForgotPasswordModal.tsx";
 import { NamePath } from "antd/es/form/interface";
+import { post } from "/@/services/initiation.service.ts";
 
 export function LoginPage() {
   const {
@@ -204,13 +204,16 @@ async function signIn() {
   if (store.getState().login.submitting) return;
   store.dispatch(startSubmitting());
 
-  const { email, password } = store.getState().login.form;
-  const result = await login(email, password);
+  const result = await post(
+    { user: store.getState().login.form },
+    userResponseDecoder,
+    "/users/users/login",
+  );
 
   result.match({
     ok: (user) => {
       location.hash = "#/dashboard";
-      loadUserIntoApp(user);
+      loadUserIntoApp(user.user);
     },
     err: (e) => {
       store.dispatch(updateErrors(e));

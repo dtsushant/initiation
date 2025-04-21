@@ -14,12 +14,12 @@
     "seed": "mikro-orm seeder:run",
     "migration": "mikro-orm migration:up",
     "start:prod": "node dist/main",
-    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "lint": "eslint .",
     "test": "jest",
     "test:watch": "jest --watch",
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
-    "test:e2e": "jest --config ./test/jest-e2e.json"
+    "test:e2e": "jest --config tsconfig.spec.json"
   },
   "dependencies": {
     "@mikro-orm/core": "^6.4.11",
@@ -90,7 +90,8 @@
     "testEnvironment": "node",
     "moduleNameMapper": {
       "^@shared/(.*)$": "<rootDir>/../../packages/shared/src/$1",
-      "^@rule-ui/(.*)$": "<rootDir>/../../packages/rule-ui/src/$1"
+      "^@rule-ui/(.*)$": "<rootDir>/../../packages/rule-ui/src/$1",
+      "^@xingine/(.*)$": "<rootDir>/../../packages/xingine/src/$1"
     }
   },
   "mikro-orm": {

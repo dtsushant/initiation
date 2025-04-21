@@ -15,9 +15,16 @@ import {
   themeConfig,
 } from "/@/utils/ant.ts";
 import { useStoreWithInitializer } from "/@/store/store.hook.ts";
-import { endLoad, loadUser } from "/@/components/app/App.slice.ts";
+import {
+  endLoad,
+  loadAllowedModule,
+  loadUser,
+} from "/@/components/app/App.slice.ts";
 import axios from "axios";
-import { getUser } from "/@/services/auth.service.ts";
+import { userResponseDecoder } from "/@/types/auth.ts";
+import { get } from "/@/services/initiation.service.ts";
+import { modulePropertyOptionsListDecoder } from "@xingine/core/xingine.decoder.ts";
+import { ModulePropertyOptions } from "@xingine";
 
 // Configure global message behavior
 message.config({
@@ -27,7 +34,6 @@ message.config({
 
 export function App() {
   const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
-  axios.defaults.baseURL = "/api";
 
   const userIsLogged = !!user;
   console.log("rendering the app");
@@ -66,7 +72,10 @@ async function load() {
   axios.defaults.headers.Authorization = `Token ${token}`;
 
   try {
-    store.dispatch(loadUser(await getUser()));
+    //store.dispatch(loadAllowedModule(await get<ModulePropertyOptions[]>(modulePropertyOptionsListDecoder, "modules")));
+    store.dispatch(
+      loadUser((await get(userResponseDecoder, "users/user")).user),
+    );
   } catch {
     store.dispatch(endLoad());
   }

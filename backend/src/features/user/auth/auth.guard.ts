@@ -9,6 +9,7 @@ import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
 import { UserService } from '../user.service';
 import { IUserData } from '../user.interface';
+import * as process from 'process';
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
@@ -31,7 +32,7 @@ export class JwtAuthGuard implements CanActivate {
       };
       const user = await this.userService.findById(decoded.id);
 
-      if (!user) {
+      if (!user || !user.user) {
         throw new UnauthorizedException('User not found');
       }
 

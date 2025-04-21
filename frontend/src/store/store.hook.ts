@@ -6,14 +6,11 @@ export function useStoreWithInitializer<T>(
   initializer: () => unknown,
 ) {
   const [state, setState] = useState(getter(store.getState()));
-  //console.log("the initializer",initializer);
   useEffect(() => {
     const unsubscribe = store.subscribe(() =>
       setState(getter(store.getState())),
     );
-    console.log("initializing the state", initializer());
     initializer();
-    console.log("the state here is ", state.constructor);
     return unsubscribe;
   }, []);
   return state;

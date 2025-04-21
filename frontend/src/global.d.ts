@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import { JSX } from "react";
+
 declare global {
   /**
    * https://cn.vitejs.dev/guide/env-and-mode.html#intellisense
