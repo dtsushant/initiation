@@ -14,7 +14,6 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     });
     console.log(process.env.GOOGLE_CALLBACK_URL);
     console.log('GoogleStrategy initialized 🚀');
-
   }
 
   async validate(

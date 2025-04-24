@@ -1,5 +1,5 @@
 import { Property, ManyToOne } from '@mikro-orm/core';
-import { User } from '../features/user/user.entity';
+import { User } from '../features/user/entity/user.entity';
 
 export abstract class BaseEntity {
   @Property({ type: 'date' })

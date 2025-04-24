@@ -23,8 +23,6 @@ import {
   setIsDesktop,
   toggleCollapse,
 } from "/@/layout/components/Nav.slice.ts";
-import { componentRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
-import { CategoryPage } from "/@/pages/categories";
 
 export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
   console.log("loading nav");

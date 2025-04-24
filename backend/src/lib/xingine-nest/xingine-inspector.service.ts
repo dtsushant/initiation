@@ -1,7 +1,13 @@
 import { Injectable, Type } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
-import { ModulePropertyOptions } from '@xingine/core/xingine.type';
-import { MODULE_PROPERTY_METADATA_KEY } from '@xingine/core/xingine.decorator';
+import {
+  ModuleProperties,
+  ModulePropertyOptions,
+} from '@xingine/core/xingine.type';
+import {
+  getModulePropertyMetadata,
+  MODULE_PROPERTY_METADATA_KEY,
+} from '@xingine/core/xingine.decorator';
 
 @Injectable()
 export class XingineInspectorService {
@@ -10,20 +16,21 @@ export class XingineInspectorService {
     private readonly metadataScanner: MetadataScanner,
   ) {}
 
-  getAllModuleProperties(): ModulePropertyOptions[] {
+  getAllModuleProperties(): ModuleProperties[] {
     const modules = this.discoveryService.getProviders();
 
-    const moduleProperties: ModulePropertyOptions[] = [];
+    const moduleProperties: ModuleProperties[] = [];
 
     for (const moduleWrapper of modules) {
-      const metatype = moduleWrapper.metatype as Type<unknown>;
+      const metatype = moduleWrapper.metatype as Type<object>;
 
       if (!metatype || typeof metatype !== 'function') continue;
 
-      const metadata = Reflect.getMetadata(
+      const metadata = getModulePropertyMetadata(metatype);
+      /*const metadata = Reflect.getMetadata(
         MODULE_PROPERTY_METADATA_KEY,
         metatype,
-      ) as ModulePropertyOptions | undefined;
+      ) as ModulePropertyOptions | undefined;*/
 
       if (metadata) {
         moduleProperties.push(metadata);

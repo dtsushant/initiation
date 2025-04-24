@@ -11,9 +11,9 @@ import { Category, CategoryDTO } from './category.entity';
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryService } from './category.service';
-import { JwtAuthGuard } from '../user/auth/auth.guard';
+import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
-import { User } from '../user/user.decorator';
+import { User } from '../../shared/auth/user.decorator';
 
 @ApiBearerAuth()
 @ApiTags('categories')
@@ -39,7 +39,7 @@ export class CategoryController {
   @UsePipes(new ValidationPipe())
   @Post('/save')
   async create(
-    @User('id') userId: number,
+    @User('id') userId: string,
     @Body() category: CreateCategoryDto,
   ): Promise<CategoryDTO> {
     // Logic to create a new category

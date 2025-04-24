@@ -1,6 +1,6 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
 import { Inject, Injectable } from '@nestjs/common';
-import { User } from '../user/user.entity';
+import { User } from '../user/entity/user.entity';
 import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
 import { Category, CategoryDTO } from './category.entity';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -17,7 +17,7 @@ export class CategoryService {
   ) {}
 
   async save(
-    userId: number,
+    userId: string,
     categoryDto: CreateCategoryDto,
   ): Promise<CategoryDTO> {
     const user = await this.userRepository.findOne({ id: userId });

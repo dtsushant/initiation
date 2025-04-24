@@ -12,7 +12,7 @@ import {
   UseGuards,
   Req,
 } from '@nestjs/common';
-import { User } from './user.decorator';
+import { User } from '../../shared/auth/user.decorator';
 import {
   ApiBearerAuth,
   ApiBody,
@@ -23,7 +23,7 @@ import { UserService } from './user.service';
 import { IUserRO } from './user.interface';
 import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
-import { JwtAuthGuard } from './auth/auth.guard';
+import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 
@@ -54,7 +54,7 @@ export class UserController {
   @UseGuards(JwtAuthGuard)
   @Put('user')
   async update(
-    @User('id') userId: number,
+    @User('id') userId: string,
     @Body('user') userData: UpdateUserDto,
   ) {
     return this.userService.update(userId, userData);
@@ -97,7 +97,7 @@ export class UserController {
   @Post('users/login')
   async login(@Body('user') loginUserDto: LoginUserDto): Promise<IUserRO> {
     const foundUser = await this.userService.findOne(loginUserDto);
-
+    console.log('found user', foundUser);
     const errors = { User: ' not found' };
     if (!foundUser) {
       throw new HttpException({ errors }, 401);

@@ -7,6 +7,17 @@ export interface UIComponent {
   meta?: Record<string, object>;
 }
 
+export interface Permission {
+  name: string;
+  description: string;
+}
+
 export interface ModulePropertyOptions {
   uiComponent?: UIComponent;
+  permissions: Permission[];
+  description?: string;
+}
+
+export interface ModuleProperties extends ModulePropertyOptions {
+  name: string;
 }

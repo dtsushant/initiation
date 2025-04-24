@@ -10,5 +10,7 @@
   "compilerOptions": {
     "types": ["node", "jest"]
   },
-  "include": ["src/**/*.spec.ts", "test/**/*.ts"]
+  "include": ["src/**/*.spec.ts",
+    "test/**/*.ts"
+  ]
 }

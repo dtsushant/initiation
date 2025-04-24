@@ -94,7 +94,7 @@ const CategoryGrid: React.FC<CategoryGridProps> = ({
 
   const handleSelect = (cat: Category | undefined) => {
     store.dispatch(selectCategory(cat));
-    navigate(`/categories/${cat ? cat.code : ""}`);
+    navigate(`/category/${cat ? cat.code : ""}`);
   };
 
   return (

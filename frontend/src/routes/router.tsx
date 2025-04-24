@@ -6,6 +6,7 @@ import { LoginPage } from "../pages/auth";
 import { NotFoundPage } from "../pages/not-found";
 import { UnauthorizedPage } from "../pages/unauthorized";
 import { routes } from ".";
+import { PublicSpacePage } from "/@/pages/public/PublicSpacePage.tsx";
 
 export function Router() {
   return (
@@ -18,6 +19,7 @@ export function Router() {
           </PublicRoute>
         }
       />
+      <Route path="/browse" element={<PublicSpacePage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
       <Route path="/" element={<Layout />}>
         <Route index element={<Navigate to="/dashboard" replace />} />

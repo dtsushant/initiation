@@ -9,9 +9,14 @@ import { TsMorphMetadataProvider } from '@mikro-orm/reflection';
 import { Migrator } from '@mikro-orm/migrations';
 import { EntityGenerator } from '@mikro-orm/entity-generator';
 import { SeedManager } from '@mikro-orm/seeder';
-import { User } from './src/features/user/user.entity';
+import { User } from './src/features/user/entity/user.entity';
 import { Category } from './src/features/category/category.entity';
-import { Merchant } from './src/features/merchant/merchant.entity';
+import { IamMigration } from './src/migrations/IamMigration';
+import { TenantTemplate } from './src/migrations/TenantTemplate';
+import { Tenant } from './src/features/tenant/tenant.entity';
+import { Party } from './src/features/party/party.entity';
+import { PartyTenant } from './src/features/party/party-tenant.entity';
+import { AppDetail } from './src/app/app.entity';
 
 dotenv.config();
 
@@ -30,10 +35,25 @@ export default defineConfig({
         name: 'InitialMigration',
         class: InitialMigration,
       },
+      {
+        name: 'IamMigration',
+        class: IamMigration,
+      },
+      {
+        name: 'TenantTemplate',
+        class: TenantTemplate,
+      },
     ],
   },
 
-  entities: [User, Category, Merchant] as EntityClass<unknown>[],
+  entities: [
+    AppDetail,
+    User,
+    Category,
+    Tenant,
+    Party,
+    PartyTenant,
+  ] as EntityClass<unknown>[],
   discovery: { disableDynamicFileAccess: true },
   seeder: {
     pathTs: join(__dirname, 'src', 'seeders'),

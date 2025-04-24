@@ -7,8 +7,8 @@ import {
 import { Reflector } from '@nestjs/core';
 import { Request } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { UserService } from '../user.service';
-import { IUserData } from '../user.interface';
+import { UserService } from '../../features/user/user.service';
+import { IUserData } from '../../features/user/user.interface';
 import * as process from 'process';
 
 @Injectable()
@@ -21,14 +21,14 @@ export class JwtAuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context
       .switchToHttp()
-      .getRequest<Request & { user?: IUserData & { id?: number } }>();
+      .getRequest<Request & { user?: IUserData & { id?: string } }>();
     const authHeader = request.headers.authorization!;
 
     const token = authHeader.split(' ')[1];
     console.log('the token', token);
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-        id: number;
+        id: string;
       };
       const user = await this.userService.findById(decoded.id);
 

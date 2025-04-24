@@ -7,7 +7,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "build": "nest build",
-    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "format": "prettier --write \\\\\\\"src/**/*.ts\\\\\\\" \\\\\\\"test/**/*.ts\\\\\\\"",
     "start:dev": "nodemon --exec ts-node src/main.ts",
     "start": "ts-node-dev --respawn -r tsconfig-paths/register src/main.ts",
     "start:debug": "nest start --debug --watch",
@@ -78,8 +78,8 @@
       "json",
       "ts"
     ],
-    "rootDir": "src",
-    "testRegex": ".*\\.spec\\.ts$",
+    "rootDir": ".",
+    "testRegex": ".*\\.(e2e-)?spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"
     },
@@ -89,9 +89,9 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "moduleNameMapper": {
-      "^@shared/(.*)$": "<rootDir>/../../packages/shared/src/$1",
-      "^@rule-ui/(.*)$": "<rootDir>/../../packages/rule-ui/src/$1",
-      "^@xingine/(.*)$": "<rootDir>/../../packages/xingine/src/$1"
+      "^@shared/(.*)$": "<rootDir>/../packages/shared/src/$1",
+      "^@rule-ui/(.*)$": "<rootDir>/../packages/rule-ui/src/$1",
+      "^@xingine/(.*)$": "<rootDir>/../packages/xingine/src/$1"
     }
   },
   "mikro-orm": {

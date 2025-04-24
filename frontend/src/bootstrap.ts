@@ -9,7 +9,6 @@ import { componentMap } from "/@/config/ruled-component.config.ts"; // <-- your 
 
 export async function bootstrapApp(): Promise<void> {
   try {
-    console.log("here here here ");
     const componentDefinitions = await get<ModulePropertyOptions[]>(
       modulePropertyOptionsListDecoder,
       "modules",

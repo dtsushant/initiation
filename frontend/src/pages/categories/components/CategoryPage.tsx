@@ -37,7 +37,7 @@ export function CategoryPage() {
       <Breadcrumbs
         items={[
           { title: "Home", path: "/dashboard" },
-          { title: "Categories", path: "/categories" },
+          { title: "Category", path: "/category" },
           {
             title: selectedCategory
               ? `Edit Category ${selectedCategory.label}`

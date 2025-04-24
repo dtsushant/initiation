@@ -10,7 +10,6 @@ export function registerModule(
 ) {
   initializeModuleRegistry(componentMap);
   componentDefinitions.forEach((def) => {
-    console.log("the def ===>>", def);
     getModuleRegistryService()!.register(def);
   });
 }

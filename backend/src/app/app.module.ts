@@ -9,10 +9,10 @@ import { AppService } from './app.service';
 import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
 import ormConfig from '../../mikro-orm.config';
 import { MikroORM } from '@mikro-orm/postgresql';
-import { XingineInspectorService } from '../lib/xingine-nest/xingine-inspector.service';
 import { moduleMap } from './app.config';
 import { XingineModule } from '../lib/xingine-nest/xingine.module';
-
+import { TenantModule } from '../features/tenant/tenant.module';
+import { AppMetaInformationPopulatorService } from './app-meta-information-populator.service';
 @Module({
   controllers: [AppController],
   imports: [
@@ -21,20 +21,24 @@ import { XingineModule } from '../lib/xingine-nest/xingine.module';
       registerRequestContext: false,
     }),
     XingineModule,
+    TenantModule,
     ...moduleMap,
   ],
-  providers: [AppService],
+  providers: [AppService, AppMetaInformationPopulatorService],
+  exports: [AppService],
 })
 export class AppModule implements NestModule, OnModuleInit {
-  constructor(private readonly orm: MikroORM) {}
+  constructor(
+    private readonly orm: MikroORM,
+    private readonly metaInfoPopulator: AppMetaInformationPopulatorService,
+  ) {}
 
   async onModuleInit(): Promise<void> {
     await this.orm.getMigrator().up();
+    const em = this.orm.em.fork();
+    await this.metaInfoPopulator.run(em);
   }
 
-  // for some reason the auth middlewares in profile and article modules are fired before the request context one,
-  // so they would fail to access contextual EM. by registering the middleware directly in AppModule, we can get
-  // around this issue
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(MikroOrmMiddleware).forRoutes('*');
   }
