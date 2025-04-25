@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { UserController } from './user.controller';
 import { User } from './entity/user.entity';
-import { UserService } from './user.service';
+import { UserService } from './service/user.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { GoogleStrategy } from '../../shared/auth/strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';

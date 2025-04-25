@@ -4,11 +4,14 @@ import dotenv from 'dotenv';
 import session from 'express-session';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import * as process from 'process';
+import { JwtAuthGuard } from './shared/auth/auth.guard';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const jwtAuthGuard = app.get(JwtAuthGuard);
+  app.useGlobalGuards(jwtAuthGuard);
 
   app.enableCors({
     origin: '*',

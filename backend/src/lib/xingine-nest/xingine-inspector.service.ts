@@ -27,10 +27,6 @@ export class XingineInspectorService {
       if (!metatype || typeof metatype !== 'function') continue;
 
       const metadata = getModulePropertyMetadata(metatype);
-      /*const metadata = Reflect.getMetadata(
-        MODULE_PROPERTY_METADATA_KEY,
-        metatype,
-      ) as ModulePropertyOptions | undefined;*/
 
       if (metadata) {
         moduleProperties.push(metadata);

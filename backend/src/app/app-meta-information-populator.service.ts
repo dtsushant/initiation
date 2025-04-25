@@ -3,8 +3,10 @@ import { AppService } from './app.service';
 import { EntityManager } from '@mikro-orm/postgresql';
 import { Permission } from '../features/user/entity/permission.entity';
 import { Collection, EntityClass } from '@mikro-orm/core';
-import { PERMISSIONS } from '../shared/auth/constant/permissions.constant';
 import { Role } from '../features/user/entity/role.entity';
+import { AppDetail } from './app.entity';
+import { ModuleProperties } from '@xingine/core/xingine.type';
+import { permissionPath } from '../shared/utils/string.utils';
 
 @Injectable()
 export class AppMetaInformationPopulatorService {
@@ -13,16 +15,44 @@ export class AppMetaInformationPopulatorService {
   constructor(private readonly appService: AppService) {}
 
   async run(em: EntityManager): Promise<void> {
-    console.log(this.appService.getModuleMetadata());
-    await this.loadAllPermission(em);
+    const moduleProperties = await this.appService.getModuleMetadata();
+    const modules = await this.loadAllModules(em, moduleProperties);
+    await this.loadAllPermission(em, moduleProperties, modules);
     await this.loadSuper(em);
   }
 
-  async loadAllModules(em: EntityManager): Promise<void> {
-    console.log(this.appService.getModuleMetadata());
+  async loadAllModules(
+    em: EntityManager,
+    moduleProperties: ModuleProperties[],
+  ): Promise<AppDetail[]> {
+    const appDetails = moduleProperties.map((property) => ({
+      module: property.name,
+      description: property.description ?? property.name,
+    }));
+    return await em.upsertMany(
+      AppDetail as EntityClass<AppDetail>,
+      appDetails,
+      {
+        onConflictFields: ['module'],
+        onConflictAction: 'merge',
+        onConflictMergeFields: ['description'],
+      },
+    );
   }
-  async loadAllPermission(em: EntityManager): Promise<void> {
-    await em.upsertMany(Permission as EntityClass<Permission>, PERMISSIONS, {
+  async loadAllPermission(
+    em: EntityManager,
+    moduleProperties: ModuleProperties[],
+    modules: AppDetail[],
+  ): Promise<void> {
+    const permissions = moduleProperties.flatMap((properties) =>
+      properties.permissions.map((permission) => ({
+        id: permissionPath(properties.name, permission.name),
+        description: permission.description,
+        module: modules.find((module) => module.module === properties.name)!,
+      })),
+    );
+    console.log('the permissions ', permissions);
+    await em.upsertMany(Permission as EntityClass<Permission>, permissions, {
       onConflictFields: ['id'],
       onConflictAction: 'merge',
       onConflictMergeFields: ['description'],
@@ -30,7 +60,7 @@ export class AppMetaInformationPopulatorService {
   }
 
   async loadSuper(em: EntityManager): Promise<void> {
-    const roleName = 'ROLE_SUPER';
+    const roleName = 'ROLE_SUPREME_LEADER';
 
     let role: Role | null = await em.findOne(
       Role as EntityClass<Role>,
@@ -58,8 +88,6 @@ export class AppMetaInformationPopulatorService {
     }
     await em.flush();
 
-    this.logger.log(
-      `[Seeder] ✅ Role '${roleName}' seeded with all permissions.`,
-    );
+    this.logger.log(`[Seeder] Role '${roleName}' seeded with all permissions.`);
   }
 }

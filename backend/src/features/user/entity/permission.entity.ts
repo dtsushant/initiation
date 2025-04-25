@@ -3,6 +3,7 @@ import {
   Entity,
   EntityClass,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryKey,
   Property,
@@ -10,6 +11,7 @@ import {
 import { v4 } from 'uuid';
 import { Role } from './role.entity';
 import { User } from './user.entity';
+import { AppDetail } from '../../../app/app.entity';
 
 @Entity({ schema: 'iam', tableName: 'permissions' })
 export class Permission {
@@ -21,4 +23,7 @@ export class Permission {
 
   @ManyToMany(() => Role as EntityClass<Role>, (role: Role) => role.permissions)
   roles = new Collection<Role>(this);
+
+  @ManyToOne(() => AppDetail as EntityClass<AppDetail>, { fieldName: 'module' })
+  module!: AppDetail;
 }

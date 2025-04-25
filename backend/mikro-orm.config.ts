@@ -57,6 +57,7 @@ export default defineConfig({
   discovery: { disableDynamicFileAccess: true },
   seeder: {
     pathTs: join(__dirname, 'src', 'seeders'),
+    // defaultSeeder: 'DatabaseSeeder'
   },
   debug: true,
   loadStrategy: LoadStrategy.JOINED,

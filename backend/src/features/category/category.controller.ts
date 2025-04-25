@@ -13,7 +13,7 @@ import { CreateCategoryDto } from './dto/create-category.dto';
 import { CategoryService } from './category.service';
 import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
-import { User } from '../../shared/auth/user.decorator';
+import { User } from '../../shared/auth/auth-user.decorator';
 
 @ApiBearerAuth()
 @ApiTags('categories')

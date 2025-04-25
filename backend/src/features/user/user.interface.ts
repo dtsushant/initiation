@@ -4,6 +4,7 @@ export interface IUserData {
   image?: string;
   token: string;
   username: string;
+  roles?: string[];
 }
 
 export interface IUserRO {

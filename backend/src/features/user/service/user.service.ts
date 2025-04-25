@@ -3,29 +3,32 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { validate } from 'class-validator';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from './dto';
-import { User, UserDTO } from './entity/user.entity';
-import { IUserRO } from './user.interface';
+import { CreateUserDto, LoginUserDto, UpdateUserDto } from '../dto';
+import { User, UserDTO } from '../entity/user.entity';
+import { IUserRO } from '../user.interface';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import {
   EntityManager,
   EntityRepository,
   QueryBuilder,
 } from '@mikro-orm/postgresql';
-import { UserPassword } from './entity/user-password.entity';
-import { hmacHash } from '../../shared/utils/crypto.utils';
+import { UserPassword } from '../entity/user-password.entity';
+import { hmacHash } from '../../../shared/utils/crypto.utils';
+import { Role } from '../entity/role.entity';
 
 @Injectable()
 export class UserService {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: EntityRepository<User>,
+    @InjectRepository(Role)
+    private readonly roleRepository: EntityRepository<Role>,
     @Inject()
     private readonly em: EntityManager,
   ) {}
 
   async findAll(): Promise<User[]> {
-    return this.userRepository.findAll();
+    return this.userRepository.findAll({ populate: ['roles'] });
   }
 
   async findOne(loginUserDto: LoginUserDto): Promise<User> {
@@ -88,6 +91,25 @@ export class UserService {
 
     // create new user
     const user = new User(username, email, password);
+
+    if (dto.roles && dto.roles.length > 0) {
+      const roles = await this.roleRepository.find(
+        { id: { $in: dto.roles } },
+        { populate: ['permissions'] },
+      );
+
+      if (roles.length !== dto.roles.length) {
+        throw new HttpException(
+          {
+            message: 'Input data validation failed',
+            errors: { username: "One or more roles doesn't exists" },
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      user.roles.set(roles);
+    }
     const errors = await validate(user);
 
     if (errors.length > 0) {
@@ -120,7 +142,7 @@ export class UserService {
   }
 
   async findById(id: string): Promise<IUserRO> {
-    const user = await this.userRepository.findOne(id);
+    const user = await this.userRepository.findOne(id, { populate: ['roles'] });
 
     if (!user) {
       const errors = { User: ' not found' };
@@ -158,6 +180,7 @@ export class UserService {
       image: user.image,
       token: this.generateJWT(user),
       username: user.username,
+      roles: user.roles?.map((r) => r.id),
     };
 
     return { user: userRO };

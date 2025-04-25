@@ -27,12 +27,12 @@ describe('TenantService Test', () => {
     //  const modules =  appController.enabledModules();
 
     it('Should register the tenant"', async () => {
-      //const ten1 = await tenantService.createTenant("001","SCHEMA_001");
+      const ten1 = await tenantService.createTenant('001', 'SCHEMA_001');
       const ten2 = await tenantService.createTenant('002', 'SCHEMA_002');
       const ten3 = await tenantService.createTenant('003', 'SCHEMA_003');
       const ten4 = await tenantService.createTenant('004', 'SCHEMA_004');
       const ten5 = await tenantService.createTenant('005', 'SCHEMA_005');
-      // expect(ten1.tenantCode).toBe('001');
+      expect(ten1.tenantCode).toBe('001');
       expect(ten2.tenantCode).toBe('002');
       expect(ten3.tenantCode).toBe('003');
       expect(ten4.tenantCode).toBe('004');

@@ -1,6 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
 import { ModulePropertyOptions } from '@xingine/core/xingine.type';
+import { PermissionGateKeeper } from '../shared/auth/auth-permit.decorator';
 
 @Controller()
 export class AppController {
@@ -10,11 +11,13 @@ export class AppController {
   ) {}
 
   @Get('welcome')
+  @PermissionGateKeeper({ allowPeasants: true })
   getWelcome(): string {
-    return 'Welcome somehting test sometihg to the modified now test awesome API!';
+    return 'Welcome!';
   }
 
   @Get('modules')
+  @PermissionGateKeeper({ allowPeasants: true })
   async enabledModules(): Promise<ModulePropertyOptions[]> {
     return await this.appService.getModuleMetadata();
   }

@@ -1,4 +1,4 @@
-import { UserService } from '../../src/features/user/user.service';
+import { UserService } from '../../src/features/user/service/user.service';
 import { CreateUserDto } from '../../src/features/user/dto';
 import { IUserRO } from '../../src/features/user/user.interface';
 

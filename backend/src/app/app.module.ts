@@ -13,6 +13,8 @@ import { moduleMap } from './app.config';
 import { XingineModule } from '../lib/xingine-nest/xingine.module';
 import { TenantModule } from '../features/tenant/tenant.module';
 import { AppMetaInformationPopulatorService } from './app-meta-information-populator.service';
+import { JwtAuthGuard } from '../shared/auth/auth.guard';
+// import {DatabaseSeeder} from "../seeders/database.seeders";
 @Module({
   controllers: [AppController],
   imports: [
@@ -24,8 +26,8 @@ import { AppMetaInformationPopulatorService } from './app-meta-information-popul
     TenantModule,
     ...moduleMap,
   ],
-  providers: [AppService, AppMetaInformationPopulatorService],
-  exports: [AppService],
+  providers: [AppService, AppMetaInformationPopulatorService, JwtAuthGuard],
+  exports: [AppService, JwtAuthGuard],
 })
 export class AppModule implements NestModule, OnModuleInit {
   constructor(
@@ -35,6 +37,8 @@ export class AppModule implements NestModule, OnModuleInit {
 
   async onModuleInit(): Promise<void> {
     await this.orm.getMigrator().up();
+    /*const seeder = this.orm.getSeeder();
+    await seeder.seed(DatabaseSeeder);*/
     const em = this.orm.em.fork();
     await this.metaInfoPopulator.run(em);
   }
