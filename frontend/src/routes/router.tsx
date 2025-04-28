@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Navigate, Routes, Route } from "react-router-dom";
 import { PublicRoute } from "../components/auth/PublicRoute";
 import { Layout } from "../layout";
@@ -7,10 +7,37 @@ import { NotFoundPage } from "../pages/not-found";
 import { UnauthorizedPage } from "../pages/unauthorized";
 import { routes } from ".";
 import { PublicSpacePage } from "/@/pages/public/PublicSpacePage.tsx";
+import { useStore } from "/@/store/store.hook.ts";
+import { AppState } from "/@/components/app/App.slice.ts";
+import { UIComponent } from "@xingine";
+import { lazyLoadComponent } from "/@/lib/xingine-react/component/utils/Component.utils.ts";
+import { AccessGuard } from "/@/lib/xingine-react/component/ComponentAccessGuard.tsx";
+import { DefaultLayout } from "/@/lib/xingine-react/component/ComponentDefaultLayout.tsx";
 
 export function Router() {
+  const {
+    app: { allowedModule },
+  } = useStore<{
+    app: AppState;
+  }>((state) => ({
+    app: state.app,
+  }));
+
+  const comps: UIComponent[] = [];
+  const populatedComps = () => {
+    if (allowedModule) {
+      allowedModule.forEach((modules) => {
+        if (modules.uiComponent !== undefined) {
+          comps.push(...modules.uiComponent);
+        }
+      });
+    }
+  };
+  populatedComps();
+
   return (
     <Routes>
+      <Route path="*" element={<NotFoundPage />} />
       <Route
         path="/login"
         element={
@@ -45,6 +72,26 @@ export function Router() {
         )}
       </Route>
       <Route path="*" element={<NotFoundPage />} />
+      {comps.length > 0 &&
+        comps.map((mod) => {
+          const Component = lazyLoadComponent(mod.component);
+
+          return (
+            <Route
+              key={mod.path}
+              path={mod.path}
+              element={
+                <AccessGuard roles={mod.roles} permissions={mod.permissions}>
+                  <DefaultLayout>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <Component meta={mod.meta} />
+                    </Suspense>
+                  </DefaultLayout>
+                </AccessGuard>
+              }
+            />
+          );
+        })}
     </Routes>
   );
 }

@@ -1,10 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { User } from "/@/types/auth.ts";
-import { ModulePropertyOptions } from "@xingine/core/xingine.type";
+import { ModuleProperties } from "@xingine/core/xingine.type";
 
 export interface AppState {
   user: User | null;
-  allowedModule: ModulePropertyOptions[] | null;
+  allowedModule: ModuleProperties[] | null;
   loading: boolean;
 }
 
@@ -25,7 +25,7 @@ const slice = createSlice({
     },
     loadAllowedModule: (
       state,
-      { payload: allowedModules }: PayloadAction<ModulePropertyOptions[]>,
+      { payload: allowedModules }: PayloadAction<ModuleProperties[]>,
     ) => {
       state.allowedModule = allowedModules;
     },

@@ -14,6 +14,7 @@ import { XingineModule } from '../lib/xingine-nest/xingine.module';
 import { TenantModule } from '../features/tenant/tenant.module';
 import { AppMetaInformationPopulatorService } from './app-meta-information-populator.service';
 import { JwtAuthGuard } from '../shared/auth/auth.guard';
+import { CacheModule } from '../shared/cache/cache.module';
 // import {DatabaseSeeder} from "../seeders/database.seeders";
 @Module({
   controllers: [AppController],
@@ -24,6 +25,7 @@ import { JwtAuthGuard } from '../shared/auth/auth.guard';
     }),
     XingineModule,
     TenantModule,
+    CacheModule,
     ...moduleMap,
   ],
   providers: [AppService, AppMetaInformationPopulatorService, JwtAuthGuard],

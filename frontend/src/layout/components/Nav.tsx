@@ -14,7 +14,7 @@ import logo from "/@/assets/initiationSmallLogo.svg";
 import smallLogo from "/@/assets/initiationNewSmallLogo.svg";
 import { CollapsedProvider } from "/@/context/CollapsedContext";
 import { useStore } from "/@/store/store.hook.ts";
-import { logout } from "/@/components/app/App.slice.ts";
+import { AppState, logout } from "/@/components/app/App.slice.ts";
 import { store } from "/@/store";
 import axios from "axios";
 import {
@@ -23,17 +23,18 @@ import {
   setIsDesktop,
   toggleCollapse,
 } from "/@/layout/components/Nav.slice.ts";
+import { UIComponent } from "@xingine";
 
 export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
   console.log("loading nav");
   const {
-    //  app: { allowedModule },
+    app: { allowedModule },
     nav: { collapsed, isDesktop, confirmationModalVisible },
   } = useStore<{
-    //  app: AppState;
+    app: AppState;
     nav: NavState;
   }>((state) => ({
-    //  app: state.app,
+    app: state.app,
     nav: state.nav,
   }));
   useEffect(() => {
@@ -55,6 +56,18 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
     location.hash = "/";
   }
 
+  const comps: UIComponent[] = [];
+
+  const populatedComps = () => {
+    if (allowedModule) {
+      allowedModule.forEach((modules) => {
+        if (modules.uiComponent !== undefined) {
+          comps.push(...modules.uiComponent);
+        }
+      });
+    }
+  };
+  populatedComps();
   const r = routes();
   const menuRoutes = propRoutes || r;
 
@@ -92,6 +105,12 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
     hideConfirmationModal();
   };
 
+  const newMenu = comps.map((c) => ({
+    key: c.path,
+    label: c.path,
+    icon: <ProductOutlined />,
+  }));
+
   const menus = authorizedRoutes.map(({ path, label, icon, children }) => ({
     key: path,
     label,
@@ -101,6 +120,8 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
       label: childLabel,
     })),
   }));
+
+  const combinedMenus = [...newMenu, ...menus];
 
   useEffect(() => {
     setCollapsed(!isDesktop);
@@ -152,7 +173,7 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
           forceSubMenuRender={false}
           selectedKeys={[activeMenuItem]}
           onClick={handleClick}
-          items={menus}
+          items={combinedMenus}
           className="mt-4"
         />
 

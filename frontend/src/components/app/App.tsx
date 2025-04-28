@@ -23,8 +23,9 @@ import {
 import axios from "axios";
 import { userResponseDecoder } from "/@/types/auth.ts";
 import { get } from "/@/services/initiation.service.ts";
-import { modulePropertyOptionsListDecoder } from "@xingine/core/xingine.decoder.ts";
-import { ModulePropertyOptions } from "@xingine";
+import { modulePropertiesListDecoder } from "@xingine/core/xingine.decoder.ts";
+import { ModuleProperties, ModulePropertyOptions, UIComponent } from "@xingine";
+import { DynamicRouter } from "/@/lib/xingine-react/component/routes/Component.router.tsx";
 
 // Configure global message behavior
 message.config({
@@ -33,10 +34,24 @@ message.config({
 });
 
 export function App() {
-  const { loading, user } = useStoreWithInitializer(({ app }) => app, load);
+  const { loading, user, allowedModule } = useStoreWithInitializer(
+    ({ app }) => app,
+    load,
+  );
+
+  const comps: UIComponent[] = [];
+  const populatedComps = () => {
+    if (allowedModule) {
+      allowedModule.forEach((modules) => {
+        if (modules.uiComponent !== undefined) {
+          comps.push(...modules.uiComponent);
+        }
+      });
+    }
+  };
+  populatedComps();
 
   const userIsLogged = !!user;
-  console.log("rendering the app");
   return (
     <Suspense fallback={<Spin size="large" />}>
       <ConfigProvider
@@ -63,6 +78,15 @@ export function App() {
   );
 }
 
+async function test() {
+  const componentDefinitions = await get<ModuleProperties[]>(
+    modulePropertiesListDecoder,
+    "modules",
+  );
+
+  store.dispatch(loadAllowedModule(componentDefinitions));
+}
+
 async function load() {
   const token = localStorage.getItem("token");
   if (!store.getState().app.loading || !token) {
@@ -72,7 +96,11 @@ async function load() {
   axios.defaults.headers.Authorization = `Token ${token}`;
 
   try {
-    //store.dispatch(loadAllowedModule(await get<ModulePropertyOptions[]>(modulePropertyOptionsListDecoder, "modules")));
+    store.dispatch(
+      loadAllowedModule(
+        await get<ModuleProperties[]>(modulePropertiesListDecoder, "modules"),
+      ),
+    );
     store.dispatch(
       loadUser((await get(userResponseDecoder, "users/user")).user),
     );

@@ -1,10 +1,21 @@
-export interface UIComponent {
-  component: string;
+import { ComponentMetaMap } from "@xingine/core/component/component-meta-map";
+
+export type UIComponent<
+  T extends keyof ComponentMetaMap = keyof ComponentMetaMap,
+> = {
+  component: T;
   path: string;
   icon?: string;
   roles?: string[];
   permissions?: string[];
-  meta?: Record<string, object>;
+  meta?: ComponentMetaMap[T];
+};
+
+export interface Comrade {
+  id: string;
+  username: string;
+  roles: string[];
+  permissions: string[];
 }
 
 export interface Permission {
@@ -13,7 +24,7 @@ export interface Permission {
 }
 
 export interface ModulePropertyOptions {
-  uiComponent?: UIComponent;
+  uiComponent?: UIComponent[];
   permissions: Permission[];
   description?: string;
 }
