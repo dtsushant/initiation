@@ -4,7 +4,7 @@ import { UserPage } from "/@/pages/users";
 import { InventoryPage } from "/@/pages/inventories";
 import { RuleDocumentPage } from "/@/pages/rules";
 
-export const componentMap: Record<string, FC> = {
+export const componentMap: Record<string, FC<unknown>> = {
   CategoryPage,
   UserPage,
   InventoryPage,

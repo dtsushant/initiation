@@ -15,6 +15,18 @@ export const UserLoginComponent: UIComponent = {
         inputType: 'password',
         required: true,
       },
+      {
+        name: 'sample',
+        label: 'Sample',
+        inputType: 'text',
+        required: true,
+      },
+      {
+        name: 'ujjwal',
+        label: 'Ujjwal lai sample',
+        inputType: 'text',
+        required: true,
+      },
     ],
   },
 };

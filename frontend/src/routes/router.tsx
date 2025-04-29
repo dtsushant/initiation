@@ -72,7 +72,7 @@ export function Router() {
         )}
       </Route>
       <Route path="*" element={<NotFoundPage />} />
-      {comps.length > 0 &&
+      {/*{comps.length > 0 &&
         comps.map((mod) => {
           const Component = lazyLoadComponent(mod.component);
 
@@ -91,7 +91,7 @@ export function Router() {
               }
             />
           );
-        })}
+        })}*/}
     </Routes>
   );
 }

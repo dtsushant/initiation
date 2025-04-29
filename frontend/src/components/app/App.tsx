@@ -39,18 +39,6 @@ export function App() {
     load,
   );
 
-  const comps: UIComponent[] = [];
-  const populatedComps = () => {
-    if (allowedModule) {
-      allowedModule.forEach((modules) => {
-        if (modules.uiComponent !== undefined) {
-          comps.push(...modules.uiComponent);
-        }
-      });
-    }
-  };
-  populatedComps();
-
   const userIsLogged = !!user;
   return (
     <Suspense fallback={<Spin size="large" />}>

@@ -1,9 +1,18 @@
 import React, { FC, FunctionComponent, JSX } from "react";
 import { ModulePropertyOptions } from "@xingine";
+import { ComponentMetaMap } from "@xingine/core/component/component-meta-map.ts";
 
 type ModuleRegistry = {
   modulePropertyOptions: ModulePropertyOptions[];
-  component: Record<string, React.FC>;
+  component: Record<
+    string,
+    {
+      name: string;
+      path: string;
+      props?: ComponentMetaMap[keyof ComponentMetaMap];
+      fc: React.FC<unknown>;
+    }
+  >;
 };
 
 class ModuleRegistryService {
@@ -11,30 +20,39 @@ class ModuleRegistryService {
     modulePropertyOptions: [],
     component: {},
   };
-  private componentMap: Record<string, FunctionComponent<unknown>>;
+  private readonly componentMap: Record<string, FunctionComponent<unknown>>;
 
   constructor(componentMap: Record<string, FunctionComponent<unknown>>) {
     this.componentMap = componentMap;
   }
 
   register(moduleProperty: ModulePropertyOptions) {
-    const key = moduleProperty.uiComponent?.component;
-    if (!key) return;
-
-    const Component = this.componentMap[key];
-    if (Component) {
-      this.modules.component[key] = Component;
-    } else {
-      console.error(`Component '${key}' not found in component map.`);
-      throw Error(`Component '${key}' not found in component map.`);
-    }
-    this.modules.modulePropertyOptions.push(moduleProperty);
+    moduleProperty.uiComponent?.forEach((component) => {
+      const key = component.component;
+      const Component = this.componentMap[key];
+      if (Component) {
+        this.modules.component[key] = {
+          name: key,
+          path: component.path,
+          props: component.meta,
+          fc: Component,
+        };
+      } else {
+        console.error(`Component '${key}' not found in component map.`);
+        throw Error(`Component '${key}' not found in component map.`);
+      }
+      this.modules.modulePropertyOptions.push(moduleProperty);
+    });
   }
 
-  get(name: string): JSX.Element | undefined {
+  get(
+    name: string,
+    props?: ComponentMetaMap[keyof ComponentMetaMap],
+  ): JSX.Element | undefined {
     const Component = this.modules.component[name];
     if (!Component) return undefined;
-    return React.createElement(Component);
+    console.log("the props here is", props);
+    return React.createElement(Component.fc, props);
   }
 
   getAll(): ModuleRegistry {

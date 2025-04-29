@@ -1,12 +1,16 @@
 import React, { lazy } from "react";
 
 export function lazyLoadComponent<TProps = object>(componentName: string) {
-  console.log("the componentName", componentName);
-  return lazy(
-    () =>
-      import(`../group/${componentName}`) as Promise<{
-        default: React.ComponentType<TProps>;
-      }>,
+  return lazy(() =>
+    // import(`/src/lib/xingine-react/component/group/${componentName}.tsx`).then((module) => {
+    import(`../group/${componentName}.tsx`).then((module) => {
+      if (!module.default) {
+        throw new Error(
+          `Dynamic import failed: ${componentName} has no default export`,
+        );
+      }
+      return { default: module.default };
+    }),
   );
 }
 

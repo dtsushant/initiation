@@ -58,7 +58,7 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
 
   const comps: UIComponent[] = [];
 
-  const populatedComps = () => {
+  /*const populatedComps = () => {
     if (allowedModule) {
       allowedModule.forEach((modules) => {
         if (modules.uiComponent !== undefined) {
@@ -67,7 +67,7 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
       });
     }
   };
-  populatedComps();
+  populatedComps();*/
   const r = routes();
   const menuRoutes = propRoutes || r;
 
@@ -105,11 +105,11 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
     hideConfirmationModal();
   };
 
-  const newMenu = comps.map((c) => ({
+  /*const newMenu = comps.map((c) => ({
     key: c.path,
     label: c.path,
     icon: <ProductOutlined />,
-  }));
+  }));*/
 
   const menus = authorizedRoutes.map(({ path, label, icon, children }) => ({
     key: path,
@@ -121,7 +121,7 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
     })),
   }));
 
-  const combinedMenus = [...newMenu, ...menus];
+  //  const combinedMenus = [...newMenu, ...menus];
 
   useEffect(() => {
     setCollapsed(!isDesktop);
@@ -173,7 +173,7 @@ export const Nav: React.FC<NavProps> = ({ routes: propRoutes }) => {
           forceSubMenuRender={false}
           selectedKeys={[activeMenuItem]}
           onClick={handleClick}
-          items={combinedMenus}
+          items={menus}
           className="mt-4"
         />
 
