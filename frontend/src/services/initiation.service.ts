@@ -3,6 +3,12 @@ import { Err, Ok, Result } from "@hqoss/monads";
 import { GenericErrors, genericErrorsDecoder } from "/@/types/error.ts";
 import axios from "axios";
 
+const token = localStorage.getItem("token");
+
+if (token) {
+  axios.defaults.headers.Authorization = `Token ${token}`;
+}
+
 axios.defaults.baseURL = "/api";
 export async function post<T, U>(
   form: T,

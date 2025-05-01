@@ -7,7 +7,6 @@ import "/@/styles/antd.css";
 import { bootstrapApp } from "/@/bootstrap.ts";
 
 (async () => {
-  console.log("here here here");
   await bootstrapApp();
 
   createRoot(document.getElementById("root")!).render(

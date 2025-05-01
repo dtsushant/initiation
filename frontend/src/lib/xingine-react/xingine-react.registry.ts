@@ -1,9 +1,9 @@
 import React, { FC, FunctionComponent, JSX } from "react";
-import { ModulePropertyOptions } from "@xingine";
+import { ModuleProperties, ModulePropertyOptions } from "@xingine";
 import { ComponentMetaMap } from "@xingine/core/component/component-meta-map.ts";
 
 type ModuleRegistry = {
-  modulePropertyOptions: ModulePropertyOptions[];
+  moduleProperties: ModuleProperties[];
   component: Record<
     string,
     {
@@ -17,7 +17,7 @@ type ModuleRegistry = {
 
 class ModuleRegistryService {
   private modules: ModuleRegistry = {
-    modulePropertyOptions: [],
+    moduleProperties: [],
     component: {},
   };
   private readonly componentMap: Record<string, FunctionComponent<unknown>>;
@@ -26,23 +26,33 @@ class ModuleRegistryService {
     this.componentMap = componentMap;
   }
 
-  register(moduleProperty: ModulePropertyOptions) {
+  register(moduleProperty: ModuleProperties) {
     moduleProperty.uiComponent?.forEach((component) => {
       const key = component.component;
       const Component = this.componentMap[key];
+      let fc: React.FC<unknown>;
       if (Component) {
-        this.modules.component[key] = {
-          name: key,
-          path: component.path,
-          props: component.meta,
-          fc: Component,
-        };
+        fc = Component;
       } else {
-        console.error(`Component '${key}' not found in component map.`);
-        throw Error(`Component '${key}' not found in component map.`);
+        console.error(
+          `Component '${key}' not found in component map, mapping to default component from meta ${component.meta?.component}.`,
+        );
+        const metaComponent = component.meta?.component;
+        if (!component.meta?.component) {
+          throw Error(`Component '${key}' not found in component map.`);
+        }
+        fc = this.componentMap[metaComponent];
+        //throw Error(`Component '${key}' not found in component map.`);
       }
-      this.modules.modulePropertyOptions.push(moduleProperty);
+
+      this.modules.component[key] = {
+        name: key,
+        path: component.path,
+        props: component.meta,
+        fc: fc,
+      };
     });
+    this.modules.moduleProperties.push(moduleProperty);
   }
 
   get(

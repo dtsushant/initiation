@@ -7,7 +7,8 @@ import React from "react";
 
 const FormRenderer: React.FC<FormMeta> = (meta) => {
   const [form] = Form.useForm();
-  console.log("the meta here is ", meta);
+  console.log("the meta here is ", JSON.stringify(meta, null, 2));
+
   const renderField = (field: FieldMeta) => {
     switch (field.inputType) {
       case "text":
@@ -28,24 +29,22 @@ const FormRenderer: React.FC<FormMeta> = (meta) => {
   };
 
   return (
-    <Card style={{ margin: 24 }}>
-      <Form form={form} layout="vertical">
-        {meta.fields.map((field) => (
-          <Form.Item
-            key={field.name}
-            name={field.name}
-            label={field.label}
-            rules={
-              field.required
-                ? [{ required: true, message: `${field.label} is required` }]
-                : []
-            }
-          >
-            {renderField(field)}
-          </Form.Item>
-        ))}
-      </Form>
-    </Card>
+    <Form form={form} layout="vertical">
+      {meta.fields.map((field) => (
+        <Form.Item
+          key={field.name}
+          name={field.name}
+          label={field.label}
+          rules={
+            field.required
+              ? [{ required: true, message: `${field.label} is required` }]
+              : []
+          }
+        >
+          {renderField(field)}
+        </Form.Item>
+      ))}
+    </Form>
   );
 };
 

@@ -13,9 +13,10 @@ import { UserPassword } from './entity/user-password.entity';
 import { USER_PERMISSIONS } from './constant/user.permissions';
 import { UserLoginComponent } from './constant/component/user-login.component';
 import { EntityClass } from '@mikro-orm/core';
+import { UserCreateComponent } from './constant/component/user-create.component';
 
 @ModuleProperty({
-  uiComponent: [UserLoginComponent],
+  uiComponent: [UserLoginComponent, UserCreateComponent],
   permissions: USER_PERMISSIONS,
 })
 @Module({

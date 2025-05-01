@@ -10,6 +10,7 @@ import {
   constant,
   Decoder,
   dict,
+  number,
   object,
   oneOf,
   optional,
@@ -17,35 +18,162 @@ import {
   unknown,
 } from "decoders";
 import {
+  ButtonTypeProperties,
+  ButtonView,
+  CheckboxTypeProperties,
   ColumnMeta,
-  ComponentMetaMap,
+  ComponentMeta,
+  DateTypeProperties,
   DetailMeta,
-  FieldInputType,
   FieldMeta,
   FormMeta,
+  InputTypeProperties,
+  NumberTypeProperties,
+  PasswordTypeProperties,
+  SelectTypeProperties,
+  SwitchTypeProperties,
   TableMeta,
   TabMeta,
+  TextareaTypeProperties,
+  TreeSelectTypeProperties,
 } from "@xingine/core/component/component-meta-map";
 
-const fieldInputTypeDecoder: Decoder<FieldInputType> = oneOf([
-  "text",
-  "input",
-  "password",
-  "number",
-  "select",
-  "date",
-  "textarea",
-]);
-const fieldMetaDecoder: Decoder<FieldMeta> = object({
-  name: string,
-  label: string,
-  inputType: fieldInputTypeDecoder,
-  required: optional(boolean),
-  options: optional(array(object({ label: string, value: string }))),
+export const inputTypeDecoder: Decoder<InputTypeProperties> = object({
+  placeholder: optional(string),
+  maxLength: optional(number),
+  minLength: optional(number),
+  disabled: optional(boolean),
 });
 
+export const passwordTypeDecoder: Decoder<PasswordTypeProperties> = object({
+  placeholder: optional(string),
+  minLength: optional(number),
+  hasStrengthMeter: optional(boolean),
+  disabled: optional(boolean),
+});
+
+export const numberTypeDecoder: Decoder<NumberTypeProperties> = object({
+  min: optional(number),
+  max: optional(number),
+  step: optional(number),
+  precision: optional(number),
+  disabled: optional(boolean),
+});
+
+export const selectTypeDecoder: Decoder<SelectTypeProperties> = object({
+  options: array(object({ label: string, value: string })),
+  multiple: optional(boolean),
+  disabled: optional(boolean),
+  placeholder: optional(string),
+});
+
+export const treeSelectTypeDecoder: Decoder<TreeSelectTypeProperties> = object({
+  treeData: array(
+    object({
+      title: string,
+      value: string,
+      children: optional(array(object({ title: string, value: string }))),
+    }),
+  ),
+  multiple: optional(boolean),
+  disabled: optional(boolean),
+  placeholder: optional(string),
+});
+
+export const switchTypeDecoder: Decoder<SwitchTypeProperties> = object({
+  checkedChildren: optional(string),
+  unCheckedChildren: optional(string),
+  defaultChecked: optional(boolean),
+  disabled: optional(boolean),
+});
+
+export const checkboxTypeDecoder: Decoder<CheckboxTypeProperties> = object({
+  label: optional(string),
+  checked: optional(boolean),
+  disabled: optional(boolean),
+});
+
+export const dateTypeDecoder: Decoder<DateTypeProperties> = object({
+  format: optional(string),
+  showTime: optional(boolean),
+  disabled: optional(boolean),
+});
+
+export const textareaTypeDecoder: Decoder<TextareaTypeProperties> = object({
+  rows: optional(number),
+  maxLength: optional(number),
+  placeholder: optional(string),
+  disabled: optional(boolean),
+});
+
+const buttonViewDecoder: Decoder<ButtonView> = oneOf([
+  "primary",
+  "default",
+  "dashed",
+  "link",
+  "text",
+]);
+
+export const buttonTypeDecoder: Decoder<ButtonTypeProperties> = object({
+  text: string,
+  type: optional(buttonViewDecoder),
+  disabled: optional(boolean),
+  onClickAction: optional(string),
+});
+
+export function decodeFieldInputPropertiesByInputType(
+  inputType: string,
+  input?: unknown,
+): object | undefined {
+  if (!input) return undefined;
+  switch (inputType) {
+    case "input":
+      return inputTypeDecoder.verify(input);
+    case "password":
+      return passwordTypeDecoder.verify(input);
+    case "number":
+      return numberTypeDecoder.verify(input);
+    case "select":
+      return selectTypeDecoder.verify(input);
+    case "treeselect":
+      return treeSelectTypeDecoder.verify(input);
+    case "switch":
+      return switchTypeDecoder.verify(input);
+    case "checkbox":
+      return checkboxTypeDecoder.verify(input);
+    case "date":
+      return dateTypeDecoder.verify(input);
+    case "textarea":
+      return textareaTypeDecoder.verify(input);
+    case "button":
+      return buttonTypeDecoder.verify(input);
+    default:
+      throw new Error(
+        `Unknown component type '${inputType}' for meta decoding`,
+      );
+  }
+}
+const fieldMetaDecoderBase = object({
+  name: string,
+  label: string,
+  inputType: string,
+  required: optional(boolean),
+  value: optional(string),
+  properties: optional(unknown),
+});
+
+function fieldMetaDecoder(): Decoder<FieldMeta> {
+  return fieldMetaDecoderBase.transform((baseFieldMeta) => {
+    const strictMeta = decodeFieldInputPropertiesByInputType(
+      baseFieldMeta.inputType,
+      baseFieldMeta.properties,
+    );
+    return { ...baseFieldMeta, properties: strictMeta } as FieldMeta;
+  });
+}
+
 const formMetaDecoder: Decoder<FormMeta> = object({
-  fields: array(fieldMetaDecoder),
+  fields: array(fieldMetaDecoder()).transform((f) => f ?? []),
 });
 
 const columnMetaDecoder: Decoder<ColumnMeta> = object({
@@ -78,7 +206,7 @@ const tabMetaDecoder: Decoder<TabMeta> = object({
 );
 
 const detailMetaDecoder: Decoder<DetailMeta> = object({
-  fields: array(fieldMetaDecoder),
+  fields: array(fieldMetaDecoder()),
 });
 
 function decodeMetaByComponent(component: string, input: unknown): object {
@@ -98,27 +226,29 @@ function decodeMetaByComponent(component: string, input: unknown): object {
   }
 }
 
-const uiComponentDecoderBase = object({
+const componentMetaDecoderBase = object({
+  component: string,
+  properties: unknown,
+});
+
+function componentMetaDecoder(): Decoder<ComponentMeta> {
+  return componentMetaDecoderBase.transform((baseComponentMeta) => {
+    const strictMeta = decodeMetaByComponent(
+      baseComponentMeta.component,
+      baseComponentMeta.properties,
+    );
+    return { ...baseComponentMeta, properties: strictMeta } as ComponentMeta;
+  });
+}
+
+export const uiComponentDecoder: Decoder<UIComponent> = object({
   component: string,
   path: string,
   icon: optional(string),
   roles: optional(array(string)),
   permissions: optional(array(string)),
-  meta: optional(unknown),
+  meta: optional(componentMetaDecoder()),
 });
-
-export function uiComponentDecoder(): Decoder<UIComponent> {
-  return uiComponentDecoderBase.transform((baseComponent) => {
-    if (baseComponent.meta) {
-      const strictMeta = decodeMetaByComponent(
-        baseComponent.component,
-        baseComponent.meta,
-      );
-      return { ...baseComponent, meta: strictMeta } as UIComponent;
-    }
-    return baseComponent as UIComponent;
-  });
-}
 
 const permissionDecoder: Decoder<Permission> = object({
   name: string,
@@ -128,7 +258,7 @@ const permissionDecoder: Decoder<Permission> = object({
 // ModulePropertyOptions decoder
 const modulePropertyOptionsDecoder: Decoder<ModulePropertyOptions> = object({
   description: optional(string),
-  uiComponent: optional(array(uiComponentDecoder())),
+  uiComponent: optional(array(uiComponentDecoder)),
   permissions: array(permissionDecoder),
 });
 
@@ -138,7 +268,7 @@ export const modulePropertyOptionsListDecoder: Decoder<
 
 export const modulePropertiesDecoder: Decoder<ModuleProperties> = object({
   name: string,
-  uiComponent: optional(array(uiComponentDecoder())),
+  uiComponent: optional(array(uiComponentDecoder)),
   permissions: array(permissionDecoder),
   description: optional(string),
 });

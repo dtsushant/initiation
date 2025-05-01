@@ -24,8 +24,8 @@ import axios from "axios";
 import { userResponseDecoder } from "/@/types/auth.ts";
 import { get } from "/@/services/initiation.service.ts";
 import { modulePropertiesListDecoder } from "@xingine/core/xingine.decoder.ts";
-import { ModuleProperties, ModulePropertyOptions, UIComponent } from "@xingine";
-import { DynamicRouter } from "/@/lib/xingine-react/component/routes/Component.router.tsx";
+import { ModuleProperties } from "@xingine";
+import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
 
 // Configure global message behavior
 message.config({
@@ -66,28 +66,15 @@ export function App() {
   );
 }
 
-async function test() {
-  const componentDefinitions = await get<ModuleProperties[]>(
-    modulePropertiesListDecoder,
-    "modules",
-  );
-
-  store.dispatch(loadAllowedModule(componentDefinitions));
-}
-
 async function load() {
-  const token = localStorage.getItem("token");
-  if (!store.getState().app.loading || !token) {
+  if (!store.getState().app.loading) {
     store.dispatch(endLoad());
     return;
   }
-  axios.defaults.headers.Authorization = `Token ${token}`;
 
   try {
     store.dispatch(
-      loadAllowedModule(
-        await get<ModuleProperties[]>(modulePropertiesListDecoder, "modules"),
-      ),
+      loadAllowedModule(getModuleRegistryService()!.getAll().moduleProperties),
     );
     store.dispatch(
       loadUser((await get(userResponseDecoder, "users/user")).user),

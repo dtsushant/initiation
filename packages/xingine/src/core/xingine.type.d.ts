@@ -1,14 +1,15 @@
-import { ComponentMetaMap } from "@xingine/core/component/component-meta-map";
+import {
+  ComponentMeta,
+  ComponentMetaMap,
+} from "@xingine/core/component/component-meta-map";
 
-export type UIComponent<
-  T extends keyof ComponentMetaMap = keyof ComponentMetaMap,
-> = {
-  component: T;
+export type UIComponent = {
+  component: string;
   path: string;
   icon?: string;
   roles?: string[];
   permissions?: string[];
-  meta?: ComponentMetaMap[T];
+  meta?: ComponentMeta;
 };
 
 export interface Comrade {

@@ -13,6 +13,9 @@ import { UIComponent } from "@xingine";
 import { lazyLoadComponent } from "/@/lib/xingine-react/component/utils/Component.utils.ts";
 import { AccessGuard } from "/@/lib/xingine-react/component/ComponentAccessGuard.tsx";
 import { DefaultLayout } from "/@/lib/xingine-react/component/ComponentDefaultLayout.tsx";
+import { PublicLayout } from "/@/layout/PublicLayout.tsx";
+import { DashboardPage } from "/@/pages/dashboard";
+import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
 
 export function Router() {
   const {
@@ -34,6 +37,7 @@ export function Router() {
     }
   };
   populatedComps();
+  console.log("the allowedModule", allowedModule);
 
   return (
     <Routes>
@@ -48,8 +52,35 @@ export function Router() {
       />
       <Route path="/browse" element={<PublicSpacePage />} />
       <Route path="/unauthorized" element={<UnauthorizedPage />} />
-      <Route path="/" element={<Layout />}>
+      <Route path="/" element={<PublicLayout registeredComponents={comps} />}>
         <Route index element={<Navigate to="/dashboard" replace />} />
+        <Route path="login" element={<LoginPage />} />
+        <Route path="dashboard" element={<DashboardPage />} />
+        {comps.length > 0 &&
+          comps.map((mod) => {
+            const Component = getModuleRegistryService()?.get(
+              mod.component,
+              mod.meta?.properties,
+            ); //lazyLoadComponent(mod.component);
+            return (
+              <Route
+                key={mod.component}
+                path={mod.path}
+                element={
+                  <AccessGuard roles={mod.roles} permissions={mod.permissions}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      {/*<Component {...mod.meta} />*/}
+                      {Component}
+                    </Suspense>
+                  </AccessGuard>
+                }
+              />
+            );
+          })}
+        {/* Add more public pages here */}
+      </Route>
+      <Route path="/admin" element={<Layout />}>
+        <Route index element={<Navigate to="/admin/dashboard" replace />} />
         {routes().flatMap((route) => {
           const baseRoute = (
             <Route key={route.path} path={route.path} element={route.element} />

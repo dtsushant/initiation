@@ -7,9 +7,9 @@ import { Nav } from "/@/layout/components/Nav";
 export function Layout() {
   const location = useLocation();
 
-  if (location.pathname === "/") {
+  /*if (location.pathname === "/") {
     return <Navigate replace to="/login" />;
-  }
+  }*/
 
   return (
     <AntdLayout className="h-full">
