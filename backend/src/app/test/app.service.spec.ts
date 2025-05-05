@@ -18,6 +18,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import ormConfig from '../../../mikro-orm.config';
 import { XingineModule } from '../../lib/xingine-nest/xingine.module';
 import { moduleMap } from '../app.config';
+import { CacheModule } from '../../shared/cache/cache.module';
 
 describe('AppService (with real modules)', () => {
   let appService: AppService;
@@ -30,6 +31,7 @@ describe('AppService (with real modules)', () => {
           registerRequestContext: false,
         }),
         XingineModule,
+        CacheModule,
         ...moduleMap,
       ],
       providers: [AppService],

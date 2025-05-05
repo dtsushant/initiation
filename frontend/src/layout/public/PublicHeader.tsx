@@ -36,7 +36,7 @@ export const PublicHeader: React.FC<UIComponent[unknown]> = ({
   };
 
   return (
-    <Header className="flex items-center justify-between bg-white shadow-md px-6 z-50">
+    <Header className="bg-white shadow z-10 px-6 h-16 flex items-center">
       <div className="flex items-center gap-6 min-w-0 flex-1">
         {/* Logo */}
         <div className="text-xl font-bold text-blue-600">Initiation</div>

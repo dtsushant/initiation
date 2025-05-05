@@ -5,6 +5,7 @@ export interface InputTypeProperties {
   maxLength?: number;
   minLength?: number;
   disabled?: boolean;
+  email?: boolean;
 }
 
 export interface PasswordTypeProperties {
@@ -74,6 +75,13 @@ export interface ButtonTypeProperties {
   disabled?: boolean;
   onClickAction?: string; // ID or name of action handler to be resolved at runtime
 }
+export type ObjectFieldProperties = {
+  fields: FieldMeta[];
+};
+
+export type ObjectListFieldProperties = {
+  itemFields: FieldMeta[];
+};
 
 export type FieldInputTypeProperties = {
   input: InputTypeProperties;
@@ -91,7 +99,7 @@ export type FieldInputTypeProperties = {
 export interface FieldMeta<
   T extends keyof FieldInputTypeProperties = keyof FieldInputTypeProperties,
 > {
-  name: string;
+  name?: string;
   label: string;
   inputType: T;
   value?: string;
@@ -106,6 +114,7 @@ export interface ColumnMeta {
 
 export interface FormMeta {
   fields: FieldMeta[];
+  action: string;
 }
 
 export interface TableMeta {

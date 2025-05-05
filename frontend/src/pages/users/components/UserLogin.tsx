@@ -4,12 +4,15 @@ import FormRenderer from "/@/lib/xingine-react/component/group/FormRenderer.tsx"
 
 export const UserLogin: React.FC<FormMeta> = (meta) => {
   console.log("the props on userlogin", meta);
-  return (
-    <>
-      <div>We render User Login page here</div>
-      <FormRenderer {...meta} />
-    </>
-  );
+  const onFinish = async (values: Record<string, unknown>): Promise<void> => {
+    console.log("Submitted values from parent:", values);
+    const delay = (ms: number) => new Promise((res) => setTimeout(res, ms));
+    await delay(5000);
+    console.log("Waited for 5 seconds");
+  };
+
+  const metaCombined = { ...meta, onFinish: onFinish };
+  return <FormRenderer {...metaCombined} />;
 };
 
 UserLogin.displayName = "UserLogin";

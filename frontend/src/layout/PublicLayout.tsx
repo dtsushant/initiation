@@ -1,4 +1,11 @@
-import { Avatar, Input, Layout as AntdLayout, Menu, Skeleton } from "antd";
+import {
+  Avatar,
+  Input,
+  Layout,
+  Layout as AntdLayout,
+  Menu,
+  Skeleton,
+} from "antd";
 import {
   HomeOutlined,
   InfoCircleOutlined,
@@ -19,20 +26,15 @@ export const PublicLayout: React.FC<UIComponent[unknown]> = ({
   registeredComponents,
 }) => {
   return (
-    <AntdLayout className="min-h-screen">
-      {/* Header */}
+    <AntdLayout className="h-screen flex flex-col">
       <PublicHeader registeredComponents={registeredComponents} />
-
-      {/* Main Layout */}
-      <AntdLayout>
-        <CollapsedProvider value={{ isCollapsed: false }}>
-          {/* Body Content */}
-          <Content className="p-8 bg-gray-50 flex-1">
+      <div className="flex-1 min-h-0 overflow-hidden flex flex-col">
+        <Content className="flex-1 overflow-y-auto p-6 bg-gray-50">
+          <CollapsedProvider value={{ isCollapsed: false }}>
             <Outlet />
-          </Content>
-        </CollapsedProvider>
-      </AntdLayout>
-
+          </CollapsedProvider>
+        </Content>
+      </div>
       <PublicFooter />
     </AntdLayout>
   );

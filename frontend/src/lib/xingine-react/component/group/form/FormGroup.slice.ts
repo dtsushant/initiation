@@ -1,5 +1,5 @@
-import { PayloadAction } from "@reduxjs/toolkit";
-import { GenericErrors } from "/@/types/error.ts";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { GenericErrors } from "/@/lib/xingine-react/types/error.ts";
 
 export type FormState<T> = {
   form: T;
@@ -47,3 +47,32 @@ export function createFormReducers<T>() {
     },
   };
 }
+
+type DefaultFormType = Record<string, object>;
+interface DefaultFormState extends FormState<DefaultFormType> {
+  focusedField: string;
+}
+
+const initialState: DefaultFormState = {
+  ...createInitialFormState({}),
+  focusedField: "",
+};
+
+const slice = createSlice({
+  name: "defaultFormState",
+  initialState,
+  reducers: {
+    ...createFormReducers<DefaultFormType>(),
+  },
+});
+
+export const {
+  updateField,
+  updateErrors,
+  startSubmitting,
+  submissionSuccess,
+  startLoading,
+  stopLoading,
+} = slice.actions;
+
+export default slice.reducer;

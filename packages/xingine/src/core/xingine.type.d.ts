@@ -33,3 +33,19 @@ export interface ModulePropertyOptions {
 export interface ModuleProperties extends ModulePropertyOptions {
   name: string;
 }
+
+export interface ProvisioneerProperties {
+  name?: string;
+  description?: string;
+  clearance?: Permission[];
+}
+
+export interface CommissarProperties<TReq = unknown, TRes = unknown> {
+  component: string;
+  operative: keyof ComponentMetaMap;
+  meta?: ComponentMetaMap[keyof ComponentMetaMap];
+  directive: new () => TReq;
+  dispatch?: TRes;
+  preAction?: string;
+  postAction?: string;
+}

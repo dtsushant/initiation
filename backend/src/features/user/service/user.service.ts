@@ -3,7 +3,7 @@ import { HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
 import { validate } from 'class-validator';
 import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
-import { CreateUserDto, LoginUserDto, UpdateUserDto } from '../dto';
+import { CreateUserDto, UserLoginDto, UpdateUserDto } from '../dto';
 import { User, UserDTO } from '../entity/user.entity';
 import { IUserRO } from '../user.interface';
 import { InjectRepository } from '@mikro-orm/nestjs';
@@ -31,7 +31,7 @@ export class UserService {
     return this.userRepository.findAll({ populate: ['roles'] });
   }
 
-  async findOne(loginUserDto: LoginUserDto): Promise<User> {
+  async findOne(loginUserDto: UserLoginDto): Promise<User> {
     const email = loginUserDto.email;
     const qb = this.em.createQueryBuilder(User, 'u');
 

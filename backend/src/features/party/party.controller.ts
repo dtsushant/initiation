@@ -1,5 +1,5 @@
 import { ApiBearerAuth, ApiExtraModels, ApiTags } from '@nestjs/swagger';
-import { CreateUserDto, LoginUserDto } from '../user/dto';
+import { CreateUserDto, UserLoginDto } from '../user/dto';
 import { Controller } from '@nestjs/common';
 
 @ApiBearerAuth()

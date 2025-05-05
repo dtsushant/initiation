@@ -5,7 +5,8 @@ const { Footer } = AntdLayout;
 
 export function PublicFooter() {
   return (
-    <Footer className="bg-white text-center text-sm text-gray-500 py-4 border-t">
+    <Footer className="bg-white border-t text-center py-4">
+      {/*<Footer className="bg-white text-center text-sm text-gray-500 py-4 border-t">*/}
       © {new Date().getFullYear()} Initiation — All rights reserved. |{" "}
       <a href="#" className="text-blue-500 hover:underline">
         Contact Us

@@ -4,7 +4,7 @@ import {
   createFormReducers,
   createInitialFormState,
   FormState,
-} from "/@/types/formstate.slice.ts";
+} from "/@/lib/xingine-react/component/group/form/FormGroup.slice.ts";
 
 export interface CategoryFormState extends FormState<CategoryFormFields> {
   autoGenerateCode: boolean;

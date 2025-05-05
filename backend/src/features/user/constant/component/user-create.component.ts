@@ -10,6 +10,7 @@ export const UserCreateComponent: UIComponent = {
     component: 'FormRenderer',
     properties: {
       fields: [],
+      action: '',
     },
   },
 };
