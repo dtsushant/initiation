@@ -10,10 +10,12 @@ import {
   constant,
   Decoder,
   dict,
+  either,
   number,
   object,
   oneOf,
   optional,
+  record,
   string,
   unknown,
 } from "decoders";
@@ -29,6 +31,8 @@ import {
   FormMeta,
   InputTypeProperties,
   NumberTypeProperties,
+  ObjectFieldProperties,
+  ObjectListFieldProperties,
   PasswordTypeProperties,
   SelectTypeProperties,
   SwitchTypeProperties,
@@ -148,6 +152,10 @@ export function decodeFieldInputPropertiesByInputType(
       return textareaTypeDecoder.verify(input);
     case "button":
       return buttonTypeDecoder.verify(input);
+    case "object":
+      return objectTypeDecoder.verify(input);
+    case "object[]":
+      return objectListTypeDecoder.verify(input);
     default:
       throw new Error(
         `Unknown component type '${inputType}' for meta decoding`,
@@ -172,6 +180,16 @@ function fieldMetaDecoder(): Decoder<FieldMeta> {
     return { ...baseFieldMeta, properties: strictMeta } as FieldMeta;
   });
 }
+
+export const objectTypeDecoder: Decoder<ObjectFieldProperties> = object({
+  fields: array(fieldMetaDecoder()).transform((f) => f ?? []),
+});
+
+export const objectListTypeDecoder: Decoder<ObjectListFieldProperties> = object(
+  {
+    itemFields: array(fieldMetaDecoder()).transform((f) => f ?? []),
+  },
+);
 
 const formMetaDecoder: Decoder<FormMeta> = object({
   fields: array(fieldMetaDecoder()).transform((f) => f ?? []),
@@ -277,4 +295,11 @@ export const modulePropertiesDecoder: Decoder<ModuleProperties> = object({
 
 export const modulePropertiesListDecoder: Decoder<ModuleProperties[]> = array(
   modulePropertiesDecoder,
+);
+
+export const dynamicShapeDecoder = record(
+  either(
+    string,
+    either(array(string), either(record(string), array(record(string)))),
+  ),
 );

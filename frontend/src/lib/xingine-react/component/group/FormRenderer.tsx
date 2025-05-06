@@ -7,6 +7,9 @@ import {
   generateRules,
   resolveComponentProps,
 } from "/@/lib/xingine-react/component/group/form/FormGroup.utils.ts";
+import { post } from "/@/services/initiation.service.ts";
+import { dynamicShapeDecoder } from "@xingine";
+import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";
 
 const FormRenderer: React.FC<
   FormMeta & {
@@ -24,6 +27,17 @@ const FormRenderer: React.FC<
     values: Record<string, unknown>,
   ): Promise<void> => {
     console.log("default submission", values);
+
+    const result = await post(values, dynamicShapeDecoder, meta.action);
+
+    result.match({
+      ok: (res) => {
+        console.log("the res", res);
+      },
+      err: (e) => {
+        console.log("the errors", e);
+      },
+    });
   };
   const onFinish = async (values: Record<string, unknown>): Promise<void> => {
     setIsSubmitting(true);
@@ -58,7 +72,8 @@ const FormRenderer: React.FC<
         meta.onValuesChange ? meta.onValuesChange : onValuesChange
       }
     >
-      {meta.fields.map((field) => {
+      {formGroup(meta.fields, isSubmitting)}
+      {/*{meta.fields.map((field) => {
         const FormField = fieldTypeRenderMap[field.inputType];
         const combinedProps = {
           ...field.properties,
@@ -80,7 +95,7 @@ const FormRenderer: React.FC<
             />
           </Form.Item>
         );
-      })}
+      })}*/}
 
       <Form.Item key="submit" name={"submit" as NamePath}>
         <ButtonField {...buttonProps} />

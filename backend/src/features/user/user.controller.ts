@@ -36,7 +36,7 @@ import { UserCreateDto } from './dto/user-create.dto';
 @ApiTags('user')
 @ApiExtraModels(UserLoginDto, CreateUserDto, UserCreateDto)
 @Controller('users')
-@Provisioneer({})
+@Provisioneer({ name: 'user' })
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
@@ -130,7 +130,7 @@ export class UserController {
   @PermissionGateKeeper({ allowPeasants: true })
   @Post('users/login')
   @HttpCode(200)
-  async login(@Body('user') loginUserDto: UserLoginDto): Promise<IUserRO> {
+  async login(@Body() loginUserDto: UserLoginDto): Promise<IUserRO> {
     const foundUser = await this.userService.findOne(loginUserDto);
     const errors = { User: ' not found' };
     if (!foundUser) {

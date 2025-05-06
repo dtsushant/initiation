@@ -5,7 +5,7 @@ import { FormField } from '@xingine/core/xingine.decorator';
 
 export class UserLoginDto {
   @FormField({
-    name: 'email',
+    name: 'user.email',
     label: 'Email Address',
     inputType: 'input',
     required: true,
@@ -17,7 +17,7 @@ export class UserLoginDto {
   readonly email!: string;
 
   @FormField({
-    name: 'password',
+    name: 'user.password',
     label: 'Password',
     inputType: 'password',
     required: true,

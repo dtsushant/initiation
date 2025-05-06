@@ -1,5 +1,5 @@
 import React, { FC, FunctionComponent, JSX } from "react";
-import { ModuleProperties, ModulePropertyOptions } from "@xingine";
+import { ModuleProperties } from "@xingine";
 import { ComponentMetaMap } from "@xingine/core/component/component-meta-map.ts";
 
 type ModuleRegistry = {

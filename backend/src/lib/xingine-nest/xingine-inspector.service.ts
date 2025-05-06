@@ -86,6 +86,7 @@ export class XingineInspectorService {
           prototype[methodName],
         );
         let fullPath: string | undefined = undefined;
+        const uiPath = `/${provisioneerProperties?.name}/${methodName}`;
         if (routePath !== undefined && method !== undefined) {
           const methodString = RequestMethod[method];
           fullPath = `/${controllerPath}/${routePath}`.replace(/\/+/g, '/');
@@ -103,18 +104,18 @@ export class XingineInspectorService {
 
         const componentMeta = extractMeta(commissar, fullPath);
         const mod = moduleProperties.find(
-          (modules) => modules.name === controller.name,
+          (modules) => modules.name === provisioneerProperties.name,
         );
 
         const uiComponent = {
           component: commissar.component,
-          path: fullPath!,
+          path: uiPath,
           meta: componentMeta,
         };
 
         if (!mod) {
           const module: ModuleProperties = {
-            name: controller.name,
+            name: provisioneerProperties.name!,
             uiComponent: [uiComponent],
             permissions: [],
           };

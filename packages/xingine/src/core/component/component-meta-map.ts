@@ -94,6 +94,8 @@ export type FieldInputTypeProperties = {
   date: DateTypeProperties;
   textarea: TextareaTypeProperties;
   button: ButtonTypeProperties;
+  object: ObjectFieldProperties;
+  "object[]": ObjectListFieldProperties;
 };
 
 export interface FieldMeta<

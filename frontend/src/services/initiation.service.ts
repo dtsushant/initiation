@@ -17,6 +17,7 @@ export async function post<T, U>(
 ): Promise<Result<U, GenericErrors>> {
   try {
     const { data } = await axios.post(uri, form);
+    console.log("the data", data);
     return Ok(decoder.verify(data));
   } catch (error) {
     if (axios.isAxiosError(error)) {

@@ -16,16 +16,18 @@ import { CommissarProperties } from '@xingine/core/xingine.type';
 import { FORM_FIELD_METADATA } from '@xingine/core/xingine.decorator';
 
 function guessInputTypeFromType(type: unknown): keyof FieldInputTypeProperties {
-  switch (type) {
-    case String:
-      return 'input';
-    case Number:
-      return 'number';
-    case Boolean:
-      return 'checkbox';
-    default:
-      return 'input';
+  if (type === String) return 'input';
+  if (type === Number) return 'number';
+  if (type === Boolean) return 'checkbox';
+
+  if (typeof type === 'function') {
+    if (type.name === 'Array') {
+      return 'object[]'; // fallback; refine if needed
+    }
+    return 'object'; // fallback for class constructor
   }
+
+  return 'input';
 }
 
 function capitalize(str: string): string {
@@ -81,12 +83,41 @@ export function extractFieldMetaFromDirective(dtoClass: Function): FieldMeta[] {
     );
     const inferredType = guessInputTypeFromType(type);
 
-    combinedFieldMap[property] = {
+    const fieldMeta: FieldMeta = {
       name: property,
       label,
       inputType: inferredType,
       required,
     };
+
+    console.log(
+      'the inferredType, type and name',
+      inferredType,
+      type,
+      property,
+    );
+    // Handle nested object
+    if (inferredType === 'object') {
+      fieldMeta.properties = {
+        fields: extractFieldMetaFromDirective(type as new () => any),
+      };
+    } else if (inferredType === 'object[]') {
+      const listType = Reflect.getMetadata(
+        'design:elementtype',
+        dtoClass.prototype,
+        property,
+      ); // optional
+      if (listType) {
+        fieldMeta.properties = {
+          itemFields: extractFieldMetaFromDirective(listType as new () => any),
+        };
+      } else {
+        fieldMeta.properties = {
+          itemFields: [], // fallback
+        };
+      }
+    }
+    combinedFieldMap[property] = fieldMeta;
   }
 
   return Object.values(combinedFieldMap);

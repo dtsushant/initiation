@@ -25,7 +25,7 @@ export function Provisioneer(options: ProvisioneerProperties): ClassDecorator {
   return (target) => {
     const finalOptions: ProvisioneerProperties = {
       ...options,
-      name: target.name,
+      name: options.name ?? target.name,
     };
     Reflect.defineMetadata(PROVISIONEER_METADATA, finalOptions, target);
   };
