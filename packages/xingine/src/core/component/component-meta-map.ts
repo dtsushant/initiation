@@ -29,6 +29,62 @@ export interface SelectTypeProperties {
   disabled?: boolean;
   placeholder?: string;
 }
+export interface LookupTypeProperties {
+  /**
+   * API action or endpoint name that will return lookup options.
+   * The response should be an array of `{ label: string, value: string }`.
+   */
+  fetchAction: string;
+
+  /**
+   * Whether multiple selections are allowed (like a multi-select).
+   */
+  multiple?: boolean;
+
+  /**
+   * Placeholder text for the input/select box.
+   */
+  placeholder?: string;
+
+  /**
+   * Whether the lookup is disabled.
+   */
+  disabled?: boolean;
+
+  /**
+   * Enables autocomplete or free-text input for searching.
+   */
+  allowSearch?: boolean;
+
+  /**
+   * If true, allows the user to create a new entry if not found.
+   */
+  allowAddNew?: boolean;
+
+  /**
+   * Optional field to specify what property the search query should match.
+   * e.g., 'label' or 'code'
+   */
+  searchField?: string;
+
+  /**
+   * Optional debounce interval for search requests (in milliseconds).
+   */
+  debounce?: number;
+
+  /**
+   * If new option is added inline, this action will be triggered to persist it.
+   */
+  createAction?: string;
+
+  /**
+   * Optionally map the backend response to expected label/value structure.
+   */
+  resultMap?: {
+    label: string;
+    value: string;
+  }[];
+}
 
 export interface TreeSelectTypeProperties {
   treeData: {
@@ -88,6 +144,7 @@ export type FieldInputTypeProperties = {
   password: PasswordTypeProperties;
   number: NumberTypeProperties;
   select: SelectTypeProperties;
+  lookup: LookupTypeProperties;
   treeselect: TreeSelectTypeProperties;
   switch: SwitchTypeProperties;
   checkbox: CheckboxTypeProperties;

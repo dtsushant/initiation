@@ -1,5 +1,6 @@
 import {
   FieldMeta,
+  ObjectFieldProperties,
   ObjectListFieldProperties,
 } from "@xingine/core/component/component-meta-map.ts";
 import { fieldTypeRenderMap } from "/@/lib/xingine-react/component/group/form/FormGroup.map.tsx";
@@ -24,7 +25,7 @@ export function formGroup(
       isSubmitting,
     };
 
-    if (field.inputType === "object") {
+    /*if (field.inputType === "object") {
       const nestedFields = (field.properties as ObjectFieldProperties).fields;
       return (
         <Card
@@ -86,6 +87,34 @@ export function formGroup(
             )}
           </Form.List>
         </Card>
+      );
+    }*/
+    // ✅ Use `object` field component from map
+    if (field.inputType === "object") {
+      return (
+        <FormField
+          key={field.name}
+          {...(combinedProps as ObjectFieldProperties & {
+            isSubmitting: boolean;
+          })}
+        />
+      );
+    }
+
+    // ✅ Use `object[]` field component from map (usually renders Form.List)
+    if (field.inputType === "object[]") {
+      return (
+        <Form.Item
+          key={field.name}
+          label={field.label}
+          required={field.required}
+        >
+          <FormField
+            {...(combinedProps as ObjectListFieldProperties & {
+              isSubmitting: boolean;
+            })}
+          />
+        </Form.Item>
       );
     }
 

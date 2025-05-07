@@ -2,9 +2,7 @@ import React from "react";
 import { FormMeta } from "@xingine/core/component/component-meta-map.ts";
 import FormRenderer from "/@/lib/xingine-react/component/group/FormRenderer.tsx";
 import { post } from "/@/services/initiation.service.ts";
-import { store } from "/@/store";
 import { loadUserIntoApp, userResponseDecoder } from "/@/types/auth.ts";
-import { updateErrors } from "/@/pages/auth/Login.slice.ts";
 
 export const UserLogin: React.FC<FormMeta> = (meta) => {
   const onFinish = async (values: Record<string, unknown>): Promise<void> => {
@@ -15,7 +13,8 @@ export const UserLogin: React.FC<FormMeta> = (meta) => {
         loadUserIntoApp(user.user);
       },
       err: (e) => {
-        store.dispatch(updateErrors(e));
+        console.log("the error", e);
+        //store.dispatch(updateErrors(e));
       },
     });
   };

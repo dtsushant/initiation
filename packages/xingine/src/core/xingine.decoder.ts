@@ -30,6 +30,7 @@ import {
   FieldMeta,
   FormMeta,
   InputTypeProperties,
+  LookupTypeProperties,
   NumberTypeProperties,
   ObjectFieldProperties,
   ObjectListFieldProperties,
@@ -126,6 +127,25 @@ export const buttonTypeDecoder: Decoder<ButtonTypeProperties> = object({
   onClickAction: optional(string),
 });
 
+export const resultMapEntryDecoder = object({
+  label: string,
+  value: string,
+});
+
+export const lookupTypePropertiesDecoder: Decoder<LookupTypeProperties> =
+  object({
+    fetchAction: string,
+    multiple: optional(boolean),
+    placeholder: optional(string),
+    disabled: optional(boolean),
+    allowSearch: optional(boolean),
+    allowAddNew: optional(boolean),
+    searchField: optional(string),
+    debounce: optional(number),
+    createAction: optional(string),
+    resultMap: optional(array(resultMapEntryDecoder)),
+  });
+
 export function decodeFieldInputPropertiesByInputType(
   inputType: string,
   input?: unknown,
@@ -142,6 +162,8 @@ export function decodeFieldInputPropertiesByInputType(
       return selectTypeDecoder.verify(input);
     case "treeselect":
       return treeSelectTypeDecoder.verify(input);
+    case "lookup":
+      return lookupTypePropertiesDecoder.verify(input);
     case "switch":
       return switchTypeDecoder.verify(input);
     case "checkbox":

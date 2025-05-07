@@ -30,7 +30,8 @@
     "react-router-dom": "^7.4.0",
     "react-toastify": "^11.0.5",
     "react-use": "^17.6.0",
-    "redux-persist": "^6.0.0"
+    "redux-persist": "^6.0.0",
+    "use-debounce": "^10.0.4"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",

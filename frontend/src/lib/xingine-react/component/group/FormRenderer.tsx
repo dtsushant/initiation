@@ -3,10 +3,6 @@ import { FormMeta } from "@xingine/core/component/component-meta-map.ts";
 import React, { useState } from "react";
 import { fieldTypeRenderMap } from "/@/lib/xingine-react/component/group/form/FormGroup.map.tsx";
 import { NamePath } from "antd/es/form/interface";
-import {
-  generateRules,
-  resolveComponentProps,
-} from "/@/lib/xingine-react/component/group/form/FormGroup.utils.ts";
 import { post } from "/@/services/initiation.service.ts";
 import { dynamicShapeDecoder } from "@xingine";
 import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";

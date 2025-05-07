@@ -57,9 +57,9 @@ export class UserService {
     const result = await qbk.getKnexQuery().first();
 
     console.log("the result ",result)*/
-    if (!user) {
+    /* if (!user) {
       throw new Error('User not found');
-    }
+    }*/
 
     /*await this.em.populate(user, ['passwords']);
     console.log(user.passwords);
@@ -69,7 +69,7 @@ export class UserService {
       throw new Error('Invalid credentials');
     }*/
 
-    return user;
+    return user!;
   }
 
   async create(dto: CreateUserDto): Promise<IUserRO> {

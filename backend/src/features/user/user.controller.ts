@@ -104,6 +104,52 @@ export class UserController {
     return {};
   }
 
+  @Commissar({
+    directive: UserCreateDto,
+    dispatch: UserRO,
+    operative: 'FormRenderer',
+    component: 'UserUpdate',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        user: {
+          type: 'object',
+          $ref: '#/components/schemas/UserCreateDto',
+        },
+      },
+    },
+  })
+  @UsePipes(new ValidationPipe())
+  @Post('update')
+  async updateUser(@Body('create') userData: UserCreateDto) {
+    return {};
+  }
+
+  @Commissar({
+    directive: UserCreateDto,
+    dispatch: UserRO,
+    operative: 'FormRenderer',
+    component: 'UserDelete',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        user: {
+          type: 'object',
+          $ref: '#/components/schemas/UserCreateDto',
+        },
+      },
+    },
+  })
+  @UsePipes(new ValidationPipe())
+  @Post('delete')
+  async detelUser(userData: UserCreateDto) {
+    return {};
+  }
+
   @Delete('users/:slug')
   async delete(@Param() params: Record<string, string>): Promise<number> {
     return this.userService.delete(params.slug);
