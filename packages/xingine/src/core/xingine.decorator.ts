@@ -10,10 +10,12 @@ import {
   FieldMeta,
   FormMeta,
 } from "@xingine/core/component/component-meta-map";
+import { DetailFieldMeta } from "@xingine/core/component/detail-meta-map";
 
 export const MODULE_PROPERTY_METADATA_KEY = "custom:module-property";
 export const PROVISIONEER_METADATA = "xingine:provisioneer";
 export const FORM_FIELD_METADATA = "xingine:form-field";
+export const DETAIL_FIELD_METADATA = "xingine:detail-field";
 
 /**
  *A @Provisioneer is a service controller that acts as a centralized,state-assigned provision handler.
@@ -70,15 +72,24 @@ export function FormField(meta: FieldMeta): PropertyDecorator {
   };
 }
 
-/**
- * now lets add type for FieldInputTypeProperties  that supports object and list of object
- * @param dtoClass
- */
 export function generateFormMeta(dtoClass: new () => any): FormMeta {
   const fields: FieldMeta[] =
     Reflect.getMetadata(FORM_FIELD_METADATA, dtoClass) || [];
   return {
     action: "",
     fields,
+  };
+}
+
+export function DetailField(meta: DetailFieldMeta): PropertyDecorator {
+  return (target, propertyKey) => {
+    const existing: DetailFieldMeta[] =
+      Reflect.getMetadata(DETAIL_FIELD_METADATA, target.constructor) || [];
+    meta.name = propertyKey.toString(); // ensure name is always set
+    Reflect.defineMetadata(
+      DETAIL_FIELD_METADATA,
+      [...existing, meta],
+      target.constructor,
+    );
   };
 }

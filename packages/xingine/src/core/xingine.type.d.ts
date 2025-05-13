@@ -45,7 +45,7 @@ export interface CommissarProperties<TReq = unknown, TRes = unknown> {
   operative: keyof ComponentMetaMap;
   meta?: ComponentMetaMap[keyof ComponentMetaMap];
   directive: new () => TReq;
-  dispatch?: TRes;
+  dispatch?: new () => TRes;
   preAction?: string;
   postAction?: string;
 }

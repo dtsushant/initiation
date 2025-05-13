@@ -1,7 +1,6 @@
 // utils/form-meta.util.ts
 import 'reflect-metadata';
 import { getMetadataStorage } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
 import {
   ComponentMeta,
   ComponentMetaMap,
@@ -13,7 +12,14 @@ import {
   TabMeta,
 } from '@xingine/core/component/component-meta-map';
 import { CommissarProperties } from '@xingine/core/xingine.type';
-import { FORM_FIELD_METADATA } from '@xingine/core/xingine.decorator';
+import {
+  DETAIL_FIELD_METADATA,
+  FORM_FIELD_METADATA,
+} from '@xingine/core/xingine.decorator';
+import {
+  DetailFieldMeta,
+  DetailInputTypeProperties,
+} from '@xingine/core/component/detail-meta-map';
 
 function guessInputTypeFromType(type: unknown): keyof FieldInputTypeProperties {
   if (type === String) return 'input';
@@ -28,6 +34,23 @@ function guessInputTypeFromType(type: unknown): keyof FieldInputTypeProperties {
   }
 
   return 'input';
+}
+
+function guessDetailTypeFromType(
+  type: unknown,
+): keyof DetailInputTypeProperties {
+  if (type === String) return 'text';
+  if (type === Number) return 'number';
+  if (type === Boolean) return 'checkbox';
+
+  if (typeof type === 'function') {
+    if (type.name === 'Array') {
+      return 'object[]'; // fallback; refine if needed
+    }
+    return 'object'; // fallback for class constructor
+  }
+
+  return 'text';
 }
 
 function capitalize(str: string): string {
@@ -90,12 +113,6 @@ export function extractFieldMetaFromDirective(dtoClass: Function): FieldMeta[] {
       required,
     };
 
-    console.log(
-      'the inferredType, type and name',
-      inferredType,
-      type,
-      property,
-    );
     // Handle nested object
     if (inferredType === 'object') {
       fieldMeta.properties = {
@@ -123,6 +140,84 @@ export function extractFieldMetaFromDirective(dtoClass: Function): FieldMeta[] {
   return Object.values(combinedFieldMap);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export function extractDetailFieldMetaFromDispatch(
+  dtoClass: Function,
+): DetailFieldMeta[] {
+  const apiMetadata =
+    Reflect.getMetadata('swagger/apiModelProperties', dtoClass.prototype) || {};
+  const decoratorFields: DetailFieldMeta[] =
+    Reflect.getMetadata(DETAIL_FIELD_METADATA, dtoClass) || [];
+
+  const combinedFieldMap: Record<string, DetailFieldMeta> = {};
+
+  // Step 1: Use FormField-decorated fields first
+  for (const field of decoratorFields) {
+    if (field && field.name) combinedFieldMap[field.name] = field;
+  }
+
+  // Step 2: Read all class properties using Reflect
+  const propertyKeys = new Set<string>([
+    ...Object.keys(apiMetadata),
+    ...Object.getOwnPropertyNames(new (dtoClass as any)()),
+    ...Object.getOwnPropertyNames(dtoClass.prototype),
+  ]);
+
+  for (const property of propertyKeys) {
+    console.log('the formfield ', property);
+    if (combinedFieldMap[property]) continue;
+
+    const label = apiMetadata[property]?.description || capitalize(property);
+
+    // Reflect type fallback
+    const type = Reflect.getMetadata(
+      'design:type',
+      dtoClass.prototype,
+      property,
+    );
+    const inferredType = guessDetailTypeFromType(type);
+    console.log('the inferredType', inferredType);
+
+    /*const fieldMeta: FieldMeta = {
+      name: property,
+      label,
+      inputType: inferredType,
+      required,
+    };*/
+    const detailMeta: DetailFieldMeta = {
+      name: property,
+      label,
+      inputType: inferredType,
+    };
+
+    // Handle nested object
+    if (inferredType === 'object') {
+      detailMeta.properties = {
+        fields: extractDetailFieldMetaFromDispatch(type as new () => any),
+      };
+    } else if (inferredType === 'object[]') {
+      const listType = Reflect.getMetadata(
+        'design:elementtype',
+        dtoClass.prototype,
+        property,
+      ); // optional
+      if (listType) {
+        detailMeta.properties = {
+          itemFields: extractDetailFieldMetaFromDispatch(
+            listType as new () => any,
+          ),
+        };
+      } else {
+        detailMeta.properties = {
+          itemFields: [], // fallback
+        };
+      }
+    }
+    combinedFieldMap[property] = detailMeta;
+  }
+  return Object.values(combinedFieldMap);
+}
+
 const metaExtractorMap: {
   [K in keyof ComponentMetaMap]: (
     options: CommissarProperties & { commissarPath?: string },
@@ -143,7 +238,10 @@ const metaExtractorMap: {
     tabs: [],
   }),
   DetailRenderer: (options): DetailMeta => ({
-    fields: [],
+    fields: options.dispatch
+      ? extractDetailFieldMetaFromDispatch(options.dispatch)
+      : [],
+    action: options.commissarPath ?? '',
   }),
 };
 

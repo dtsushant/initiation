@@ -15,6 +15,7 @@ import {
 import { UserPassword } from '../entity/user-password.entity';
 import { hmacHash } from '../../../shared/utils/crypto.utils';
 import { Role } from '../entity/role.entity';
+import { UserCreateDto } from '../dto/user-create.dto';
 
 @Injectable()
 export class UserService {
@@ -72,9 +73,9 @@ export class UserService {
     return user!;
   }
 
-  async create(dto: CreateUserDto): Promise<IUserRO> {
+  async create(dto: UserCreateDto): Promise<IUserRO> {
     // check uniqueness of username/email
-    const { username, email, password } = dto;
+    const { username, email, password } = dto.identity;
     const exists = await this.userRepository.count({
       $or: [{ username }, { email }],
     });
@@ -92,7 +93,7 @@ export class UserService {
     // create new user
     const user = new User(username, email, password);
 
-    if (dto.roles && dto.roles.length > 0) {
+    /*if (dto. && dto.roles.length > 0) {
       const roles = await this.roleRepository.find(
         { id: { $in: dto.roles } },
         { populate: ['permissions'] },
@@ -109,7 +110,7 @@ export class UserService {
       }
 
       user.roles.set(roles);
-    }
+    }*/
     const errors = await validate(user);
 
     if (errors.length > 0) {

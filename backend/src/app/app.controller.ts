@@ -21,4 +21,13 @@ export class AppController {
   async enabledModules(): Promise<ModulePropertyOptions[]> {
     return await this.appService.getModuleMetadata();
   }
+
+  @Get('lookup')
+  @PermissionGateKeeper({ allowPeasants: true })
+  async lookup(): Promise<{ label: string; value: string }[]> {
+    return (await this.appService.getModuleMetadata()).map((metaData) => ({
+      label: metaData.name,
+      value: metaData.name,
+    }));
+  }
 }

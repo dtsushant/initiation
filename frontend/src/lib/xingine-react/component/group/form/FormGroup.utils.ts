@@ -5,6 +5,7 @@ import {
   FieldInputTypeProperties,
   FieldMeta,
   InputTypeProperties,
+  LookupTypeProperties,
   NumberTypeProperties,
   PasswordTypeProperties,
   SelectTypeProperties,
@@ -70,6 +71,13 @@ export function generateRules(
   return rules;
 }
 
+/*export function resolveComponentProps<T extends keyof FieldInputTypeProperties>(
+    type: T,
+    props?: FieldInputTypeProperties[T] & { isSubmitting: boolean }
+): FieldInputTypeProperties[T] & { isSubmitting: boolean } {
+  return props ?? ({} as FieldInputTypeProperties[T] & { isSubmitting: boolean });
+}*/
+
 export const resolveComponentProps = (
   type: keyof FieldInputTypeProperties,
   props?: FieldInputTypeProperties[keyof FieldInputTypeProperties] & {
@@ -113,6 +121,8 @@ export const resolveComponentProps = (
         isSubmitting: props.isSubmitting,
         htmlType: "submit",
       };
+    case "lookup":
+      return props as LookupTypeProperties;
     default:
       return {};
   }

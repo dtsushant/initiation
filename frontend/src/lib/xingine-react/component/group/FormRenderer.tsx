@@ -69,30 +69,6 @@ const FormRenderer: React.FC<
       }
     >
       {formGroup(meta.fields, isSubmitting)}
-      {/*{meta.fields.map((field) => {
-        const FormField = fieldTypeRenderMap[field.inputType];
-        const combinedProps = {
-          ...field.properties,
-          isSubmitting: isSubmitting,
-        };
-        return (
-          <Form.Item
-            key={field.name}
-            name={field.name as NamePath}
-            label={field.label}
-            rules={generateRules(field, field.properties)}
-            initialValue={field.value}
-            {...(field.inputType === "checkbox"
-              ? { valuePropName: "checked" }
-              : {})}
-          >
-            <FormField
-              {...resolveComponentProps(field.inputType, combinedProps)}
-            />
-          </Form.Item>
-        );
-      })}*/}
-
       <Form.Item key="submit" name={"submit" as NamePath}>
         <ButtonField {...buttonProps} />
       </Form.Item>

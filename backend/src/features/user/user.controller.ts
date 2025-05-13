@@ -30,7 +30,7 @@ import { PermissionGateKeeper } from '../../shared/auth/auth-permit.decorator';
 import { Provisioneer } from '@xingine/core/xingine.decorator';
 import { Commissar } from '../../lib/xingine-nest/xingine-nest.decorator';
 import { UserRO } from './dto/user-login.dto';
-import { UserCreateDto } from './dto/user-create.dto';
+import { UserCreateDto, UserDetailDto } from './dto/user-create.dto';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -40,6 +40,12 @@ import { UserCreateDto } from './dto/user-create.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @Commissar({
+    directive: UserDetailDto,
+    dispatch: UserDetailDto,
+    operative: 'DetailRenderer',
+    component: 'UserDetail',
+  })
   @Get('user')
   async findMe(@User('email') email: string): Promise<IUserRO> {
     return this.userService.findByEmail(email);
@@ -64,23 +70,6 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        user: {
-          type: 'object',
-          $ref: '#/components/schemas/CreateUserDto',
-        },
-      },
-    },
-  })
-  @UsePipes(new ValidationPipe())
-  @Post('users')
-  async create(@Body('user') userData: CreateUserDto) {
-    return this.userService.create(userData);
-  }
-
   @Commissar({
     directive: UserCreateDto,
     dispatch: UserRO,
@@ -100,54 +89,9 @@ export class UserController {
   })
   @UsePipes(new ValidationPipe())
   @Post('users')
-  async createUser(@Body('create') userData: UserCreateDto) {
-    return {};
-  }
-
-  @Commissar({
-    directive: UserCreateDto,
-    dispatch: UserRO,
-    operative: 'FormRenderer',
-    component: 'UserUpdate',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        user: {
-          type: 'object',
-          $ref: '#/components/schemas/UserCreateDto',
-        },
-      },
-    },
-  })
-  @UsePipes(new ValidationPipe())
-  @Post('update')
-  async updateUser(@Body('create') userData: UserCreateDto) {
-    return {};
-  }
-
-  @Commissar({
-    directive: UserCreateDto,
-    dispatch: UserRO,
-    operative: 'FormRenderer',
-    component: 'UserDelete',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        user: {
-          type: 'object',
-          $ref: '#/components/schemas/UserCreateDto',
-        },
-      },
-    },
-  })
-  @UsePipes(new ValidationPipe())
-  @Post('delete')
-  async detelUser(userData: UserCreateDto) {
-    return {};
+  async createUser(@Body() userData: UserCreateDto) {
+    console.log('the user data', userData);
+    return this.userService.create(userData);
   }
 
   @Delete('users/:slug')
