@@ -5,14 +5,59 @@ import { formMetaDecoder } from '@xingine/core/decoders/form.decoder';
 import { detailMetaDecoder } from '@xingine/core/decoders/detail.decoder';
 import { dynamicShapeDecoder } from '@xingine/core/decoders/shared.decoder';
 import { modulePropertiesListDecoder } from '@xingine/core/xingine.decoder';
+import {
+  extractRouteParams,
+  resolveDynamicPath,
+  resolvePath,
+} from '@xingine/core/utils/type';
 
 describe('extractMeta test', () => {
+  it('RoutesParam are replaced properly ', () => {
+    const apiResp = {
+      user: {
+        bio: '',
+        email: 'side@s.com',
+        image: '',
+        token:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNpZGVAcy5jb20iLCJleHAiOjE3NTI0MDY0NTguNjA0LCJpZCI6ImUxYjljY2ZlLWQ0ZTctNDcwNi1iNzc2LTUyNjI2ZjlmZmU3YyIsInVzZXJuYW1lIjoic2lkZXNvbWV0aGluIiwiaWF0IjoxNzQ3MjIyNDU4fQ.G_xS3mYkpxIKcWLY6npRb2Hl2oxNmzObM-jpVnQF_nk',
+        username: 'sidesomethin',
+        roles: [],
+      },
+    };
+
+    const redirectionPath = '/abc/:user.username';
+    const replacedPath = resolveDynamicPath(
+      redirectionPath,
+      dynamicShapeDecoder.verify(apiResp),
+    );
+    expect(replacedPath).toBe('/abc/sidesomethin');
+
+    const data = {
+      component: 'test',
+      users: [{ name: 'Alice' }, { name: 'Bob', profile: { age: 30 } }],
+    };
+
+    expect(resolvePath(data, 'component')).toBe('test');
+    expect(resolvePath(data, 'users.1.profile.age')).toBe(30);
+    expect(resolvePath(data, 'users.0.name')).toBe('Alice');
+    expect(resolvePath(data, 'users.2.name')).toBe(undefined);
+  });
+  it('routesParam extraction property ', () => {
+    const str = '/abc/:one.a/test/:two.d.c/:three';
+    const slugs = extractRouteParams(str);
+    const sluggedApi = slugs.reduce((acc, key) => {
+      return `${acc}/:${key}`;
+    }, '');
+    expect(sluggedApi).toBe('/:one.a/:two.d.c/:three');
+  });
   it('should decode dynamic object', async () => {
     const justAString = 'just a String';
     const numbr = 2;
     const bool = true;
     const num = dynamicShapeDecoder.verify(numbr);
     const boole = dynamicShapeDecoder.verify(bool);
+    const date = dynamicShapeDecoder.verify(new Date());
+    console.log(date);
     console.log(num);
     console.log(boole);
     const str = dynamicShapeDecoder.verify(justAString);
@@ -58,7 +103,6 @@ describe('extractMeta test', () => {
     const options: CommissarProperties = {
       component: 'UserDetail',
       directive: UserLoginDto,
-      dispatch: UserDetail,
       operative: 'DetailRenderer',
     };
     const meta = extractMeta(options, '');

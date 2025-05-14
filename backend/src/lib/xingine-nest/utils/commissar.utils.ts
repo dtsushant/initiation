@@ -4,10 +4,14 @@ import { getMetadataStorage } from 'class-validator';
 import {
   ComponentMeta,
   ComponentMetaMap,
+  DetailDispatchProperties,
   DetailMeta,
   FieldInputTypeProperties,
   FieldMeta,
+  FormDispatchProperties,
   FormMeta,
+  TabDispatchProperties,
+  TableDispatchProperties,
   TableMeta,
   TabMeta,
 } from '@xingine/core/component/component-meta-map';
@@ -144,7 +148,6 @@ export function extractFieldMetaFromDirective(dtoClass: Function): FieldMeta[] {
 export function extractDetailFieldMetaFromDirective(
   dtoClass: Function,
 ): DetailFieldMeta[] {
-  console.log('am i here even');
   const apiMetadata =
     Reflect.getMetadata('swagger/apiModelProperties', dtoClass.prototype) || {};
   const decoratorFields: DetailFieldMeta[] =
@@ -165,7 +168,6 @@ export function extractDetailFieldMetaFromDirective(
   ]);
 
   for (const property of propertyKeys) {
-    console.log('the formfield ', property);
     if (combinedFieldMap[property]) continue;
 
     const label = apiMetadata[property]?.description || capitalize(property);
@@ -228,19 +230,31 @@ const metaExtractorMap: {
     const fields = extractFieldMetaFromDirective(options.directive);
     return {
       action: options.commissarPath ?? '',
-      fields,
+      fields: fields,
+      dispatch: options.dispatch
+        ? (options.dispatch as FormDispatchProperties)
+        : undefined,
     };
   },
   TableRenderer: (options): TableMeta => ({
     columns: [],
     dataSourceUrl: '',
+    dispatch: options.dispatch
+      ? (options.dispatch as TableDispatchProperties)
+      : undefined,
   }),
   TabRenderer: (options): TabMeta => ({
     tabs: [],
+    dispatch: options.dispatch
+      ? (options.dispatch as TabDispatchProperties)
+      : undefined,
   }),
   DetailRenderer: (options): DetailMeta => ({
     fields: extractDetailFieldMetaFromDirective(options.directive),
     action: options.commissarPath ?? '',
+    dispatch: options.dispatch
+      ? (options.dispatch as DetailDispatchProperties)
+      : undefined,
   }),
 };
 

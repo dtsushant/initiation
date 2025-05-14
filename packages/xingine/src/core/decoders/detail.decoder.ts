@@ -22,7 +22,10 @@ import {
   TagDetailProperties,
   TextDetailProperties,
 } from "../component/detail-meta-map";
-import { DetailMeta } from "@xingine/core/component/component-meta-map";
+import {
+  DetailDispatchProperties,
+  DetailMeta,
+} from "@xingine/core/component/component-meta-map";
 import { dynamicShapeDecoder } from "./shared.decoder";
 
 export const textDetailDecoder: Decoder<TextDetailProperties> = object({
@@ -69,33 +72,6 @@ export const tagDetailDecoder: Decoder<TagDetailProperties> = object({
   color: optional(string),
 });
 
-/*
-const fieldMetaDecoderBase = object({
-    name: string,
-    label: string,
-    inputType: string,
-    required: optional(boolean),
-    value: optional(string),
-    properties: optional(unknown),
-});
-
-function fieldMetaDecoder(): Decoder<FieldMeta> {
-    return fieldMetaDecoderBase.transform((baseFieldMeta) => {
-        const strictMeta = decodeFieldInputPropertiesByInputType(
-            baseFieldMeta.inputType,
-            baseFieldMeta.properties,
-        );
-        return { ...baseFieldMeta, properties: strictMeta } as FieldMeta;
-    });
-}
-
-name: string;
-    label: string;
-    inputType: T;
-    value: unknown;
-    properties?: DetailInputTypeProperties[T];
- */
-
 const detailMetaDecoderBase = object({
   name: string,
   label: string,
@@ -140,7 +116,13 @@ export const detailPropertyDecoderMap = {
   "object[]": objectArrayDetailDecoder,
 };
 
+const detailDispatchPropertiesDecoder: Decoder<DetailDispatchProperties> =
+  object({
+    scrollToField: optional(string),
+  });
+
 export const detailMetaDecoder: Decoder<DetailMeta> = object({
   fields: array(detailFieldMetaDecoder()).transform((f) => f ?? []),
   action: string,
+  dispatch: optional(detailDispatchPropertiesDecoder),
 });

@@ -68,6 +68,11 @@ class ModuleRegistryService {
   getAll(): ModuleRegistry {
     return this.modules;
   }
+
+  getComponentPath(name: string): string {
+    const componentProperty = this.modules.component[name];
+    return componentProperty?.path ?? "notFound";
+  }
 }
 
 let instance: ModuleRegistryService | null = null;

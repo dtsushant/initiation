@@ -26,7 +26,10 @@ import {
   TextareaTypeProperties,
   TreeSelectTypeProperties,
 } from "@xingine/core/component/form-meta-map";
-import { FormMeta } from "@xingine/core/component/component-meta-map";
+import {
+  FormDispatchProperties,
+  FormMeta,
+} from "@xingine/core/component/component-meta-map";
 
 export const inputTypeDecoder: Decoder<InputTypeProperties> = object({
   placeholder: optional(string),
@@ -198,7 +201,16 @@ export const objectListTypeDecoder: Decoder<ObjectListFieldProperties> = object(
   },
 );
 
+export const formDispatchPropertiesDecoder: Decoder<FormDispatchProperties> =
+  object({
+    onSuccessRedirectTo: optional(
+      object({
+        component: string,
+      }),
+    ),
+  });
 export const formMetaDecoder: Decoder<FormMeta> = object({
   fields: array(fieldMetaDecoder()).transform((f) => f ?? []),
   action: string,
+  dispatch: optional(formDispatchPropertiesDecoder),
 });

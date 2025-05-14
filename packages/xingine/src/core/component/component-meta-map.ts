@@ -7,19 +7,43 @@ export interface ColumnMeta {
   headerName: string;
 }
 
+export interface FormDispatchProperties {
+  onSuccessRedirectTo?: {
+    component: string;
+  };
+}
+
+export interface TableDispatchProperties {
+  onRowClickNavigateTo?: {
+    component: string;
+  };
+  refreshAfterAction?: boolean;
+}
+
+export interface TabDispatchProperties {
+  activateTab?: string;
+}
+
+export interface DetailDispatchProperties {
+  scrollToField?: string;
+}
+
 export interface FormMeta {
   fields: FieldMeta[];
   action: string;
+  dispatch?: FormDispatchProperties;
 }
 
 export interface DetailMeta {
   fields: DetailFieldMeta[];
   action: string;
+  dispatch?: DetailDispatchProperties;
 }
 
 export interface TableMeta {
   columns: ColumnMeta[];
   dataSourceUrl: string;
+  dispatch?: TableDispatchProperties;
 }
 
 export interface TabMeta {
@@ -28,6 +52,7 @@ export interface TabMeta {
     component: keyof ComponentMetaMap;
     meta: ComponentMetaMap[keyof ComponentMetaMap];
   }[];
+  dispatch?: TabDispatchProperties;
 }
 
 export type ComponentMetaMap = {

@@ -1,6 +1,10 @@
 import {
   ComponentMeta,
   ComponentMetaMap,
+  DetailDispatchProperties,
+  FormDispatchProperties,
+  TabDispatchProperties,
+  TableDispatchProperties,
 } from "@xingine/core/component/component-meta-map";
 
 export type UIComponent = {
@@ -38,26 +42,6 @@ export interface ProvisioneerProperties {
   name?: string;
   description?: string;
   clearance?: Permission[];
-}
-export interface FormDispatchProperties {
-  onSuccessRedirectTo: {
-    component: string;
-  };
-}
-
-export interface TableDispatchProperties {
-  onRowClickNavigateTo?: {
-    component: string;
-  };
-  refreshAfterAction?: boolean;
-}
-
-export interface TabDispatchProperties {
-  activateTab?: string;
-}
-
-export interface DetailDispatchProperties {
-  scrollToField?: string;
 }
 
 export type ComponentDispatchByComponent<T extends keyof ComponentMetaMap> =

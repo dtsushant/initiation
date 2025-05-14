@@ -8,7 +8,7 @@ import {
   getModulePropertyMetadata,
   getProvisioneerProperties,
 } from '@xingine/core/xingine.decorator';
-import { Constructor } from '@xingine/core/utils/type';
+import { Constructor, extractRouteParams } from '@xingine/core/utils/type';
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { getCommissarProperties } from './xingine-nest.decorator';
 import { extractMeta } from './utils/commissar.utils';
@@ -86,11 +86,18 @@ export class XingineInspectorService {
           prototype[methodName],
         );
         let fullPath: string | undefined = undefined;
-        const uiPath = `/${provisioneerProperties?.name}/${methodName}`;
+        let uiPath = `/${provisioneerProperties?.name}/${methodName}`;
         if (routePath !== undefined && method !== undefined) {
           const methodString = RequestMethod[method];
           fullPath = `/${controllerPath}/${routePath}`.replace(/\/+/g, '/');
           console.log(`[${methodString}] ${fullPath}`);
+        }
+
+        const slugs = extractRouteParams(fullPath ?? '');
+        if (slugs.length >= 1) {
+          uiPath += slugs.reduce((acc, key) => {
+            return `${acc}/:${key}`;
+          }, '');
         }
 
         /*const hasPermission = this.reflector.get(
@@ -99,7 +106,7 @@ export class XingineInspectorService {
         );
 
         if (hasPermission) {
-          console.log(`✅ ${controller.name}.${methodName} is annotated with @PermissionGateKeeper(${hasPermission})`);
+          console.log(` ${controller.name}.${methodName} is annotated with @PermissionGateKeeper(${hasPermission})`);
         }*/
 
         const componentMeta = extractMeta(commissar, fullPath ?? '');

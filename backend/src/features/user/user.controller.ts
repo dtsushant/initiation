@@ -50,7 +50,7 @@ export class UserController {
     operative: 'DetailRenderer',
     component: 'UserDetail',
   })
-  @Get(':username')
+  @Get(':user.username')
   async userDetail(@Param() params: Record<string, string>): Promise<IUserRO> {
     return this.userService.findByUsername(params.username);
   }
@@ -78,7 +78,7 @@ export class UserController {
     directive: UserCreateDto,
     dispatch: {
       onSuccessRedirectTo: {
-        component: '',
+        component: 'UserDetail',
       },
     },
     operative: 'FormRenderer',
@@ -98,6 +98,34 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @Post('users')
   async createUser(@Body() userData: UserCreateDto) {
+    console.log('the user data', userData);
+    return this.userService.create(userData);
+  }
+
+  @Commissar({
+    directive: UserCreateDto,
+    dispatch: {
+      onSuccessRedirectTo: {
+        component: 'UserDetail',
+      },
+    },
+    operative: 'FormRenderer',
+    component: 'KshitijComp',
+  })
+  @ApiBody({
+    schema: {
+      type: 'object',
+      properties: {
+        user: {
+          type: 'object',
+          $ref: '#/components/schemas/UserCreateDto',
+        },
+      },
+    },
+  })
+  @UsePipes(new ValidationPipe())
+  @Post('kshitij')
+  async createUser1(@Body() userData: UserCreateDto) {
     console.log('the user data', userData);
     return this.userService.create(userData);
   }

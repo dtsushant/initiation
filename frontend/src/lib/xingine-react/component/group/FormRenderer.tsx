@@ -6,6 +6,9 @@ import { NamePath } from "antd/es/form/interface";
 import { post } from "/@/services/initiation.service.ts";
 import { dynamicShapeDecoder } from "@xingine";
 import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";
+import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
+import { useNavigate } from "react-router-dom";
+import { resolveDynamicPath } from "@xingine/core/utils/type.ts";
 
 const FormRenderer: React.FC<
   FormMeta & {
@@ -16,9 +19,14 @@ const FormRenderer: React.FC<
     ) => void;
   }
 > = (meta) => {
-  console.log("the mta here is", meta);
+  const { dispatch } = meta;
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const navigate = useNavigate();
+  const formSubmissionSuccessRedirectionPath =
+    getModuleRegistryService()?.getComponentPath(
+      dispatch?.onSuccessRedirectTo!.component ?? "",
+    );
 
   const defaultFinish = async (
     values: Record<string, unknown>,
@@ -34,6 +42,11 @@ const FormRenderer: React.FC<
     result.match({
       ok: (res) => {
         console.log("the res", res);
+        if (dispatch && formSubmissionSuccessRedirectionPath) {
+          navigate(
+            resolveDynamicPath(formSubmissionSuccessRedirectionPath, res),
+          );
+        }
       },
       err: (e) => {
         console.log("the errors", e);

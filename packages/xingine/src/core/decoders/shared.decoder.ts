@@ -1,6 +1,7 @@
 import {
   array,
   boolean,
+  date,
   Decoder,
   either,
   lazy,
@@ -9,18 +10,6 @@ import {
   string,
 } from "decoders";
 
-/*
-export const dynamicShapeDecoder = either(
-    string,
-    record(
-      either(
-        string,
-        either(array(string), either(record(string), array(record(string)))),
-      ),
-    )
-);
-*/
-
 export const dynamicShapeDecoder: Decoder<unknown> = lazy(() =>
   either(
     string,
@@ -28,7 +17,10 @@ export const dynamicShapeDecoder: Decoder<unknown> = lazy(() =>
       number,
       either(
         boolean,
-        either(array(dynamicShapeDecoder), record(dynamicShapeDecoder)),
+        either(
+          date,
+          either(array(dynamicShapeDecoder), record(dynamicShapeDecoder)),
+        ),
       ),
     ),
   ),
