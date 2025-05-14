@@ -24,3 +24,8 @@ export function getBreadcrumbs(
     path: "/" + parts.slice(0, index + 1).join("/"),
   }));
 }
+
+export function normalizePath(path: string): string {
+  let count = 1;
+  return path.replace(/:([^/]+)/g, () => `:slug${count++}`);
+}

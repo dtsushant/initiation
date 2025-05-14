@@ -33,24 +33,20 @@ export const dateDetailDecoder: Decoder<DateDetailProperties> = object({
   format: optional(string),
 });
 
-// ✅ Select
 export const selectDetailDecoder: Decoder<SelectDetailProperties> = object({
   options: optional(array(object({ label: string, value: string }))),
   fallback: optional(string),
 });
 
-// ✅ Switch
 export const switchDetailDecoder: Decoder<SwitchDetailProperties> = object({
   activeLabel: optional(string),
   inactiveLabel: optional(string),
 });
 
-// ✅ Checkbox
 export const checkboxDetailDecoder: Decoder<CheckboxDetailProperties> = object({
   label: optional(string),
 });
 
-// ✅ Number
 export const numberDetailDecoder: Decoder<NumberDetailProperties> = object({
   precision: optional(number),
   prefix: optional(string),
@@ -101,6 +97,7 @@ name: string;
  */
 
 const detailMetaDecoderBase = object({
+  name: string,
   label: string,
   inputType: string,
   value: optional(dynamicShapeDecoder),
@@ -113,8 +110,10 @@ function detailFieldMetaDecoder(): Decoder<DetailFieldMeta> {
     const inputType =
       baseDetailMeta.inputType as keyof typeof detailPropertyDecoderMap;
     const decoder = detailPropertyDecoderMap[inputType];
-    const strictMeta = decoder.verify(baseDetailMeta.properties);
-
+    const strictMeta = baseDetailMeta.properties
+      ? decoder.verify(baseDetailMeta.properties)
+      : undefined;
+    console.log("the strict meta", strictMeta);
     return { ...baseDetailMeta, properties: strictMeta } as DetailFieldMeta;
   });
 }

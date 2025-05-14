@@ -141,9 +141,10 @@ export function extractFieldMetaFromDirective(dtoClass: Function): FieldMeta[] {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
-export function extractDetailFieldMetaFromDispatch(
+export function extractDetailFieldMetaFromDirective(
   dtoClass: Function,
 ): DetailFieldMeta[] {
+  console.log('am i here even');
   const apiMetadata =
     Reflect.getMetadata('swagger/apiModelProperties', dtoClass.prototype) || {};
   const decoratorFields: DetailFieldMeta[] =
@@ -193,7 +194,7 @@ export function extractDetailFieldMetaFromDispatch(
     // Handle nested object
     if (inferredType === 'object') {
       detailMeta.properties = {
-        fields: extractDetailFieldMetaFromDispatch(type as new () => any),
+        fields: extractDetailFieldMetaFromDirective(type as new () => any),
       };
     } else if (inferredType === 'object[]') {
       const listType = Reflect.getMetadata(
@@ -203,7 +204,7 @@ export function extractDetailFieldMetaFromDispatch(
       ); // optional
       if (listType) {
         detailMeta.properties = {
-          itemFields: extractDetailFieldMetaFromDispatch(
+          itemFields: extractDetailFieldMetaFromDirective(
             listType as new () => any,
           ),
         };
@@ -238,9 +239,7 @@ const metaExtractorMap: {
     tabs: [],
   }),
   DetailRenderer: (options): DetailMeta => ({
-    fields: options.dispatch
-      ? extractDetailFieldMetaFromDispatch(options.dispatch)
-      : [],
+    fields: extractDetailFieldMetaFromDirective(options.directive),
     action: options.commissarPath ?? '',
   }),
 };

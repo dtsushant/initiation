@@ -39,13 +39,61 @@ export interface ProvisioneerProperties {
   description?: string;
   clearance?: Permission[];
 }
+export interface FormDispatchProperties {
+  onSuccessRedirectTo: {
+    component: string;
+  };
+}
 
-export interface CommissarProperties<TReq = unknown, TRes = unknown> {
+export interface TableDispatchProperties {
+  onRowClickNavigateTo?: {
+    component: string;
+  };
+  refreshAfterAction?: boolean;
+}
+
+export interface TabDispatchProperties {
+  activateTab?: string;
+}
+
+export interface DetailDispatchProperties {
+  scrollToField?: string;
+}
+
+export type ComponentDispatchByComponent<T extends keyof ComponentMetaMap> =
+  T extends "FormRenderer"
+    ? FormDispatchProperties
+    : T extends "TableRenderer"
+      ? TableDispatchProperties
+      : T extends "TabRenderer"
+        ? TabDispatchProperties
+        : T extends "DetailRenderer"
+          ? DetailDispatchProperties
+          : never;
+
+export type ComponentDispatchMap = {
+  [K in keyof ComponentMetaMap]: ComponentDispatchByComponent<K>;
+};
+
+export interface CommissarProperties<
+  TReq = unknown,
+  TOperative extends keyof ComponentMetaMap = keyof ComponentMetaMap,
+> {
   component: string;
-  operative: keyof ComponentMetaMap;
-  meta?: ComponentMetaMap[keyof ComponentMetaMap];
+  operative: TOperative;
+  meta?: ComponentMetaMap[TOperative];
   directive: new () => TReq;
-  dispatch?: new () => TRes;
+  dispatch?: ComponentDispatchMap[TOperative];
   preAction?: string;
   postAction?: string;
 }
+
+/*export interface CommissarProperties<TReq = unknown, TOperative extends keyof ComponentMetaMap> {
+  component: string;
+  operative: TOperative;
+  meta?: ComponentMetaMap[TOperative];
+  directive: new () => TReq;
+  dispatch?: ComponentDispatchMap[TOperative];
+  preAction?: string;
+  postAction?: string;
+}*/

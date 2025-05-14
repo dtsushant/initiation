@@ -10,7 +10,10 @@ import { PublicSpacePage } from "/@/pages/public/PublicSpacePage.tsx";
 import { useStore } from "/@/store/store.hook.ts";
 import { AppState } from "/@/components/app/App.slice.ts";
 import { UIComponent } from "@xingine";
-import { lazyLoadComponent } from "/@/lib/xingine-react/component/utils/Component.utils.ts";
+import {
+  lazyLoadComponent,
+  normalizePath,
+} from "/@/lib/xingine-react/component/utils/Component.utils.ts";
 import { AccessGuard } from "/@/lib/xingine-react/component/ComponentAccessGuard.tsx";
 import { DefaultLayout } from "/@/lib/xingine-react/component/ComponentDefaultLayout.tsx";
 import { PublicLayout } from "/@/layout/PublicLayout.tsx";
@@ -62,10 +65,11 @@ export function Router() {
               mod.component,
               mod.meta?.properties,
             ); //lazyLoadComponent(mod.component);
+            console.log("the normalizedPath", mod.path);
             return (
               <Route
                 key={mod.component}
-                path={mod.path}
+                path={normalizePath(mod.path)}
                 element={
                   <AccessGuard roles={mod.roles} permissions={mod.permissions}>
                     <Suspense fallback={<div>Loading...</div>}>

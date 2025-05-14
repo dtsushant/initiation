@@ -20,7 +20,7 @@ describe('extractMeta test', () => {
       operative: 'FormRenderer',
     };
 
-    const meta = extractMeta(options);
+    const meta = extractMeta(options, '');
     console.log('the meta here is ', meta);
     // Assert shape without type casting
     expect(meta.component).toBe('FormRenderer');
@@ -61,7 +61,7 @@ describe('extractMeta test', () => {
       operative: 'FormRenderer',
     };
 
-    const meta = extractMeta(options);
+    const meta = extractMeta(options, '');
     // console.log('the meta here is ', meta);
     console.log(JSON.stringify(meta, null, 2));
   });
@@ -70,11 +70,10 @@ describe('extractMeta test', () => {
     const options: CommissarProperties = {
       component: 'UserDetail',
       directive: UserCreateDto,
-      dispatch: UserDetail,
       operative: 'DetailRenderer',
     };
 
-    const meta = extractMeta(options);
+    const meta = extractMeta(options, '');
     // console.log('the meta here is ', meta);
     console.log(JSON.stringify(meta, null, 2));
   });

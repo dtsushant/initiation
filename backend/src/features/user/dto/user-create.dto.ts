@@ -26,7 +26,7 @@ class Identity {
   })
   username!: string;
   @FormField({
-    label: 'User Roles',
+    label: 'Email',
     inputType: 'input',
     required: true,
     properties: {
@@ -44,8 +44,8 @@ class Identity {
     },
   })
   password!: string;
-  firstName!: string;
-  lastName!: string;
+  firstName?: string;
+  lastName?: string;
 }
 
 class ContactInfo {
@@ -97,7 +97,7 @@ export class UserCreateDto {
   @ApiProperty()
   accessControl?: AccessControl;
   @ApiProperty()
-  meta!: Meta;
+  meta?: Meta;
 }
 
 export class UserDetailDto {

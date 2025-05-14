@@ -158,6 +158,11 @@ export class UserService {
     return this.buildUserRO(user);
   }
 
+  async findByUsername(username: string): Promise<IUserRO> {
+    const user = await this.userRepository.findOneOrFail({ username });
+    return this.buildUserRO(user);
+  }
+
   generateJWT(user: User) {
     const today = new Date();
     const exp = new Date(today);

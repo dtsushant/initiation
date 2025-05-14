@@ -7,11 +7,11 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { User } from '../user/entity/user.entity';
 import { ModuleProperty } from '@xingine/core/xingine.decorator';
 import { CATEGORY_PERMISSIONS } from './constant/category.permissions';
-import { CategoryViewComponent } from './component/category-view.component';
+/*import { CategoryViewComponent } from './component/category-view.component';
 @ModuleProperty({
   uiComponent: [CategoryViewComponent],
   permissions: CATEGORY_PERMISSIONS,
-})
+})*/
 @Module({
   controllers: [CategoryController],
   exports: [CategoryService],

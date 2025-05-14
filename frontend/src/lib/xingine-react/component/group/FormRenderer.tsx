@@ -16,15 +16,20 @@ const FormRenderer: React.FC<
     ) => void;
   }
 > = (meta) => {
+  console.log("the mta here is", meta);
   const [form] = Form.useForm();
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const defaultFinish = async (
     values: Record<string, unknown>,
   ): Promise<void> => {
-    console.log("default submission", values);
+    console.log("default submission", values, meta.action);
 
-    const result = await post(values, dynamicShapeDecoder, meta.action);
+    const result = await post<unknown>(
+      values,
+      dynamicShapeDecoder,
+      meta.action,
+    );
 
     result.match({
       ok: (res) => {

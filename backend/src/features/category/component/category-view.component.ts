@@ -1,6 +1,6 @@
 import { UIComponent } from '@xingine/core/xingine.type';
 
-export const CategoryViewComponent: UIComponent = {
+/*export const CategoryViewComponent: UIComponent = {
   component: 'CategoryView',
   path: '/category/create',
   icon: 'user-plus',
@@ -12,4 +12,4 @@ export const CategoryViewComponent: UIComponent = {
       fields: [],
     },
   },
-};
+};*/

@@ -1,8 +1,35 @@
-import { array, either, record, string } from "decoders";
+import {
+  array,
+  boolean,
+  Decoder,
+  either,
+  lazy,
+  number,
+  record,
+  string,
+} from "decoders";
 
-export const dynamicShapeDecoder = record(
+/*
+export const dynamicShapeDecoder = either(
+    string,
+    record(
+      either(
+        string,
+        either(array(string), either(record(string), array(record(string)))),
+      ),
+    )
+);
+*/
+
+export const dynamicShapeDecoder: Decoder<unknown> = lazy(() =>
   either(
     string,
-    either(array(string), either(record(string), array(record(string)))),
+    either(
+      number,
+      either(
+        boolean,
+        either(array(dynamicShapeDecoder), record(dynamicShapeDecoder)),
+      ),
+    ),
   ),
 );

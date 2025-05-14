@@ -102,7 +102,7 @@ export class XingineInspectorService {
           console.log(`✅ ${controller.name}.${methodName} is annotated with @PermissionGateKeeper(${hasPermission})`);
         }*/
 
-        const componentMeta = extractMeta(commissar, fullPath);
+        const componentMeta = extractMeta(commissar, fullPath ?? '');
         const mod = moduleProperties.find(
           (modules) => modules.name === provisioneerProperties.name,
         );

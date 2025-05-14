@@ -17,6 +17,7 @@ import {
 import {
   ColumnMeta,
   ComponentMeta,
+  ComponentMetaMap,
   TableMeta,
   TabMeta,
 } from "@xingine/core/component/component-meta-map";
@@ -75,11 +76,13 @@ const componentMetaDecoderBase = object({
 });
 
 function componentMetaDecoder(): Decoder<ComponentMeta> {
+  console.log("calling component metadecoder");
   return componentMetaDecoderBase.transform((baseComponentMeta) => {
     const strictMeta = decodeMetaByComponent(
       baseComponentMeta.component,
       baseComponentMeta.properties,
-    );
+    ) as ComponentMetaMap[keyof ComponentMetaMap];
+
     return { ...baseComponentMeta, properties: strictMeta } as ComponentMeta;
   });
 }

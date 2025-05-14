@@ -1,6 +1,6 @@
 import { UIComponent } from '@xingine/core/xingine.type';
 
-export const RuleViewComponent: UIComponent = {
+/*export const RuleViewComponent: UIComponent = {
   component: 'RuleView',
   path: '/rule/create',
   icon: 'user-plus',
@@ -12,4 +12,4 @@ export const RuleViewComponent: UIComponent = {
       fields: [],
     },
   },
-};
+};*/

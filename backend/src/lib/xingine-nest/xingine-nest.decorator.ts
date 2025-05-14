@@ -1,7 +1,10 @@
 import { Constructor } from '@xingine/core/utils/type';
 import { CommissarProperties } from '@xingine/core/xingine.type';
 import { PROVISIONEER_METADATA } from '@xingine/core/xingine.decorator';
-import { FormMeta } from '@xingine/core/component/component-meta-map';
+import {
+  ComponentMetaMap,
+  FormMeta,
+} from '@xingine/core/component/component-meta-map';
 import { extractMeta } from './utils/commissar.utils';
 
 export const COMMISSAR_METADATA = 'xingine:provisioneer:commissar';
@@ -11,9 +14,10 @@ export const COMMISSAR_METADATA = 'xingine:provisioneer:commissar';
  * that also manages its UI representation and execution lifecycle hooks.
  * Each @Commissar determines how the action is visualized to the user (via component) and may specify logic to be executed before and/or after the core action.
  */
-export function Commissar<TReq = unknown, TRes = unknown>(
-  options: CommissarProperties<TReq, TRes>,
-): MethodDecorator {
+export function Commissar<
+  TReq = unknown,
+  TOperative extends keyof ComponentMetaMap = keyof ComponentMetaMap,
+>(options: CommissarProperties<TReq, TOperative>): MethodDecorator {
   return (target, propertyKey, descriptor: PropertyDescriptor) => {
     const constructor = target.constructor;
     console.log('the constructor name', constructor.name);
@@ -32,7 +36,10 @@ export function Commissar<TReq = unknown, TRes = unknown>(
       }
     }, 0);
 
-    const meta: CommissarProperties['meta'] = extractMeta(options).properties;
+    const meta: CommissarProperties['meta'] = extractMeta(
+      options,
+      '',
+    ).properties;
     const fullOptions = { ...options, meta };
 
     Reflect.defineMetadata(COMMISSAR_METADATA, fullOptions, descriptor.value);

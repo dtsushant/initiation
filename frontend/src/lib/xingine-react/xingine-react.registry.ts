@@ -61,7 +61,7 @@ class ModuleRegistryService {
   ): JSX.Element | undefined {
     const Component = this.modules.component[name];
     if (!Component) return undefined;
-    console.log("the props here is", props);
+    console.log("the component name and props here is", name, props);
     return React.createElement(Component.fc, props);
   }
 

@@ -40,15 +40,19 @@ import { UserCreateDto, UserDetailDto } from './dto/user-create.dto';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
-  @Commissar({
-    directive: UserDetailDto,
-    dispatch: UserDetailDto,
-    operative: 'DetailRenderer',
-    component: 'UserDetail',
-  })
   @Get('user')
   async findMe(@User('email') email: string): Promise<IUserRO> {
     return this.userService.findByEmail(email);
+  }
+
+  @Commissar({
+    directive: UserDetailDto,
+    operative: 'DetailRenderer',
+    component: 'UserDetail',
+  })
+  @Get(':username')
+  async userDetail(@Param() params: Record<string, string>): Promise<IUserRO> {
+    return this.userService.findByUsername(params.username);
   }
 
   @ApiBody({
@@ -72,7 +76,11 @@ export class UserController {
 
   @Commissar({
     directive: UserCreateDto,
-    dispatch: UserRO,
+    dispatch: {
+      onSuccessRedirectTo: {
+        component: '',
+      },
+    },
     operative: 'FormRenderer',
     component: 'UserCreate',
   })
@@ -101,7 +109,6 @@ export class UserController {
 
   @Commissar({
     directive: UserLoginDto,
-    dispatch: UserRO,
     operative: 'FormRenderer',
     component: 'UserLogin',
   })

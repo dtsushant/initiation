@@ -1,6 +1,7 @@
 import { FieldMeta } from "@xingine/core/component/form-meta-map";
 import { DetailFieldMeta } from "@xingine/core/component/detail-meta-map";
 
+export type Method = "POST" | "GET";
 export interface ColumnMeta {
   field: string;
   headerName: string;
