@@ -34,7 +34,7 @@ export class UserLoginDto {
     properties: { label: 'Remember Me' },
   })
   @ApiProperty()
-  readonly rememberMe!: string;
+  readonly rememberMe?: boolean = false;
 }
 
 export class UserRO implements IUserRO {

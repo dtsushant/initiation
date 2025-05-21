@@ -16,6 +16,8 @@ import { UserPassword } from '../entity/user-password.entity';
 import { hmacHash } from '../../../shared/utils/crypto.utils';
 import { Role } from '../entity/role.entity';
 import { UserCreateDto } from '../dto/user-create.dto';
+import { Permission } from '../entity/permission.entity';
+import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
 
 @Injectable()
 export class UserService {
@@ -24,12 +26,49 @@ export class UserService {
     private readonly userRepository: EntityRepository<User>,
     @InjectRepository(Role)
     private readonly roleRepository: EntityRepository<Role>,
+    @InjectRepository(Permission)
+    private readonly permissionRepository: EntityRepository<Permission>,
     @Inject()
     private readonly em: EntityManager,
   ) {}
 
   async findAll(): Promise<User[]> {
     return this.userRepository.findAll({ populate: ['roles'] });
+  }
+
+  async fetchAllRoles(): Promise<Role[]> {
+    return this.roleRepository.findAll();
+  }
+
+  async fetchAllPermission(): Promise<NestedCheckboxOption[]> {
+    return this.mapPermissionsToNestedCheckbox(
+      await this.permissionRepository.findAll(),
+    );
+  }
+
+  private mapPermissionsToNestedCheckbox(
+    data: Permission[],
+  ): NestedCheckboxOption[] {
+    const grouped: Record<string, NestedCheckboxOption> = {};
+
+    for (const item of data) {
+      const moduleKey = item.module;
+
+      if (!grouped[moduleKey.module]) {
+        grouped[moduleKey.module] = {
+          label: moduleKey.description ?? moduleKey.module,
+          value: moduleKey.module,
+          children: [],
+        };
+      }
+
+      grouped[moduleKey.module].children!.push({
+        label: item.description ?? item.id,
+        value: `${item.id}`,
+      });
+    }
+
+    return Object.values(grouped);
   }
 
   async findOne(loginUserDto: UserLoginDto): Promise<User> {
@@ -93,13 +132,14 @@ export class UserService {
     // create new user
     const user = new User(username, email, password);
 
-    /*if (dto. && dto.roles.length > 0) {
-      const roles = await this.roleRepository.find(
-        { id: { $in: dto.roles } },
+    const roles = dto.accessControl?.roles;
+    if (roles && roles.length > 0) {
+      const dbRoles = await this.roleRepository.find(
+        { id: { $in: roles } },
         { populate: ['permissions'] },
       );
 
-      if (roles.length !== dto.roles.length) {
+      if (dbRoles.length !== roles.length) {
         throw new HttpException(
           {
             message: 'Input data validation failed',
@@ -109,8 +149,8 @@ export class UserService {
         );
       }
 
-      user.roles.set(roles);
-    }*/
+      user.roles.set(dbRoles);
+    }
     const errors = await validate(user);
 
     if (errors.length > 0) {
@@ -159,7 +199,10 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<IUserRO> {
-    const user = await this.userRepository.findOneOrFail({ username });
+    const user = await this.userRepository.findOneOrFail(
+      { username },
+      { populate: ['roles'] },
+    );
     return this.buildUserRO(user);
   }
 

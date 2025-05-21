@@ -27,6 +27,7 @@ const FormRenderer: React.FC<
     getModuleRegistryService()?.getComponentPath(
       dispatch?.onSuccessRedirectTo!.component ?? "",
     );
+  const namedPathPayload = dispatch?.onSuccessRedirectTo?.payloadNamePath;
 
   const defaultFinish = async (
     values: Record<string, unknown>,
@@ -44,7 +45,11 @@ const FormRenderer: React.FC<
         console.log("the res", res);
         if (dispatch && formSubmissionSuccessRedirectionPath) {
           navigate(
-            resolveDynamicPath(formSubmissionSuccessRedirectionPath, res),
+            resolveDynamicPath(
+              formSubmissionSuccessRedirectionPath,
+              res,
+              namedPathPayload,
+            ),
           );
         }
       },

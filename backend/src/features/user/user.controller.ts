@@ -31,6 +31,8 @@ import { Provisioneer } from '@xingine/core/xingine.decorator';
 import { Commissar } from '../../lib/xingine-nest/xingine-nest.decorator';
 import { UserRO } from './dto/user-login.dto';
 import { UserCreateDto, UserDetailDto } from './dto/user-create.dto';
+import { CreateRoleDto } from './dto/create-role.dto';
+import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -45,13 +47,37 @@ export class UserController {
     return this.userService.findByEmail(email);
   }
 
+  @Get('role-lookup')
+  async fetchRoles(): Promise<{ label: string; value: string }[]> {
+    return (await this.userService.fetchAllRoles()).map((r) => {
+      return { label: r.id, value: r.id };
+    });
+  }
+
+  @Get('permission-lookup')
+  async fetchPermission(): Promise<NestedCheckboxOption[]> {
+    return await this.userService.fetchAllPermission();
+  }
+
+  @Commissar({
+    directive: CreateRoleDto,
+    operative: 'FormRenderer',
+    component: 'AddRole',
+  })
+  @Post('addRole')
+  async createRole(@Body() roleData: CreateRoleDto): Promise<{ msg: string }> {
+    console.log('the roleData', roleData);
+    return { msg: 'success' };
+  }
+
   @Commissar({
     directive: UserDetailDto,
     operative: 'DetailRenderer',
     component: 'UserDetail',
   })
-  @Get(':user.username')
+  @Get(':username')
   async userDetail(@Param() params: Record<string, string>): Promise<IUserRO> {
+    console.log('the params', params);
     return this.userService.findByUsername(params.username);
   }
 
@@ -77,8 +103,10 @@ export class UserController {
   @Commissar({
     directive: UserCreateDto,
     dispatch: {
+      formSubmissionResponse: {},
       onSuccessRedirectTo: {
         component: 'UserDetail',
+        payloadNamePath: { username: 'user.username' },
       },
     },
     operative: 'FormRenderer',
@@ -98,34 +126,6 @@ export class UserController {
   @UsePipes(new ValidationPipe())
   @Post('users')
   async createUser(@Body() userData: UserCreateDto) {
-    console.log('the user data', userData);
-    return this.userService.create(userData);
-  }
-
-  @Commissar({
-    directive: UserCreateDto,
-    dispatch: {
-      onSuccessRedirectTo: {
-        component: 'UserDetail',
-      },
-    },
-    operative: 'FormRenderer',
-    component: 'KshitijComp',
-  })
-  @ApiBody({
-    schema: {
-      type: 'object',
-      properties: {
-        user: {
-          type: 'object',
-          $ref: '#/components/schemas/UserCreateDto',
-        },
-      },
-    },
-  })
-  @UsePipes(new ValidationPipe())
-  @Post('kshitij')
-  async createUser1(@Body() userData: UserCreateDto) {
     console.log('the user data', userData);
     return this.userService.create(userData);
   }

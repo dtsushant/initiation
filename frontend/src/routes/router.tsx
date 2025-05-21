@@ -13,6 +13,7 @@ import { UIComponent } from "@xingine";
 import {
   lazyLoadComponent,
   normalizePath,
+  safeSluggedRoute,
 } from "/@/lib/xingine-react/component/utils/Component.utils.ts";
 import { AccessGuard } from "/@/lib/xingine-react/component/ComponentAccessGuard.tsx";
 import { DefaultLayout } from "/@/lib/xingine-react/component/ComponentDefaultLayout.tsx";
@@ -69,7 +70,7 @@ export function Router() {
             return (
               <Route
                 key={mod.component}
-                path={normalizePath(mod.path)}
+                path={safeSluggedRoute(mod.path)}
                 element={
                   <AccessGuard roles={mod.roles} permissions={mod.permissions}>
                     <Suspense fallback={<div>Loading...</div>}>

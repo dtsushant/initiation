@@ -8,7 +8,7 @@ import {
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRO } from './user-login.dto';
-import { IUserRO } from '../user.interface';
+import { IUserData, IUserRO } from '../user.interface';
 
 export enum CreatedBy {
   SELF = 'SELF_REGISTRATION',
@@ -69,7 +69,7 @@ class AccessControl {
     inputType: 'lookup',
     required: false,
     properties: {
-      fetchAction: 'lookup',
+      fetchAction: 'users/role-lookup',
       createAction: 'lookup',
       allowAddNew: true,
       allowSearch: true,
@@ -100,7 +100,16 @@ export class UserCreateDto {
   meta?: Meta;
 }
 
+export class UserData {
+  bio!: string;
+  email!: string;
+  image?: string;
+  token!: string;
+  username!: string;
+  roles?: string[];
+}
+
 export class UserDetailDto {
   @ApiProperty()
-  user!: Identity;
+  user!: UserData;
 }

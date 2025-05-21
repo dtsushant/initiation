@@ -33,10 +33,15 @@ describe('UserController Test', () => {
   describe('users/login test', () => {
     it('should create user', async () => {
       await RequestContext.create(em.fork(), async () => {
-        const resp = await userController.create({
-          email: 'test@test.com',
-          password: 'test',
-          username: 'test@test.com',
+        const resp = await userController.createUser({
+          identity: {
+            email: 'test@test.com',
+            password: 'test',
+            username: 'test@test.com',
+          },
+          accessControl: {
+            roles: ['ROLE_SUPREME_LEADER', 'ROLE_CHAIRMAN', 'ROLE_PEASANT'],
+          },
         });
         expect(resp.user.email).toBe('test@test.com');
       });

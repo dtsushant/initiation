@@ -1,7 +1,10 @@
 import { CommissarProperties } from '@xingine/core/xingine.type';
 import { UserDetail, UserLoginDto } from './dto/commisar.dto';
 import { extractMeta } from '../utils/commissar.utils';
-import { formMetaDecoder } from '@xingine/core/decoders/form.decoder';
+import {
+  formMetaDecoder,
+  nestedCheckboxOptionListDecoder,
+} from '@xingine/core/decoders/form.decoder';
 import { detailMetaDecoder } from '@xingine/core/decoders/detail.decoder';
 import { dynamicShapeDecoder } from '@xingine/core/decoders/shared.decoder';
 import { modulePropertiesListDecoder } from '@xingine/core/xingine.decoder';
@@ -12,6 +15,98 @@ import {
 } from '@xingine/core/utils/type';
 
 describe('extractMeta test', () => {
+  it('Nested option decoder test', () => {
+    const nestedOptions = [
+      {
+        value: 'UserModule',
+        children: [
+          {
+            label: 'Create or update user',
+            value: 'UserModule::create',
+          },
+          {
+            label: 'View user',
+            value: 'UserModule::view',
+          },
+        ],
+      },
+      {
+        value: 'CategoryModule',
+        children: [
+          {
+            label: 'Create or update category',
+            value: 'CategoryModule::create',
+          },
+          {
+            label: 'View category',
+            value: 'CategoryModule::view',
+          },
+        ],
+      },
+      {
+        value: 'RuleModule',
+        children: [
+          {
+            label: 'Create or update rule',
+            value: 'RuleModule::create',
+          },
+          {
+            label: 'View rule',
+            value: 'RuleModule::view',
+          },
+        ],
+      },
+    ];
+
+    const decode = nestedCheckboxOptionListDecoder.verify(nestedOptions);
+
+    console.log(decode);
+  });
+
+  it('Should resolve named path from params', () => {
+    const params = {
+      username: 'someusername@usernam.com',
+      user: {
+        username: 'nestedUsername@inside.user',
+        roles: ['Chairman', 'Peasant', 'PrinceLing'],
+      },
+    };
+
+    const outerUsername = resolvePath(params, 'username');
+    const nestedUsername = resolvePath(params, 'user.username');
+    const roles = resolvePath(params, 'user.roles');
+    const chairman = resolvePath(params, 'user.roles.0');
+    const peasant = resolvePath(params, 'user.roles.1');
+    const princeLing = resolvePath(params, 'user.roles.2');
+
+    expect(outerUsername).toBe('someusername@usernam.com');
+    expect(nestedUsername).toBe('nestedUsername@inside.user');
+    expect(chairman).toBe('Chairman');
+    expect(peasant).toBe('Peasant');
+    expect(princeLing).toBe('PrinceLing');
+  });
+
+  it('Should resolve dynamic path', () => {
+    const res = {
+      username: 'someusername@usernam.com',
+      user: {
+        username: 'nestedUsername@inside.user',
+      },
+    };
+    const resolvedPath1 = resolveDynamicPath('/mycustompath/:username', res);
+    expect(resolvedPath1).toBe('/mycustompath/someusername%40usernam.com');
+
+    const conditionalProvidedPath = {
+      username: 'user.username',
+    };
+    const resolvedPath2 = resolveDynamicPath(
+      '/mycustompath/:username',
+      res,
+      conditionalProvidedPath,
+    );
+    expect(resolvedPath2).toBe('/mycustompath/nestedUsername%40inside.user');
+  });
+
   it('RoutesParam are replaced properly ', () => {
     const apiResp = {
       user: {
@@ -156,6 +251,14 @@ describe('extractMeta test', () => {
                   },
                 ],
                 action: '/users/users/login',
+                dispatch: {
+                  //formSubmissionResponse:UserDetail, TODO:- make this dynamic property
+                  formSubmissionResponse: {},
+                  onSuccessRedirectTo: {
+                    component: 'DetailRenderer',
+                    payloadNamePath: { user: 'username' },
+                  },
+                },
               },
             },
           },
@@ -165,6 +268,6 @@ describe('extractMeta test', () => {
     ];
 
     const decoded = modulePropertiesListDecoder.verify(json);
-    console.log(decoded);
+    console.log(JSON.stringify(decoded, null, 2));
   });
 });

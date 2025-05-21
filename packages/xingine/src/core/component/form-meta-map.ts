@@ -104,10 +104,28 @@ export interface SwitchTypeProperties {
   disabled?: boolean;
 }
 
+export interface CheckboxOption {
+  label: string;
+  value: string;
+  checked?: boolean;
+  disabled?: boolean;
+}
+
 export interface CheckboxTypeProperties {
+  options?: CheckboxOption[];
+  fetchAction?: string;
   label?: string;
   checked?: boolean;
   disabled?: boolean;
+}
+
+export interface NestedCheckboxOption extends CheckboxOption {
+  children?: NestedCheckboxOption[];
+}
+
+export interface NestedCheckboxTypeProperties {
+  options?: NestedCheckboxOption[];
+  fetchAction?: string;
 }
 
 export interface DateTypeProperties {
@@ -148,6 +166,7 @@ export type FieldInputTypeProperties = {
   treeselect: TreeSelectTypeProperties;
   switch: SwitchTypeProperties;
   checkbox: CheckboxTypeProperties;
+  nestedcheckbox: NestedCheckboxTypeProperties;
   date: DateTypeProperties;
   textarea: TextareaTypeProperties;
   button: ButtonTypeProperties;

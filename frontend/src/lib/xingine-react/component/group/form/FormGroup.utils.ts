@@ -6,6 +6,7 @@ import {
   FieldMeta,
   InputTypeProperties,
   LookupTypeProperties,
+  NestedCheckboxTypeProperties,
   NumberTypeProperties,
   PasswordTypeProperties,
   SelectTypeProperties,
@@ -87,6 +88,7 @@ export const resolveComponentProps = (
   | FieldInputTypeProperties[keyof FieldInputTypeProperties]
   | (FieldInputTypeProperties[keyof FieldInputTypeProperties] &
       Record<string, unknown>) => {
+  console.log("assiging the props ", props);
   if (!props) {
     return {};
   }
@@ -111,6 +113,8 @@ export const resolveComponentProps = (
       return props as SwitchTypeProperties;
     case "checkbox":
       return props as CheckboxTypeProperties;
+    case "nestedcheckbox":
+      return props as NestedCheckboxTypeProperties;
     case "date":
       return props as DateTypeProperties;
     case "textarea":

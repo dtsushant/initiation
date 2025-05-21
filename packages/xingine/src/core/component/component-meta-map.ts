@@ -8,8 +8,10 @@ export interface ColumnMeta {
 }
 
 export interface FormDispatchProperties {
+  formSubmissionResponse: unknown;
   onSuccessRedirectTo?: {
     component: string;
+    payloadNamePath?: Record<string, string>;
   };
 }
 

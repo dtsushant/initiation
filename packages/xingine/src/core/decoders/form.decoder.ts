@@ -1,22 +1,28 @@
 import {
   array,
   boolean,
+  constant,
   Decoder,
+  lazy,
   number,
   object,
   oneOf,
   optional,
+  record,
   string,
   unknown,
 } from "decoders";
 import {
   ButtonTypeProperties,
   ButtonView,
+  CheckboxOption,
   CheckboxTypeProperties,
   DateTypeProperties,
   FieldMeta,
   InputTypeProperties,
   LookupTypeProperties,
+  NestedCheckboxOption,
+  NestedCheckboxTypeProperties,
   NumberTypeProperties,
   ObjectFieldProperties,
   ObjectListFieldProperties,
@@ -30,6 +36,7 @@ import {
   FormDispatchProperties,
   FormMeta,
 } from "@xingine/core/component/component-meta-map";
+import { dynamicShapeDecoder } from "@xingine/core/decoders/shared.decoder";
 
 export const inputTypeDecoder: Decoder<InputTypeProperties> = object({
   placeholder: optional(string),
@@ -81,10 +88,40 @@ export const switchTypeDecoder: Decoder<SwitchTypeProperties> = object({
   disabled: optional(boolean),
 });
 
-export const checkboxTypeDecoder: Decoder<CheckboxTypeProperties> = object({
-  label: optional(string),
+const checkboxOptionDecoder: Decoder<CheckboxOption> = object({
+  label: string,
+  value: string,
   checked: optional(boolean),
   disabled: optional(boolean),
+});
+
+const nestedCheckBoxOptionDecoder: Decoder<NestedCheckboxOption> = lazy(() =>
+  object({
+    label: string,
+    value: string,
+    checked: optional(boolean),
+    disabled: optional(boolean),
+    children: optional(array(nestedCheckBoxOptionDecoder)),
+  }),
+);
+export const nestedCheckboxOptionListDecoder: Decoder<NestedCheckboxOption[]> =
+  array(nestedCheckBoxOptionDecoder);
+export const nestedCheckboxTypeDecoder: Decoder<NestedCheckboxTypeProperties> =
+  object({
+    options: optional(nestedCheckboxOptionListDecoder),
+    fetchAction: optional(string),
+  });
+
+export const checkboxOptionListDecoder: Decoder<CheckboxOption[]> = array(
+  checkboxOptionDecoder,
+);
+export const checkboxTypeDecoder: Decoder<CheckboxTypeProperties> = object({
+  options: optional(checkboxOptionListDecoder),
+  fetchAction: optional(string),
+  value: optional(array(string)),
+  disabled: optional(boolean),
+  label: optional(string),
+  checked: optional(boolean),
 });
 
 export const dateTypeDecoder: Decoder<DateTypeProperties> = object({
@@ -156,6 +193,8 @@ export function decodeFieldInputPropertiesByInputType(
       return switchTypeDecoder.verify(input);
     case "checkbox":
       return checkboxTypeDecoder.verify(input);
+    case "nestedcheckbox":
+      return nestedCheckboxTypeDecoder.verify(input);
     case "date":
       return dateTypeDecoder.verify(input);
     case "textarea":
@@ -201,16 +240,80 @@ export const objectListTypeDecoder: Decoder<ObjectListFieldProperties> = object(
   },
 );
 
-export const formDispatchPropertiesDecoder: Decoder<FormDispatchProperties> =
+/*export function jsonSchemaToDecoder(schema: unknown): Decoder<unknown> {
+  if (schema.enum) {
+    const enumDecoders = schema.enum.map((val: string | number | boolean) =>
+        constant(val)
+    );
+    return oneOf(enumDecoders);
+  }
+
+  switch (schema.type) {
+    case 'string':
+      return string;
+    case 'number':
+      return number;
+    case 'boolean':
+      return boolean;
+    case 'array':
+      return array(jsonSchemaToDecoder(schema.items));
+    case 'object':
+      const props = schema.properties ?? {};
+      const required = new Set(schema.required ?? []);
+      const shape: Record<string, Decoder<unknown>> = {};
+
+      for (const [key, propSchema] of Object.entries(props)) {
+        const decoder = jsonSchemaToDecoder(propSchema);
+        shape[key] = required.has(key) ? decoder : optional(decoder);
+      }
+
+      return object(shape);
+    default:
+      return object({}); // fallback
+  }
+}*/
+
+const formDispatchPropertiesDecoderBase = object({
+  formSubmissionResponse: dynamicShapeDecoder,
+  onSuccessRedirectTo: optional(
+    object({
+      component: string,
+      payloadNamePath: optional(record(string, string)),
+    }),
+  ),
+});
+
+function formDispatchPropertiesDecoder(): Decoder<FormDispatchProperties> {
+  console.log("decoding the dispatch");
+  return formDispatchPropertiesDecoderBase.transform((formDispatchProperty) => {
+    console.log("the property", formDispatchProperty);
+    return formDispatchProperty as FormDispatchProperties;
+  });
+}
+
+/*export const formDispatchPropertiesDecoder: Decoder<FormDispatchProperties> = object({
+  formSubmissionResponse: jsonSchemaToDecoder(),
+  onSuccessRedirectTo: optional(object({
+    component: string,
+    payloadNamePath: optional(record(string)),
+  })),
+}) as FormDispatchProperties;*/
+/*export const formDispatchPropertiesDecoder: Decoder<FormDispatchProperties> =
   object({
+    formSubmissionResponse:unknown,
     onSuccessRedirectTo: optional(
       object({
         component: string,
+        payloadNamePath:optional(record(string,string))
       }),
     ),
-  });
+  });*/
 export const formMetaDecoder: Decoder<FormMeta> = object({
   fields: array(fieldMetaDecoder()).transform((f) => f ?? []),
   action: string,
-  dispatch: optional(formDispatchPropertiesDecoder),
+  dispatch: optional(
+    formDispatchPropertiesDecoder().transform((f) => {
+      return f;
+    }),
+  ),
 });

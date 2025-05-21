@@ -33,5 +33,6 @@ export async function post<T, U>(
 
 export async function get<U>(decoder: Decoder<U>, uri: string): Promise<U> {
   const { data } = await axios.get(uri);
+  console.log("the data here is ", JSON.stringify(data, null, 2));
   return decoder.verify(data);
 }

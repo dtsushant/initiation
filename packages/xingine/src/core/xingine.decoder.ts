@@ -76,7 +76,6 @@ const componentMetaDecoderBase = object({
 });
 
 function componentMetaDecoder(): Decoder<ComponentMeta> {
-  console.log("calling component metadecoder");
   return componentMetaDecoderBase.transform((baseComponentMeta) => {
     const strictMeta = decodeMetaByComponent(
       baseComponentMeta.component,

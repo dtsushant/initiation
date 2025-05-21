@@ -4,9 +4,17 @@ export function extractRouteParams(path: string): string[] {
   const matches = path.match(/:([a-zA-Z0-9_.]+)/g);
   return matches?.map((param) => param.slice(1)) ?? [];
 }
-export function resolveDynamicPath(template: string, params: unknown): string {
+export function resolveDynamicPath(
+  template: string,
+  params: unknown,
+  conditionalNamedPath?: Record<string, string>,
+): string {
   return template.replace(/:([a-zA-Z0-9_.]+)/g, (_, key) => {
-    const value = resolvePath(params, key);
+    let keyToResolve = key;
+    if (conditionalNamedPath) {
+      keyToResolve = conditionalNamedPath[key];
+    }
+    const value = resolvePath(params, keyToResolve);
     if (value === undefined) {
       console.warn(`Missing route param: ${key}`);
       return `:${key}`;

@@ -5,13 +5,20 @@ import {
 } from "@xingine/core/component/detail-meta-map.ts";
 import { formatDate } from "date-fns";
 import { renderDetailFields } from "/@/lib/xingine-react/component/group/detail/DetailGroup.tsx";
+import { resolvePath } from "@xingine/core/utils/type.ts";
 
-export function renderValue(field: DetailFieldMeta): React.ReactNode {
-  const { value, inputType, properties } = field;
+export function renderValue(
+  field: DetailFieldMeta,
+  detailValue: unknown,
+  fullName: string,
+): React.ReactNode {
+  const { inputType, properties } = field;
+  const value = resolvePath(detailValue, fullName);
+  console.log("the fullname and the inputTpye here is ", fullName, inputType);
 
   switch (inputType) {
     case "text":
-      return String(value ?? "");
+      return String(value);
 
     case "date":
       return String(value); //formatDate(value, (properties as DetailInputTypeProperties['date'])?.format);
@@ -45,6 +52,7 @@ export function renderValue(field: DetailFieldMeta): React.ReactNode {
         prefix = "",
         suffix = "",
       } = (properties as DetailInputTypeProperties["number"]) ?? {};
+
       const num = typeof value === "number" ? value : Number(value);
       return `${prefix}${num.toFixed(precision ?? 0)}${suffix}`;
     }
@@ -67,8 +75,8 @@ export function renderValue(field: DetailFieldMeta): React.ReactNode {
 
     case "object": {
       const { fields } = properties as DetailInputTypeProperties["object"];
-      // return <div style={{ marginLeft: 16 }}>{renderDetailFields(fields, [field.name])}</div>;
-      return renderDetailFields(fields, [field.name]);
+      // return {renderDetailFields(fields, [field.name])}</div>;
+      return renderDetailFields(fields, detailValue, [field.name]);
     }
 
     case "object[]": {

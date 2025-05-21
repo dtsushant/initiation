@@ -15,7 +15,6 @@ import {
 } from "antd";
 import {
   ButtonTypeProperties,
-  CheckboxTypeProperties,
   DateTypeProperties,
   FieldInputTypeProperties,
   FieldMeta,
@@ -33,6 +32,8 @@ import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.t
 import { NamePath } from "antd/es/form/interface";
 import { FormGroup } from "/@/components/FormGroup/FormGroup.tsx";
 import { LookupField } from "/@/lib/xingine-react/component/group/form/LookupField.tsx";
+import { CheckboxField } from "/@/lib/xingine-react/component/group/form/CheckboxField.tsx";
+import { NestedCheckboxField } from "/@/lib/xingine-react/component/group/form/NestedCheckBoxField.tsx";
 
 export const InputField: React.FC<
   InputTypeProperties & { isSubmitting?: boolean }
@@ -244,16 +245,6 @@ export const ButtonField = (
   );
 };
 
-export const CheckboxField = forwardRef<
-  CheckboxRef,
-  CheckboxTypeProperties & {
-    onChange?: (e: CheckboxChangeEvent) => void;
-  }
->((props, ref) => (
-  <Checkbox ref={ref} disabled={props.disabled} onChange={props.onChange}>
-    {props.label}
-  </Checkbox>
-));
 export const fieldTypeRenderMap = {
   input: InputField,
   password: PasswordField,
@@ -267,6 +258,7 @@ export const fieldTypeRenderMap = {
   "object[]": ObjectArrayField,
   button: ButtonField,
   checkbox: CheckboxField,
+  nestedcheckbox: NestedCheckboxField,
   lookup: LookupField,
 } satisfies {
   [K in keyof FieldInputTypeProperties]: React.ComponentType<

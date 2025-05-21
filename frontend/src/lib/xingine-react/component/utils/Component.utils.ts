@@ -25,7 +25,30 @@ export function getBreadcrumbs(
   }));
 }
 
-export function normalizePath(path: string): string {
-  let count = 1;
-  return path.replace(/:([^/]+)/g, () => `:slug${count++}`);
+export function safeSluggedRoute(route: string): string {
+  return route.replace(/:([a-zA-Z0-9_.]+)/g, (_, key) => {
+    return ":" + key.replace(/\./g, "_"); // → ":user_username"
+  });
+}
+
+export function nestParamsSluggedParams(
+  flat: Record<string, string | undefined>,
+  separator = "_",
+): Record<string, unknown> {
+  const nested: Record<string, unknown> = {};
+
+  for (const [key, value] of Object.entries(flat)) {
+    const keys = key.split(separator);
+    let current = nested;
+
+    for (let i = 0; i < keys.length - 1; i++) {
+      const part = keys[i];
+      if (!(part in current)) current[part] = {};
+      current = current[part] as Record<string, unknown>;
+    }
+
+    current[keys[keys.length - 1]] = value;
+  }
+
+  return nested;
 }
