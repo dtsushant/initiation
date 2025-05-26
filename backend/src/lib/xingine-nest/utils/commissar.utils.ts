@@ -2,6 +2,7 @@
 import 'reflect-metadata';
 import { getMetadataStorage } from 'class-validator';
 import {
+  ColumnMeta,
   ComponentMeta,
   ComponentMetaMap,
   DetailDispatchProperties,
@@ -17,6 +18,7 @@ import {
 } from '@xingine/core/component/component-meta-map';
 import { CommissarProperties } from '@xingine/core/xingine.type';
 import {
+  COLUMN_PROPERTY_METADATA,
   DETAIL_FIELD_METADATA,
   FORM_FIELD_METADATA,
 } from '@xingine/core/xingine.decorator';
@@ -216,9 +218,47 @@ export function extractDetailFieldMetaFromDirective(
         };
       }
     }
-    combinedFieldMap[property] = detailMeta;
+    if (combinedFieldMap[property]) continue;
   }
   return Object.values(combinedFieldMap);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
+export function extractTableMetaFromDirective(
+  dtoClass: Function,
+): ColumnMeta[] {
+  const apiMetadata =
+    Reflect.getMetadata('swagger/apiModelProperties', dtoClass.prototype) || {};
+
+  const combinedColumnMap: Record<string, ColumnMeta> = {};
+
+  const decoratedColumnField: ColumnMeta[] =
+    Reflect.getMetadata(COLUMN_PROPERTY_METADATA, dtoClass) || [];
+
+  const columns: ColumnMeta[] = [];
+
+  const propertyKeys = new Set<string>([
+    ...Object.keys(apiMetadata),
+    ...Object.getOwnPropertyNames(new (dtoClass as any)()),
+    ...Object.getOwnPropertyNames(dtoClass.prototype),
+  ]);
+
+  for (const field of decoratedColumnField) {
+    if (field && field.dataIndex) combinedColumnMap[field.dataIndex] = field;
+  }
+
+  for (const prop of propertyKeys) {
+    if (combinedColumnMap[prop]) continue;
+
+    const columnDetail = {
+      title: apiMetadata[prop]?.description || capitalize(prop),
+      dataIndex: prop,
+      key: prop,
+    };
+    combinedColumnMap[prop] = columnDetail;
+  }
+
+  return Object.values(combinedColumnMap);
 }
 
 const metaExtractorMap: {
@@ -237,8 +277,8 @@ const metaExtractorMap: {
     };
   },
   TableRenderer: (options): TableMeta => ({
-    columns: [],
-    dataSourceUrl: '',
+    columns: extractTableMetaFromDirective(options.directive),
+    dataSourceUrl: options.commissarPath ?? '',
     dispatch: options.dispatch
       ? (options.dispatch as TableDispatchProperties)
       : undefined,

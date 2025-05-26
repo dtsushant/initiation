@@ -25,3 +25,6 @@ export const dynamicShapeDecoder: Decoder<unknown> = lazy(() =>
     ),
   ),
 );
+
+export const dynamicShapeListDecoder: Decoder<unknown[]> =
+  array(dynamicShapeDecoder);

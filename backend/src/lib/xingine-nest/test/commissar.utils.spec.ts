@@ -10,7 +10,12 @@ import {
   IsArray,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
-import { UserCreateDto, UserDetail, UserLoginDto } from './dto/commisar.dto';
+import {
+  OrganizationInfo,
+  UserCreateDto,
+  UserDetail,
+  UserLoginDto,
+} from './dto/commisar.dto';
 
 describe('extractMeta test', () => {
   it('should return module metadata from CommissarProperties', async () => {
@@ -71,6 +76,18 @@ describe('extractMeta test', () => {
       component: 'UserDetail',
       directive: UserCreateDto,
       operative: 'DetailRenderer',
+    };
+
+    const meta = extractMeta(options, '');
+    // console.log('the meta here is ', meta);
+    console.log(JSON.stringify(meta, null, 2));
+  });
+
+  it('should directive to proper Table Renderer', async () => {
+    const options: CommissarProperties = {
+      component: 'OrgInfo',
+      directive: OrganizationInfo,
+      operative: 'TableRenderer',
     };
 
     const meta = extractMeta(options, '');

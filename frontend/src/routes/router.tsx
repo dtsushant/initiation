@@ -12,7 +12,6 @@ import { AppState } from "/@/components/app/App.slice.ts";
 import { UIComponent } from "@xingine";
 import {
   lazyLoadComponent,
-  normalizePath,
   safeSluggedRoute,
 } from "/@/lib/xingine-react/component/utils/Component.utils.ts";
 import { AccessGuard } from "/@/lib/xingine-react/component/ComponentAccessGuard.tsx";

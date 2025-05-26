@@ -10,11 +10,63 @@ import { dynamicShapeDecoder } from '@xingine/core/decoders/shared.decoder';
 import { modulePropertiesListDecoder } from '@xingine/core/xingine.decoder';
 import {
   extractRouteParams,
+  isGroupCondition,
   resolveDynamicPath,
   resolvePath,
 } from '@xingine/core/utils/type';
+import { searchQueryDecoder } from '@xingine/core/decoders/expression.decoder';
+import { SearchQuery } from '@xingine/core/expressions/operators';
 
 describe('extractMeta test', () => {
+  it('Search Query decoding test', () => {
+    const rawQuery = {
+      and: [
+        { field: 'status', operator: 'eq', value: 'active' },
+        {
+          or: [
+            { field: 'email', operator: 'like', value: '@gmail.com' },
+            { field: 'role', operator: 'eq', value: 'admin' },
+          ],
+        },
+      ],
+    };
+
+    const decoded: SearchQuery = searchQueryDecoder.verify(rawQuery);
+
+    // top level keys
+    expect(decoded).toHaveProperty('and');
+    expect(decoded.and).toHaveLength(2);
+
+    // first condition should be base
+    const statusCondition = decoded.and?.[0];
+    expect(statusCondition).toEqual({
+      field: 'status',
+      operator: 'eq',
+      value: 'active',
+    });
+
+    // second should be a group condition
+    const nestedOrGroup = decoded.and?.[1];
+    expect(nestedOrGroup).toHaveProperty('or');
+    if (isGroupCondition(nestedOrGroup)) {
+      expect(nestedOrGroup.or).toHaveLength(2);
+
+      expect(nestedOrGroup.or?.[0]).toEqual({
+        field: 'email',
+        operator: 'like',
+        value: '@gmail.com',
+      });
+
+      expect(nestedOrGroup.or?.[1]).toEqual({
+        field: 'role',
+        operator: 'eq',
+        value: 'admin',
+      });
+    } else {
+      throw new Error('Expected a group condition with an OR clause');
+    }
+  });
+
   it('Nested option decoder test', () => {
     const nestedOptions = [
       {
@@ -217,48 +269,289 @@ describe('extractMeta test', () => {
         name: 'user',
         uiComponent: [
           {
+            component: 'AddRole',
+            path: '/user/createRole',
+            meta: {
+              component: 'FormRenderer',
+              properties: {
+                action: '/users/addRole',
+                fields: [
+                  {
+                    label: 'Permission assigned',
+                    inputType: 'checkbox',
+                    required: true,
+                    properties: { fetchAction: 'users/role-lookup' },
+                    name: 'permissions',
+                  },
+                  {
+                    label: 'Actual Permission assigned',
+                    inputType: 'nestedcheckbox',
+                    required: true,
+                    properties: { fetchAction: 'users/permission-lookup' },
+                    name: 'moduledPermission',
+                  },
+                  {
+                    name: 'name',
+                    label: 'Name',
+                    inputType: 'input',
+                    required: false,
+                  },
+                ],
+              },
+            },
+          },
+          {
+            component: 'UserDetail',
+            path: '/user/userDetail/:username',
+            meta: {
+              component: 'DetailRenderer',
+              properties: {
+                fields: [
+                  {
+                    name: 'user',
+                    label: 'User',
+                    inputType: 'object',
+                    properties: {
+                      fields: [
+                        { name: 'bio', label: 'Bio', inputType: 'text' },
+                        { name: 'email', label: 'Email', inputType: 'text' },
+                        { name: 'image', label: 'Image', inputType: 'text' },
+                        { name: 'token', label: 'Token', inputType: 'text' },
+                        {
+                          name: 'username',
+                          label: 'Username',
+                          inputType: 'text',
+                        },
+                        { name: 'roles', label: 'Roles', inputType: 'text' },
+                      ],
+                    },
+                  },
+                ],
+                action: '/users/:username',
+              },
+            },
+          },
+          {
+            component: 'UserList',
+            path: '/user/userList',
+            meta: {
+              component: 'TableRenderer',
+              properties: {
+                columns: [
+                  {
+                    title: 'Constructor',
+                    dataIndex: 'constructor',
+                    key: 'constructor',
+                  },
+                ],
+                dataSourceUrl: '/users/userList',
+              },
+            },
+          },
+          {
+            component: 'UserCreate',
+            path: '/user/createUser',
+            meta: {
+              component: 'FormRenderer',
+              properties: {
+                action: '/users/users',
+                fields: [
+                  {
+                    name: 'identity',
+                    label: 'Identity',
+                    inputType: 'object',
+                    required: false,
+                    properties: {
+                      fields: [
+                        {
+                          label: 'Username',
+                          inputType: 'input',
+                          required: true,
+                          properties: {
+                            placeholder:
+                              'Enter a unique username eg. TarnTheTireless',
+                          },
+                          name: 'username',
+                        },
+                        {
+                          label: 'Email',
+                          inputType: 'input',
+                          required: true,
+                          properties: {
+                            placeholder: 'Enter a valid email',
+                            email: true,
+                          },
+                          name: 'email',
+                        },
+                        {
+                          label: 'Password',
+                          inputType: 'password',
+                          required: true,
+                          properties: { placeholder: 'Type a Secure Password' },
+                          name: 'password',
+                        },
+                        {
+                          name: 'firstName',
+                          label: 'FirstName',
+                          inputType: 'input',
+                          required: false,
+                        },
+                        {
+                          name: 'lastName',
+                          label: 'LastName',
+                          inputType: 'input',
+                          required: false,
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    name: 'contactInfo',
+                    label: 'ContactInfo',
+                    inputType: 'object',
+                    required: false,
+                    properties: {
+                      fields: [
+                        {
+                          name: 'address',
+                          label: 'Address',
+                          inputType: 'input',
+                          required: false,
+                        },
+                        {
+                          name: 'contactNo',
+                          label: 'ContactNo',
+                          inputType: 'object[]',
+                          required: false,
+                          properties: { itemFields: [] },
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    name: 'organizationInfo',
+                    label: 'OrganizationInfo',
+                    inputType: 'object',
+                    required: false,
+                    properties: {
+                      fields: [
+                        {
+                          name: 'organization',
+                          label: 'Organization',
+                          inputType: 'input',
+                          required: false,
+                        },
+                        {
+                          name: 'panVatNo',
+                          label: 'PanVatNo',
+                          inputType: 'input',
+                          required: false,
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    name: 'documents',
+                    label: 'Documents',
+                    inputType: 'object',
+                    required: false,
+                    properties: {
+                      fields: [
+                        {
+                          name: 'files',
+                          label: 'Files',
+                          inputType: 'input',
+                          required: false,
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    name: 'accessControl',
+                    label: 'AccessControl',
+                    inputType: 'object',
+                    required: false,
+                    properties: {
+                      fields: [
+                        {
+                          label: 'User Roles',
+                          inputType: 'lookup',
+                          required: false,
+                          properties: {
+                            fetchAction: 'users/role-lookup',
+                            createAction: 'lookup',
+                            allowAddNew: true,
+                            allowSearch: true,
+                            multiple: true,
+                            resultMap: [{ label: 'name', value: 'id' }],
+                          },
+                          name: 'roles',
+                        },
+                        {
+                          name: 'groupId',
+                          label: 'GroupId',
+                          inputType: 'input',
+                          required: false,
+                        },
+                      ],
+                    },
+                  },
+                  {
+                    name: 'meta',
+                    label: 'Meta',
+                    inputType: 'object',
+                    required: false,
+                    properties: {
+                      fields: [
+                        {
+                          name: 'createdBy',
+                          label: 'CreatedBy',
+                          inputType: 'input',
+                          required: false,
+                        },
+                      ],
+                    },
+                  },
+                ],
+                dispatch: {
+                  formSubmissionResponse: {},
+                  onSuccessRedirectTo: {
+                    component: 'UserDetail',
+                    payloadNamePath: { username: 'user.username' },
+                  },
+                },
+              },
+            },
+          },
+          {
             component: 'UserLogin',
             path: '/user/login',
             meta: {
               component: 'FormRenderer',
               properties: {
+                action: '/users/users/login',
                 fields: [
                   {
                     name: 'email',
                     label: 'Email Address',
                     inputType: 'input',
                     required: true,
-                    properties: {
-                      placeholder: 'Enter email',
-                    },
+                    properties: { placeholder: 'Enter email' },
                   },
                   {
                     name: 'password',
                     label: 'Password',
                     inputType: 'password',
                     required: true,
-                    properties: {
-                      placeholder: 'Enter password',
-                    },
+                    properties: { placeholder: 'Enter password' },
                   },
                   {
                     name: 'rememberMe',
                     label: 'Remember Me',
                     inputType: 'checkbox',
-                    properties: {
-                      label: 'Remember Me',
-                    },
+                    properties: { label: 'Remember Me' },
                   },
                 ],
-                action: '/users/users/login',
-                dispatch: {
-                  //formSubmissionResponse:UserDetail, TODO:- make this dynamic property
-                  formSubmissionResponse: {},
-                  onSuccessRedirectTo: {
-                    component: 'DetailRenderer',
-                    payloadNamePath: { user: 'username' },
-                  },
-                },
               },
             },
           },

@@ -18,6 +18,8 @@ import { Role } from '../entity/role.entity';
 import { UserCreateDto } from '../dto/user-create.dto';
 import { Permission } from '../entity/permission.entity';
 import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
+import { SearchQuery } from '@xingine/core/expressions/operators';
+import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
 
 @Injectable()
 export class UserService {
@@ -236,19 +238,22 @@ export class UserService {
   }
 
   async findAllWithPagination(
-    query: Record<string, string>,
+    query: SearchQuery,
   ): Promise<{ users: UserDTO[]; usersCount: number }> {
     const qb = this.userRepository.createQueryBuilder('u');
+    const where = buildMikroOrmWhereFromNestedCondition(query);
+
+    qb.where(where);
+    const usersCount = await qb.clone().count('id').execute('get');
 
     qb.orderBy({ id: 'DESC' });
-    const usersCount = await qb.clone().count('id', true).execute('get');
 
     if ('limit' in query) {
-      qb.limit(+query.limit);
+      qb.limit(+Number(query.limit));
     }
 
     if ('offset' in query) {
-      qb.offset(+query.offset);
+      qb.offset(+Number(query.offset));
     }
 
     const users = await qb.getResult();

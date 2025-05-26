@@ -35,7 +35,7 @@ class ContactInfo {
   contactNo?: string[];
 }
 
-class OrganizationInfo {
+export class OrganizationInfo {
   organization?: string;
   panVatNo?: string;
 }

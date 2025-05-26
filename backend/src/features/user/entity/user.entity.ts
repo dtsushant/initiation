@@ -26,7 +26,7 @@ export class User {
   @Property({ fieldName: 'username' })
   username: string;
 
-  @Property({ hidden: true, fieldName: 'email' })
+  @Property({ fieldName: 'email' })
   @IsEmail()
   email: string;
 

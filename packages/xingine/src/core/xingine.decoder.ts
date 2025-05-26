@@ -23,16 +23,7 @@ import {
 } from "@xingine/core/component/component-meta-map";
 import { formMetaDecoder } from "@xingine/core/decoders/form.decoder";
 import { detailMetaDecoder } from "@xingine/core/decoders/detail.decoder";
-
-const columnMetaDecoder: Decoder<ColumnMeta> = object({
-  field: string,
-  headerName: string,
-});
-
-const tableMetaDecoder: Decoder<TableMeta> = object({
-  columns: array(columnMetaDecoder),
-  dataSourceUrl: string,
-});
+import { tableMetaDecoder } from "@xingine/core/decoders/table.decoder";
 
 const tabMetaDecoder: Decoder<TabMeta> = object({
   tabs: array(

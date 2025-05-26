@@ -7,6 +7,7 @@ import {
 } from "./xingine.type";
 import { Constructor } from "@xingine/core/utils/type";
 import {
+  ColumnMeta,
   FieldMeta,
   FormMeta,
 } from "@xingine/core/component/component-meta-map";
@@ -16,6 +17,7 @@ export const MODULE_PROPERTY_METADATA_KEY = "custom:module-property";
 export const PROVISIONEER_METADATA = "xingine:provisioneer";
 export const FORM_FIELD_METADATA = "xingine:form-field";
 export const DETAIL_FIELD_METADATA = "xingine:detail-field";
+export const COLUMN_PROPERTY_METADATA = "xingine:column-property";
 
 /**
  *A @Provisioneer is a service controller that acts as a centralized,state-assigned provision handler.
@@ -88,6 +90,20 @@ export function DetailField(meta: DetailFieldMeta): PropertyDecorator {
     meta.name = propertyKey.toString(); // ensure name is always set
     Reflect.defineMetadata(
       DETAIL_FIELD_METADATA,
+      [...existing, meta],
+      target.constructor,
+    );
+  };
+}
+
+export function ColumnProperty(meta: ColumnMeta): PropertyDecorator {
+  return (target, propertyKey) => {
+    const existing: ColumnMeta[] =
+      Reflect.getMetadata(COLUMN_PROPERTY_METADATA, target.constructor) || [];
+    meta.title = propertyKey.toString();
+    meta.dataIndex = propertyKey.toString();
+    Reflect.defineMetadata(
+      COLUMN_PROPERTY_METADATA,
       [...existing, meta],
       target.constructor,
     );

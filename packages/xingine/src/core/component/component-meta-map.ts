@@ -1,10 +1,24 @@
-import { FieldMeta } from "@xingine/core/component/form-meta-map";
+import {
+  FieldInputTypeProperties,
+  FieldMeta,
+} from "@xingine/core/component/form-meta-map";
 import { DetailFieldMeta } from "@xingine/core/component/detail-meta-map";
+import { Operator } from "@xingine/core/expressions/operators";
 
 export type Method = "POST" | "GET";
 export interface ColumnMeta {
-  field: string;
-  headerName: string;
+  title?: string;
+  dataIndex?: string;
+  key?: string;
+  render?: string; // optional: string name of render function
+  width?: number | string;
+  sortable?: boolean;
+  filterable?: {
+    apply?: boolean;
+    operator?: Operator;
+    inputType?: keyof FieldInputTypeProperties;
+    searchFieldKey?: string;
+  };
 }
 
 export interface FormDispatchProperties {
@@ -45,6 +59,7 @@ export interface DetailMeta {
 export interface TableMeta {
   columns: ColumnMeta[];
   dataSourceUrl: string;
+  rowKey?: string;
   dispatch?: TableDispatchProperties;
 }
 

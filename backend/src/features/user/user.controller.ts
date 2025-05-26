@@ -33,6 +33,9 @@ import { UserRO } from './dto/user-login.dto';
 import { UserCreateDto, UserDetailDto } from './dto/user-create.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
+import { UserList } from './dto/user-list.dto';
+import { SearchQuery } from '@xingine/core/expressions/operators';
+import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -79,6 +82,28 @@ export class UserController {
   async userDetail(@Param() params: Record<string, string>): Promise<IUserRO> {
     console.log('the params', params);
     return this.userService.findByUsername(params.username);
+  }
+
+  @Commissar({
+    directive: UserList,
+    operative: 'TableRenderer',
+    component: 'UserList',
+  })
+  @Post('userList')
+  async userList(@Body() query: SearchQuery): Promise<UserList[]> {
+    console.log('the search query here is', query);
+    const res = await this.userService.findAllWithPagination(query);
+    return res.users.map((user) => {
+      return {
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        firstName: 'firstName',
+        lastName: 'lastName',
+        age: 10,
+        assignedRoles: [],
+      };
+    });
   }
 
   @ApiBody({
