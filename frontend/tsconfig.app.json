@@ -14,13 +14,27 @@
     "moduleDetection": "force",
     "noEmit": true,
     "jsx": "react-jsx",
-
+    "allowJs": true,
     /* Linting */
     "strict": true,
+    "noImplicitAny": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "/@/*": ["src/*"],
+      "@shared/*": ["../packages/shared/src/*"],
+      "@rule-ui": ["../packages/rule-ui/src/index.ts"],
+      "@rule-ui/*": ["../packages/rule-ui/src/*"],
+      "@xingine": ["../packages/xingine/src/index.ts"],
+      "@xingine/*": ["../packages/xingine/src/*"]
+    }
   },
-  "include": ["src"]
+  "include": ["src/**/*"]
 }
+
+

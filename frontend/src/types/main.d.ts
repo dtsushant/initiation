@@ -1,0 +1,3 @@
+interface MainProps {
+  collapsed: boolean;
+}

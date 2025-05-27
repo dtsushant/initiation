@@ -1,0 +1,196 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@tailwind screens;
+
+:root {
+  /* Primary color - using blaze orange 6 as the primary color */
+  --color-primary: var(--blazeorange-6);
+  --color-primary-light: var(--fieryorange-1);
+  --color-primary-hover: var(--blazeorange-7);
+  --color-primary-focus: rgba(255, 115, 0, 0.05);
+  --color-primary-link: #1570ef;
+
+  /* Golden Yellow */
+  --goldenyellow-1: #fff8e6;
+  --goldenyellow-2: #ffefc2;
+  --goldenyellow-3: #ffe291;
+  --goldenyellow-4: #ffd55e;
+  --goldenyellow-5: #ffc82e;
+  --goldenyellow-6: #ffbc00;
+  --goldenyellow-7: #d9a000;
+  --goldenyellow-8: #b58500;
+  --goldenyellow-9: #916b00;
+  --goldenyellow-10: #735500;
+
+  /* Bright Orange */
+  --brightorange-1: #fff5e6;
+  --brightorange-2: #ffe7c2;
+  --brightorange-3: #ffd491;
+  --brightorange-4: #ffc05e;
+  --brightorange-5: #ffad2e;
+  --brightorange-6: #ff9b00;
+  --brightorange-7: #d98400;
+  --brightorange-8: #b56e00;
+  --brightorange-9: #915800;
+  --brightorange-10: #734600;
+
+  /* Blaze Orange */
+  --blazeorange-1: #fff1e6;
+  --blazeorange-2: #ffddc2;
+  --blazeorange-3: #ffc391;
+  --blazeorange-4: #ffa75e;
+  --blazeorange-5: #ff8c2e;
+  --blazeorange-6: #ff7300;
+  --blazeorange-7: #d96200;
+  --blazeorange-8: #b55200;
+  --blazeorange-9: #914200;
+  --blazeorange-10: #733400;
+
+  /* Fiery Orange */
+  --fieryorange-1: #ffede7;
+  --fieryorange-2: #ffd4c5;
+  --fieryorange-3: #ffb297;
+  --fieryorange-4: #ff8e66;
+  --fieryorange-5: #ff6c38;
+  --fieryorange-6: #ff4c0c;
+  --fieryorange-7: #d9410a;
+  --fieryorange-8: #b53609;
+  --fieryorange-9: #912b07;
+  --fieryorange-10: #732205;
+
+  /* Ferrari Red */
+  --ferrarired-1: #ffebe8;
+  --ferrarired-2: #ffcfc7;
+  --ferrarired-3: #ffa99a;
+  --ferrarired-4: #ff806c;
+  --ferrarired-5: #ff5a3f;
+  --ferrarired-6: #ff3615;
+  --ferrarired-7: #d92e12;
+  --ferrarired-8: #b5260f;
+  --ferrarired-9: #911f0c;
+  --ferrarired-10: #731809;
+
+  /* Emerald Green */
+  --emeraldgreen-1: #e6faf0;
+  --emeraldgreen-2: #c2f3da;
+  --emeraldgreen-3: #91e9bd;
+  --emeraldgreen-4: #5edf9f;
+  --emeraldgreen-5: #2ed582;
+  --emeraldgreen-6: #00cc66;
+  --emeraldgreen-7: #00ad57;
+  --emeraldgreen-8: #009148;
+  --emeraldgreen-9: #00743a;
+  --emeraldgreen-10: #005c2e;
+
+  /* Neutral */
+  --neutral-1: #ffffff;
+  --neutral-2: #fcfcfc;
+  --neutral-3: #f5f5f5;
+  --neutral-4: #f0f0f0;
+  --neutral-5: #d9d9d9;
+  --neutral-6: #bfbfbf;
+  --neutral-7: #8c8c8c;
+  --neutral-8: #595959;
+  --neutral-9: #454545;
+  --neutral-10: #262626;
+  --neutral-11: #1f1f1f;
+  --neutral-12: #141414;
+  --neutral-13: #000000;
+  --neutral-14: #333333;
+
+  /* Blue */
+  --blue-1: #e8f4ff;
+  --blue-2: #c8e4ff;
+  --blue-3: #9ccfff;
+  --blue-4: #6db9ff;
+  --blue-5: #42a4ff;
+  --blue-6: #1890ff;
+  --blue-7: #147ad9;
+  --blue-8: #1166b5;
+  --blue-9: #0e5291;
+  --blue-10: #0b4173;
+
+  /* Violet */
+  --violet-1: #eae8ed;
+  --violet-2: #cdc8d3;
+  --violet-3: #a59db0;
+  --violet-4: #7b6f8b;
+  --violet-5: #544368;
+  --violet-6: #2e1a47;
+  --violet-7: #27163c;
+  --violet-8: #211232;
+  --violet-9: #1a0f28;
+  --violet-10: #150c20;
+}
+
+body {
+  margin: 0;
+  font-family:
+    'Lato',
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    'Helvetica Neue',
+    Arial,
+    sans-serif,
+    'Apple Color Emoji',
+    'Segoe UI Emoji',
+    'Segoe UI Symbol';
+}
+
+body.dark::-webkit-scrollbar {
+  color: rgb(229 231 235 / 100%);
+}
+
+.custom-background {
+  background-repeat: no-repeat;
+  background-position: center;
+}
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.formbackground {
+ background-color: rgb(99, 98, 98);
+}
+
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+#root {
+  @apply fixed h-full w-full;
+}
+
+.ant-layout-content {
+  overflow: auto;
+  scrollbar-width: none;     /* Firefox */
+  -ms-overflow-style: none;  /* IE 10+ */
+}
+
+.ant-layout-content::-webkit-scrollbar {
+  display: none;             /* Chrome/Safari */
+}
+
+
+
+input {
+  font-size: 14px !important;
+  color: var(--neutral-10) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-box-shadow: 0 0 0 30px white inset !important;
+  -webkit-text-fill-color: inherit !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+input:-webkit-autofill:focus {
+  -webkit-box-shadow: 0 0 0 30px var(--color-primary-focus) inset !important;
+  border-color: var(--color-primary) !important;
+}

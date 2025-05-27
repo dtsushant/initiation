@@ -1,10 +1,17 @@
-import { StrictMode } from 'react'
-import { createRoot } from 'react-dom/client'
-import './index.css'
-import App from './App.tsx'
+import React from "react";
+import { createRoot } from "react-dom/client";
+import { App } from "/@/components/app/App.tsx";
+import "react-toastify/dist/ReactToastify.css";
+import "/@/styles/global.css";
+import "/@/styles/antd.css";
+import { bootstrapApp } from "/@/bootstrap.ts";
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+(async () => {
+  await bootstrapApp();
+
+  createRoot(document.getElementById("root")!).render(
+    <React.StrictMode>
+      <App />
+    </React.StrictMode>,
+  );
+})();

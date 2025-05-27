@@ -1,18 +1,22 @@
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
-import dotenv from "dotenv";
-import session = require('express-session');
+import { AppModule } from './app/app.module';
+import dotenv from 'dotenv';
+import session from 'express-session';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import * as process from 'process';
+import { JwtAuthGuard } from './shared/auth/auth.guard';
 
 dotenv.config();
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  
+  const jwtAuthGuard = app.get(JwtAuthGuard);
+  app.useGlobalGuards(jwtAuthGuard);
+
   app.enableCors({
-    origin: '*', 
+    origin: '*',
     credentials: true,
-  }); 
+  });
   app.use(
     session({
       secret: process.env.SESSION_SECRET!,
