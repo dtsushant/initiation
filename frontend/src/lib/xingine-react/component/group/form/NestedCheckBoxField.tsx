@@ -30,7 +30,7 @@ export const NestedCheckboxField: React.FC<NestedCheckboxGroupFieldProps> = (
   const [loading, setLoading] = useState<boolean>(!!fetchAction);
   const [checkedList, setCheckedList] = useState<string[]>(value);
 
-  useEffect(() => setCheckedList(value), [value]);
+  // useEffect(() => setCheckedList(value), [value]);
 
   useEffect(() => {
     if (!fetchAction) return;

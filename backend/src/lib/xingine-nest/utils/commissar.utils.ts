@@ -218,7 +218,7 @@ export function extractDetailFieldMetaFromDirective(
         };
       }
     }
-    if (combinedFieldMap[property]) continue;
+    combinedFieldMap[property] = detailMeta;
   }
   return Object.values(combinedFieldMap);
 }
