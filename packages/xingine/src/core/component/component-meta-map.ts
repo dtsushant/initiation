@@ -77,7 +77,30 @@ export type ComponentMetaMap = {
   TableRenderer: TableMeta;
   TabRenderer: TabMeta;
   DetailRenderer: DetailMeta;
+  ChartRenderer: ChartMeta;
 };
+
+export type ChartType = "bar" | "line" | "pie" | "scatter";
+
+export interface ChartDataset {
+  label: string;
+  data: number[] | { x: number | string; y: number }[];
+  backgroundColor?: string;
+  borderColor?: string;
+}
+
+export interface ChartConfig {
+  type: ChartType;
+  title?: string;
+  labels?: string[];
+  datasets?: ChartDataset[];
+  options?: Record<string, unknown>;
+  dataSourceUrl?: string;
+}
+
+export interface ChartMeta {
+  charts: ChartConfig[];
+}
 
 export interface ComponentMeta<
   T extends keyof ComponentMetaMap = keyof ComponentMetaMap,

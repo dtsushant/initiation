@@ -16,6 +16,8 @@ import {
   UserDetail,
   UserLoginDto,
 } from './dto/commisar.dto';
+import { chartMetaDecoder } from '@xingine/core/decoders/chart.decoder';
+import { componentMetaDecoder } from '@xingine/core/xingine.decoder';
 
 describe('extractMeta test', () => {
   it('should return module metadata from CommissarProperties', async () => {
@@ -93,5 +95,21 @@ describe('extractMeta test', () => {
     const meta = extractMeta(options, '');
     // console.log('the meta here is ', meta);
     console.log(JSON.stringify(meta, null, 2));
+  });
+
+  it('should directive to proper Chart Renderer', async () => {
+    const options: CommissarProperties = {
+      component: 'OrgInfo',
+      directive: OrganizationInfo,
+      operative: 'ChartRenderer',
+    };
+
+    const meta = extractMeta(options, '');
+    // console.log('the meta here is ', meta);
+    console.log(JSON.stringify(meta, null, 2));
+
+    const doesDecode = componentMetaDecoder().verify(meta);
+
+    console.log(doesDecode);
   });
 });

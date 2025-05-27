@@ -71,13 +71,3 @@ export interface CommissarProperties<
   preAction?: string;
   postAction?: string;
 }
-
-/*export interface CommissarProperties<TReq = unknown, TOperative extends keyof ComponentMetaMap> {
-  component: string;
-  operative: TOperative;
-  meta?: ComponentMetaMap[TOperative];
-  directive: new () => TReq;
-  dispatch?: ComponentDispatchMap[TOperative];
-  preAction?: string;
-  postAction?: string;
-}*/

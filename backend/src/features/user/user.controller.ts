@@ -36,6 +36,7 @@ import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
 import { UserList } from './dto/user-list.dto';
 import { SearchQuery } from '@xingine/core/expressions/operators';
 import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
+import { UserAnalyticsDto } from './dto/user-analytics.dto';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -60,6 +61,16 @@ export class UserController {
   @Get('permission-lookup')
   async fetchPermission(): Promise<NestedCheckboxOption[]> {
     return await this.userService.fetchAllPermission();
+  }
+
+  @Commissar({
+    directive: UserAnalyticsDto,
+    operative: 'ChartRenderer',
+    component: 'UserAnalytics',
+  })
+  @Get('user-analytics')
+  async userAnalytics(): Promise<{ msg: string }> {
+    return { msg: 'success' };
   }
 
   @Commissar({

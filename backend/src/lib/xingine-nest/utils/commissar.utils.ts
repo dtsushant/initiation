@@ -2,6 +2,7 @@
 import 'reflect-metadata';
 import { getMetadataStorage } from 'class-validator';
 import {
+  ChartMeta,
   ColumnMeta,
   ComponentMeta,
   ComponentMetaMap,
@@ -26,6 +27,7 @@ import {
   DetailFieldMeta,
   DetailInputTypeProperties,
 } from '@xingine/core/component/detail-meta-map';
+import { extractChartMetaFromDirective } from './commissar.charts';
 
 function guessInputTypeFromType(type: unknown): keyof FieldInputTypeProperties {
   if (type === String) return 'input';
@@ -296,6 +298,9 @@ const metaExtractorMap: {
       ? (options.dispatch as DetailDispatchProperties)
       : undefined,
   }),
+  ChartRenderer: (options): ChartMeta => {
+    return extractChartMetaFromDirective(options.directive);
+  },
 };
 
 export function extractMeta(

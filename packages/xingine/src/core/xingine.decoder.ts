@@ -24,6 +24,7 @@ import {
 import { formMetaDecoder } from "@xingine/core/decoders/form.decoder";
 import { detailMetaDecoder } from "@xingine/core/decoders/detail.decoder";
 import { tableMetaDecoder } from "@xingine/core/decoders/table.decoder";
+import { chartMetaDecoder } from "@xingine/core/decoders/chart.decoder";
 
 const tabMetaDecoder: Decoder<TabMeta> = object({
   tabs: array(
@@ -54,6 +55,8 @@ function decodeMetaByComponent(component: string, input: unknown): object {
       return tabMetaDecoder.verify(input);
     case "DetailRenderer":
       return detailMetaDecoder.verify(input);
+    case "ChartRenderer":
+      return chartMetaDecoder.verify(input);
     default:
       throw new Error(
         `Unknown component type '${component}' for meta decoding`,
@@ -66,7 +69,7 @@ const componentMetaDecoderBase = object({
   properties: unknown,
 });
 
-function componentMetaDecoder(): Decoder<ComponentMeta> {
+export function componentMetaDecoder(): Decoder<ComponentMeta> {
   return componentMetaDecoderBase.transform((baseComponentMeta) => {
     const strictMeta = decodeMetaByComponent(
       baseComponentMeta.component,
