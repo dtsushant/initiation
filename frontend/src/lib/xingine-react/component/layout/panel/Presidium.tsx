@@ -13,15 +13,23 @@ const Presidium: React.FC = () => {
   return (
     <header
       className={`
-    fixed md:static bottom-0 md:top-0 w-full z-40
-    h-14
-    flex items-center justify-between
-    px-4 py-2
-    bg-white dark:bg-gray-900 text-black dark:text-white
-    shadow
-  `}
+  order-last
+  md:order-first
+  fixed md:relative bottom-0 md:bottom-auto
+   h-16
+  max-h-screen // Will not exceed 100% of viewport height
+  overflow-y-auto // Add scroll if content exceeds max-height
+  md:overflow-visible // Remove overflow-y on medium screens and up
+  px-4 sm:px-8 md:px-4 // px-4 (16px) on mobile, px-6 (24px) from sm, px-8 (32px) from md
+  
+  py-2
+  w-full z-30
+  flex items-center justify-between flex-wrap
+  bg-white dark:bg-gray-800 text-black dark:text-white
+  shadow
+`}
     >
-      <div className={`px-4`}>
+      <div className={``}>
         <button
           onClick={() => setDarkMode((prev) => !prev)}
           className="text-lg flex items-center gap-1"

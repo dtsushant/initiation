@@ -6,6 +6,9 @@ import {
   LayoutProvider,
   useLayoutContext,
 } from "/@/lib/xingine-react/component/layout/context/LayoutContext.tsx";
+import { Layout as AntdLayout } from "antd";
+import { Nav } from "/@/layout/components/Nav.tsx";
+import { Main } from "/@/layout/components/Main.tsx";
 
 export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
   const { structure } = mandate;
@@ -31,14 +34,21 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
   return (
     <Suspense fallback={<div>Loading layout...</div>}>
       <div
-        className={`layout-root ${collapsed ? "collapsed" : ""} ${darkMode ? "dark" : ""}`}
+        className={`layout-root flex h-screen w-full ${darkMode ? "dark" : ""}`}
       >
         <div className="order-1 md:order-none">
           <Sidebar />
         </div>
-        <div className="flex flex-col flex-1 relative">
+        <div
+          className={`
+  flex flex-col flex-1
+  // On mobile, no margin. On desktop, apply margin for sidebar.
+  md:${collapsed ? "ml-16" : "ml-64"}
+  transition-all duration-300
+`}
+        >
           <Header />
-          <main className="flex-1 overflow-auto px-4 pt-4 pb-14 md:pb-0 mt-14 md:mt-0">
+          <main className="flex-1 overflow-y-auto p-4">
             <Body />
           </main>
           <Footer />

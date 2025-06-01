@@ -10,7 +10,8 @@ const Doctrine: React.FC = () => {
         darkMode
           ? "bg-gray-900 border-gray-700 text-gray-300"
           : "bg-white border-gray-200 text-gray-600"
-      }`}
+      }
+      hidden lg:flex`}
     >
       © 2025 My Company. All rights reserved.
     </footer>
