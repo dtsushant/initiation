@@ -3,6 +3,7 @@ import {
   CommissarProperties,
   ModuleProperties,
   ModulePropertyOptions,
+  Provisioneer,
   ProvisioneerProperties,
 } from "./xingine.type";
 import { Constructor } from "@xingine/core/utils/type";
@@ -25,9 +26,9 @@ export const COLUMN_PROPERTY_METADATA = "xingine:column-property";
  * The Provisioneer is not autonomous in defining its functional intent;
  * instead, it operates strictly under system-defined allocations and routes.
  */
-export function Provisioneer(options: ProvisioneerProperties): ClassDecorator {
+export function Provisioneer(options: Provisioneer): ClassDecorator {
   return (target) => {
-    const finalOptions: ProvisioneerProperties = {
+    const finalOptions: Provisioneer = {
       ...options,
       name: options.name ?? target.name,
     };

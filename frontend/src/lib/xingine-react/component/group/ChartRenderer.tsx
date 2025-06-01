@@ -58,6 +58,7 @@ const renderChart = (chart: ChartConfig, index: number) => {
         <LineChart width={600} height={300} data={data}>
           <XAxis dataKey="name" />
           <YAxis />
+          <CartesianGrid stroke="#eee" strokeDasharray="5 5" />
           <Tooltip />
           <Legend />
           {datasets.map((ds) => (

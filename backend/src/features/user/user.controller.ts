@@ -37,12 +37,13 @@ import { UserList } from './dto/user-list.dto';
 import { SearchQuery } from '@xingine/core/expressions/operators';
 import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
 import { UserAnalyticsDto } from './dto/user-analytics.dto';
+import { userProvisioneer } from './constant/component/user.provisioneer';
 
 @ApiBearerAuth()
 @ApiTags('user')
 @ApiExtraModels(UserLoginDto, CreateUserDto, UserCreateDto)
 @Controller('users')
-@Provisioneer({ name: 'user' })
+@Provisioneer(userProvisioneer)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 

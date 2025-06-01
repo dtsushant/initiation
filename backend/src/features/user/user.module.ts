@@ -11,15 +11,8 @@ import { Permission } from './entity/permission.entity';
 import { Role } from './entity/role.entity';
 import { UserPassword } from './entity/user-password.entity';
 import { USER_PERMISSIONS } from './constant/user.permissions';
-import { UserLoginComponent } from './constant/component/user-login.component';
 import { EntityClass } from '@mikro-orm/core';
-import { UserCreateComponent } from './constant/component/user-create.component';
-import { UserBinaComponent } from './constant/component/user-bina.component';
 
-@ModuleProperty({
-  uiComponent: [UserLoginComponent, UserCreateComponent, UserBinaComponent],
-  permissions: USER_PERMISSIONS,
-})
 @Module({
   controllers: [UserController],
   exports: [UserService],

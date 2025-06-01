@@ -38,10 +38,4 @@ export class UserList {
   })
   age!: number;
   assignedRoles!: string[];
-  @ColumnProperty({
-    filterable: {
-      apply: true,
-    },
-  })
-  suyesh?: string;
 }

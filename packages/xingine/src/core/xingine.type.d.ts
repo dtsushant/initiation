@@ -7,10 +7,22 @@ import {
   TableDispatchProperties,
 } from "@xingine/core/component/component-meta-map";
 
+export interface Panel {
+  presidium: string;
+  assembly: string;
+  doctrine: string;
+}
+
+export interface LayoutMandate {
+  structure: Panel;
+  clearanceRequired?: string[];
+}
+
 export type UIComponent = {
   component: string;
   path: string;
   icon?: string;
+  layout: LayoutMandate;
   roles?: string[];
   permissions?: string[];
   meta?: ComponentMeta;
@@ -39,10 +51,13 @@ export interface ModuleProperties extends ModulePropertyOptions {
 }
 
 export interface ProvisioneerProperties {
-  name?: string;
+  name: string;
   description?: string;
-  clearance?: Permission[];
+  layoutMandate: LayoutMandate;
+  clearance: Permission[];
 }
+
+export type Provisioneer = Partial<ProvisioneerProperties> & { name: string };
 
 export type ComponentDispatchByComponent<T extends keyof ComponentMetaMap> =
   T extends "FormRenderer"

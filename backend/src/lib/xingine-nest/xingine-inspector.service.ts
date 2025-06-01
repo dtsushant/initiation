@@ -116,6 +116,7 @@ export class XingineInspectorService {
 
         const uiComponent = {
           component: commissar.component,
+          layout: provisioneerProperties.layoutMandate,
           path: uiPath,
           meta: componentMeta,
         };

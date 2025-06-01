@@ -1,6 +1,8 @@
 import {
+  LayoutMandate,
   ModuleProperties,
   ModulePropertyOptions,
+  Panel,
   Permission,
   UIComponent,
 } from "./xingine.type";
@@ -80,14 +82,45 @@ export function componentMetaDecoder(): Decoder<ComponentMeta> {
   });
 }
 
-export const uiComponentDecoder: Decoder<UIComponent> = object({
+export const panelDecoder: Decoder<Panel> = object({
+  presidium: string,
+  assembly: string,
+  doctrine: string,
+});
+
+export const LayoutMandateDecoder: Decoder<LayoutMandate> = object({
+  structure: panelDecoder,
+  clearanceRequired: optional(array(string)),
+});
+
+export const uiComponentDecoderBase = object({
   component: string,
   path: string,
+  layout: optional(LayoutMandateDecoder),
   icon: optional(string),
   roles: optional(array(string)),
   permissions: optional(array(string)),
   meta: optional(componentMetaDecoder()),
 });
+
+export function uiComponentDecoder(): Decoder<UIComponent> {
+  return uiComponentDecoderBase.transform((uiComponentDecoderBase) => {
+    const base = uiComponentDecoderBase;
+    const defaultLayout: LayoutMandate = {
+      structure: {
+        presidium: "people",
+        assembly: "people",
+        doctrine: "people",
+      },
+      clearanceRequired: [],
+    };
+
+    return {
+      ...base,
+      layout: base.layout ?? defaultLayout,
+    };
+  });
+}
 
 const permissionDecoder: Decoder<Permission> = object({
   name: string,
@@ -97,7 +130,7 @@ const permissionDecoder: Decoder<Permission> = object({
 // ModulePropertyOptions decoder
 const modulePropertyOptionsDecoder: Decoder<ModulePropertyOptions> = object({
   description: optional(string),
-  uiComponent: optional(array(uiComponentDecoder)),
+  uiComponent: optional(array(uiComponentDecoder())),
   permissions: array(permissionDecoder),
 });
 
@@ -107,7 +140,7 @@ export const modulePropertyOptionsListDecoder: Decoder<
 
 export const modulePropertiesDecoder: Decoder<ModuleProperties> = object({
   name: string,
-  uiComponent: optional(array(uiComponentDecoder)),
+  uiComponent: optional(array(uiComponentDecoder())),
   permissions: array(permissionDecoder),
   description: optional(string),
 });
