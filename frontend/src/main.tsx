@@ -42,6 +42,8 @@ import { LayoutRenderer } from "/@/lib/xingine-react/component/layout";
 import { ThemeProvider } from "antd-style";
 import { Workbox } from "workbox-window";
 import InstallAppButton from "/@/InstallAppButton.tsx";
+import "./index.css";
+import { LayoutProvider } from "/@/lib/xingine-react/component/layout/context/LayoutContext.tsx";
 
 // Create router
 export const routes: RouteObject[] = [
@@ -174,10 +176,10 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider>
+      <LayoutProvider>
         <RouterProvider router={router} />
         <InstallAppButton />
-      </ThemeProvider>
+      </LayoutProvider>
     </QueryClientProvider>
   </StrictMode>,
 );

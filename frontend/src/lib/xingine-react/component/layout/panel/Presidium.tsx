@@ -1,30 +1,45 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  HomeOutlined,
-  UserOutlined,
-  LogoutOutlined,
   BulbOutlined,
-  MenuOutlined,
+  HomeOutlined,
+  LogoutOutlined,
+  UserOutlined,
 } from "@ant-design/icons";
+import { useLayoutContext } from "../context/LayoutContext";
 
-const Presidium: React.FC<{
-  darkMode: boolean;
-  setDarkMode: (value: boolean) => void;
-}> = ({ onToggleMenu, darkMode, setDarkMode }) => {
+const Presidium: React.FC = () => {
+  const { darkMode, setDarkMode, toggleMobileMenu } = useLayoutContext();
+
   return (
-    <header className={`presidium-header ${darkMode ? "dark" : "light"}`}>
-      <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+    <header
+      className={`
+    fixed md:static bottom-0 md:top-0 w-full z-40
+    h-14
+    flex items-center justify-between
+    px-4 py-2
+    bg-white dark:bg-gray-900 text-black dark:text-white
+    shadow
+  `}
+    >
+      <div className={`px-4`}>
         <button
-          className="toggle-mode"
           onClick={() => setDarkMode((prev) => !prev)}
+          className="text-lg flex items-center gap-1"
         >
-          <BulbOutlined className={`bulb-icon ${darkMode ? "glow" : ""}`} />
+          <BulbOutlined
+            className={darkMode ? "text-yellow-400 glow" : "text-gray-500"}
+          />
+          <span className="hidden md:inline">
+            {darkMode ? "Light" : "Dark"} Mode
+          </span>
         </button>
       </div>
-      <nav className="presidium-nav">
-        <a href="/">
+
+      {/* Navigation Icons */}
+      <nav className="flex gap-4">
+        <button onClick={toggleMobileMenu}>
           <HomeOutlined />
-        </a>
+        </button>
         <a href="/profile">
           <UserOutlined />
         </a>

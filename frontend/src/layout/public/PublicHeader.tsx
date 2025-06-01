@@ -25,6 +25,7 @@ export const PublicHeader: React.FC<UIComponent[unknown]> = ({
       })),
     [],
   );
+
   const { pathname } = useLocation();
   const navigate = useNavigate();
 

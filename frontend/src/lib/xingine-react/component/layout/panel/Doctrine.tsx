@@ -1,18 +1,20 @@
 import React from "react";
+import { useLayoutContext } from "../context/LayoutContext";
 
 const Doctrine: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+  const { darkMode } = useLayoutContext();
+
   return (
-    <footer className="doctrine-footer">
-      <div className="footer-content">
-        <span>© {currentYear} Initiation</span>
-        <span className="footer-links">
-          <a href="/privacy">Privacy</a>
-          <a href="/terms">Terms</a>
-          <a href="/contact">Contact</a>
-        </span>
-      </div>
+    <footer
+      className={`text-center py-4 mt-auto border-t ${
+        darkMode
+          ? "bg-gray-900 border-gray-700 text-gray-300"
+          : "bg-white border-gray-200 text-gray-600"
+      }`}
+    >
+      © 2025 My Company. All rights reserved.
     </footer>
   );
 };
+
 export default Doctrine;
