@@ -5,14 +5,19 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useLayoutContext } from "../context/LayoutContext";
+import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
 
 const Presidium: React.FC = () => {
-  const { darkMode, setDarkMode, toggleMobileMenu } = useLayoutContext();
+  const { darkMode, setDarkMode, toggleMobileMenu } = useXingineContext();
 
   return (
     <header
       className={`
+      ${
+        darkMode
+          ? "bg-gray-900 border-gray-700 text-gray-300"
+          : "bg-white border-gray-200 text-gray-600"
+      }
   order-last
   md:order-first
   fixed md:relative bottom-0 md:bottom-auto
@@ -25,7 +30,6 @@ const Presidium: React.FC = () => {
   py-2
   w-full z-30
   flex items-center justify-between flex-wrap
-  bg-white dark:bg-gray-800 text-black dark:text-white
   shadow
 `}
     >

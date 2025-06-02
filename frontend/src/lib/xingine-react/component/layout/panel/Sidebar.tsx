@@ -10,13 +10,13 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from "@ant-design/icons";
-import { useLayoutContext } from "../context/LayoutContext";
+import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
 
 const { useBreakpoint } = Grid;
 
 const Sidebar: React.FC = () => {
   const { collapsed, setCollapsed, darkMode, mobileMenuVisible } =
-    useLayoutContext();
+    useXingineContext();
 
   const toggleCollapse = () => setCollapsed((prev: boolean) => !prev);
   const screens = useBreakpoint();
@@ -51,15 +51,13 @@ const Sidebar: React.FC = () => {
 `}
       >*/
     <Layout.Sider
-      width={expandedWidth}
-      collapsedWidth={collapsedWidth}
       theme={darkMode ? "dark" : "light"}
       collapsed={collapsed}
       onCollapse={setCollapsed}
       breakpoint="md"
       trigger={null} // We'll use our custom trigger button
       className={`
-        fixed top-0 left-0 h-full z-40
+        top-0 left-0 h-full z-40
         transition-all duration-300
         bg-white dark:bg-gray-900
         
@@ -69,6 +67,7 @@ const Sidebar: React.FC = () => {
         className={`
           absolute top-4 
           ${collapsed ? "right-[-20px]" : "right-[-16px]"}
+           
           z-50
         `}
       >
@@ -81,59 +80,6 @@ const Sidebar: React.FC = () => {
           }`}
         />
       </div>
-      {/*<div
-            className={`
-           top-4 
-          ${collapsed ? 'right-[-20px]' : 'right-[-16px]'} 
-        `}
-        >
-          <Button
-              shape="circle"
-              icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
-              onClick={toggleCollapse}
-              className={`shadow-md ${
-                  darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-700'
-              }`}
-          />
-        </div>*/}
-
-      {/*<div className="sticky top-0 z-[1] flex h-[70px] w-full select-none items-center bg-white">
-          <div className="flex items-center justify-start w-full">
-            <Button
-                shape="circle"
-                icon={collapsed ? <MenuUnfoldOutlined/> : <MenuFoldOutlined/>}
-                onClick={toggleCollapse}
-                className={`shadow-md ${
-                    darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-700'
-                }`}
-            />
-            <img
-                src={collapsed ? 'uncollapse' : 'collapse'}
-                alt="Logo"
-                height={30}
-                width={collapsed ? 30 : 140}
-                className={`h-12 ${collapsed ? "cursor-pointer mx-auto" : ""}`}
-                onClick={collapsed ? () => setCollapsed(!collapsed) : undefined}
-            />
-          </div>
-
-          {!collapsed ? (
-              <div className="absolute right-5 flex items-center">
-                <MenuFoldOutlined
-                    className="text-xl cursor-pointer text-[#000000D9] hover:text-brightorange-6"
-                    onClick={() => setCollapsed(true)}
-                />
-              </div>
-          ):
-              (
-                  <div className="absolute right-5 flex items-center">
-                    <MenuUnfoldOutlined
-                        className="text-xl cursor-pointer text-[#000000D9] hover:text-brightorange-6"
-                        onClick={() => setCollapsed(false)}
-                    />
-                  </div>
-              )}
-        </div>*/}
 
       <Menu
         mode="inline"

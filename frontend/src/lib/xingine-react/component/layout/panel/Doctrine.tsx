@@ -1,16 +1,12 @@
 import React from "react";
-import { useLayoutContext } from "../context/LayoutContext";
+import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
 
 const Doctrine: React.FC = () => {
-  const { darkMode } = useLayoutContext();
+  const { darkMode } = useXingineContext();
 
   return (
     <footer
-      className={`text-center py-4 mt-auto border-t ${
-        darkMode
-          ? "bg-gray-900 border-gray-700 text-gray-300"
-          : "bg-white border-gray-200 text-gray-600"
-      }
+      className={`text-center py-4 mt-auto border-t 
       hidden lg:flex`}
     >
       © 2025 My Company. All rights reserved.

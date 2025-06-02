@@ -2,13 +2,9 @@ import React, { lazy, Suspense, useState } from "react";
 import { LayoutMandate } from "@xingine";
 import "./index.css";
 import Sidebar from "/@/lib/xingine-react/component/layout/panel/Sidebar.tsx";
-import {
-  LayoutProvider,
-  useLayoutContext,
-} from "/@/lib/xingine-react/component/layout/context/LayoutContext.tsx";
-import { Layout as AntdLayout } from "antd";
-import { Nav } from "/@/layout/components/Nav.tsx";
-import { Main } from "/@/layout/components/Main.tsx";
+
+import { Grid, Layout as AntdLayout } from "antd";
+import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
 
 export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
   const { structure } = mandate;
@@ -20,7 +16,7 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
     mobileMenuVisible,
     setMobileMenuVisible,
     partySeal,
-  } = useLayoutContext();
+  } = useXingineContext();
 
   const toggleCollapse = () => setCollapsed((prev) => !prev);
   const toggleMobileMenu = () => setMobileMenuVisible((prev) => !prev);
@@ -30,28 +26,78 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
   const Body = lazy(() => import(`./panel/Assembly.tsx`));
   const Footer = lazy(() => import(`./panel/Doctrine.tsx`));
 
-  console.log("the mobile menu", mobileMenuVisible);
+  const { useBreakpoint } = Grid;
+
+  const screens = useBreakpoint();
+  const isMobile = !screens.md; // Below md breakpoint
+
+  const expandedWidth = isMobile ? 240 : 250;
+  const collapsedWidth = 112;
+  const sidebarWidth = collapsed ? collapsedWidth : expandedWidth;
+
   return (
     <Suspense fallback={<div>Loading layout...</div>}>
       <div
-        className={`layout-root flex h-screen w-full ${darkMode ? "dark" : ""}`}
+        className={`relative h-screen overflow-hidden ${darkMode ? "dark" : ""}`}
       >
-        <div className="order-1 md:order-none">
+        <div
+          className={`fixed top-0 left-0 h-full w-[${sidebarWidth}px]  ${
+            darkMode
+              ? "bg-gray-900 border-gray-700 text-gray-300"
+              : "bg-white border-gray-200 text-gray-600"
+          }
+                   p-4 z-40 transition-all duration-300`}
+        >
           <Sidebar />
         </div>
+
         <div
-          className={`
-  flex flex-col flex-1
-  // On mobile, no margin. On desktop, apply margin for sidebar.
-  md:${collapsed ? "ml-16" : "ml-64"}
-  transition-all duration-300
-`}
+          className="absolute top-0 bottom-0 right-0 flex flex-col"
+          style={{ left: `${sidebarWidth}px` }}
         >
-          <Header />
-          <main className="flex-1 overflow-y-auto p-4">
+          <div
+            className={`
+          ${
+            darkMode
+              ? "bg-gray-900 border-gray-700 text-gray-300"
+              : "bg-white border-gray-200 text-gray-600"
+          }
+          order-last md:order-first // Controls visual order within flex-col
+          h-16
+          max-h-screen 
+          overflow-y-auto md:overflow-visible // Header content scroll
+          px-4 sm:px-8 md:px-4 // Padding: 16px mobile, 32px sm, 16px md+
+          py-2
+          w-full // Fills the width of its absolute parent
+          z-30 // Still needs high z-index if anything else might overlap
+          flex items-center justify-between flex-wrap
+          shadow
+          ${isMobile ? "order-last" : "md:order-first"} // Ensure proper order within flex-col on mobile/desktop
+          ${isMobile ? "fixed bottom-0 left-0 right-0" : "md:relative md:top-auto"} // Header drops to bottom on mobile
+        `}
+          >
+            <Header />
+          </div>
+
+          <div
+            className={`flex-1 overflow-y-auto bg-white dark:bg-gray-800 p-4
+          ${!isMobile ? "mt-16" : ""} // Add top margin on desktop for header
+          ${isMobile ? "pb-16" : ""}  // Add bottom padding on mobile for header
+        `}
+          >
             <Body />
-          </main>
-          <Footer />
+          </div>
+
+          <div
+            className={`fixed ${
+              darkMode
+                ? "bg-gray-900 border-gray-700 text-gray-300"
+                : "bg-white border-gray-200 text-gray-600"
+            } bottom-0 right-0  p-4 z-10 overflow-auto hidden lg:flex`}
+            style={{ left: `${sidebarWidth}px` }}
+          >
+            <Footer />
+          </div>
         </div>
       </div>
     </Suspense>
