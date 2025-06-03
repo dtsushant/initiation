@@ -7,8 +7,10 @@ import { Party } from './party.entity';
 import { PartyTenant } from './party-tenant.entity';
 import { Tenant } from '../tenant/tenant.entity';
 import { User } from '../user/entity/user.entity';
+import { PartyController } from './party.controller';
 
 @Module({
+  controllers: [PartyController],
   imports: [
     MikroOrmModule.forFeature({ entities: [Tenant, User, Party, PartyTenant] }),
     TenantModule,

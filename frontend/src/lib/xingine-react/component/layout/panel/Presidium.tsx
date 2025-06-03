@@ -8,7 +8,8 @@ import {
 import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
 
 const Presidium: React.FC = () => {
-  const { darkMode, setDarkMode, toggleMobileMenu } = useXingineContext();
+  const { panelControl } = useXingineContext();
+  const { darkMode, setDarkMode, toggleMobileMenu } = panelControl;
 
   return (
     <header

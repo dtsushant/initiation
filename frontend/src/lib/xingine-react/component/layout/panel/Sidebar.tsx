@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { Layout, Menu, Button, Grid } from "antd";
 import {
   HomeOutlined,
@@ -11,45 +11,37 @@ import {
   MenuFoldOutlined,
 } from "@ant-design/icons";
 import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const { useBreakpoint } = Grid;
 
 const Sidebar: React.FC = () => {
-  const { collapsed, setCollapsed, darkMode, mobileMenuVisible } =
-    useXingineContext();
+  const { panelControl, moduleProperties, routes } = useXingineContext();
+  const { collapsed, setCollapsed, darkMode, mobileMenuVisible } = panelControl;
 
   const toggleCollapse = () => setCollapsed((prev: boolean) => !prev);
   const screens = useBreakpoint();
   const isMobile = !screens.md; // Below md breakpoint
-  const menuItems = [
-    { key: "1", icon: <HomeOutlined />, label: "Dashboard" },
-    { key: "2", icon: <FileTextOutlined />, label: "Reports" },
-    { key: "3", icon: <ShoppingCartOutlined />, label: "Orders" },
-    { key: "4", icon: <TeamOutlined />, label: "Users" },
-    { key: "5", icon: <SettingOutlined />, label: "Settings" },
-    { key: "6", icon: <LockOutlined />, label: "Security" },
-  ];
+  const { pathname } = useLocation();
+  const navigate = useNavigate();
+  const menuItems = moduleProperties!.flatMap((module, i) => {
+    return module.uiComponent!.map((comp, j) => ({
+      key: comp.path,
+      icon: <LockOutlined />,
+      label: comp.component,
+    }));
+  });
 
-  const expandedWidth = isMobile ? 240 : 258;
-  const collapsedWidth = isMobile ? 40 : 90;
-  /* className={`
-    bg-white dark:bg-gray-900
-    w-full md:w-64
-    h-14 md:h-auto
-    z-30
-    flex-shrink-0
-    shadow md:shadow-none
-    px-4 py-2
-  `}*/
+  const handleClick = useCallback(
+    ({ key }: { key: string }) => {
+      if (pathname !== key) {
+        navigate(key);
+      }
+    },
+    [navigate, pathname],
+  );
+
   return (
-    /*<aside
-          className={`
-  fixed top-0 left-0 h-full z-40
-  md:block ${collapsed ? 'md:w-20' : 'md:w-64'} // Show on MD, control width
-  bg-white dark:bg-gray-900
-  transition-all duration-300
-`}
-      >*/
     <Layout.Sider
       theme={darkMode ? "dark" : "light"}
       collapsed={collapsed}
@@ -86,6 +78,7 @@ const Sidebar: React.FC = () => {
         theme={darkMode ? "dark" : "light"}
         items={menuItems}
         className="flex-1"
+        onClick={handleClick}
         inlineCollapsed={collapsed}
       />
     </Layout.Sider>

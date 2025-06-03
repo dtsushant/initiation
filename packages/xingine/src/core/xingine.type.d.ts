@@ -40,6 +40,10 @@ export interface Permission {
   description: string;
 }
 
+export interface GroupedPermission {
+  [key: string]: Permission[];
+}
+
 export interface ModulePropertyOptions {
   uiComponent?: UIComponent[];
   permissions: Permission[];

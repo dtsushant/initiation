@@ -44,6 +44,7 @@ import { Workbox } from "workbox-window";
 import InstallAppButton from "/@/InstallAppButton.tsx";
 import "./index.css";
 import { ContextBureau } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { App } from "/@/App.tsx";
 
 // Create router
 export const routes: RouteObject[] = [
@@ -92,7 +93,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <ContextBureau>
-        <RouterProvider router={router} />
+        <App />
         <InstallAppButton />
       </ContextBureau>
     </QueryClientProvider>

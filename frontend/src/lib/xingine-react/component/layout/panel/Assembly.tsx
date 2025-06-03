@@ -1,5 +1,7 @@
 import { Breadcrumb, Tabs } from "antd";
-import { useLocation } from "react-router-dom";
+import { Outlet, useLocation } from "react-router-dom";
+import React from "react";
+import { Content } from "antd/lib/layout/layout";
 
 const Assembly = () => {
   const location = useLocation();
@@ -13,6 +15,10 @@ const Assembly = () => {
           return <Breadcrumb.Item key={url}>{_}</Breadcrumb.Item>;
         })}
       </Breadcrumb>
+
+      <Content className="p-6">
+        <Outlet />
+      </Content>
       <Tabs
         defaultActiveKey="1"
         type="line"

@@ -28,8 +28,8 @@ export class PartyService {
     partyCode: string,
     tenantCode: string,
   ): Promise<PartyTenant> {
-    const party = await this.partyRepo.findOneOrFail(partyCode);
-    const tenant = await this.tenantRepo.findOneOrFail(tenantCode);
+    const party = await this.partyRepo.findOneOrFail({ partyCode });
+    const tenant = await this.tenantRepo.findOneOrFail({ tenantCode });
     const pt = new PartyTenant();
     pt.party = party;
     pt.tenant = tenant;

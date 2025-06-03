@@ -1,6 +1,10 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
 import { get } from "/@/services/initiation.service.ts";
-import { ModuleProperties, modulePropertiesListDecoder } from "@xingine"; // Assuming correct paths
+import { ModuleProperties, modulePropertiesListDecoder } from "@xingine";
+import { RouteObject } from "react-router-dom";
+import { registerModule } from "/@/lib/xingine-react/xingine-react.service.ts";
+import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
+import { LayoutRenderer } from "/@/lib/xingine-react/component/layout";
 
 export interface ColorPalette {
   [key: string]: string;
@@ -13,7 +17,7 @@ export interface PartySeal {
   issuedBy: string;
 }
 
-export interface LayoutProperty {
+export interface PanelControlBureau {
   collapsed: boolean;
   setCollapsed: React.Dispatch<React.SetStateAction<boolean>>;
   darkMode: boolean;
@@ -24,7 +28,13 @@ export interface LayoutProperty {
   layoutLoading: boolean;
 }
 
-export const XingineContext = createContext<LayoutProperty | null>(null);
+export interface UIMandate {
+  panelControl: PanelControlBureau;
+  moduleProperties?: ModuleProperties[];
+  routes: RouteObject[];
+}
+
+export const XingineContext = createContext<UIMandate | null>(null);
 
 const defaultColorPalette: ColorPalette = {
   primary: "#6f42c1",
@@ -45,11 +55,11 @@ export const ContextBureau: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
   const [moduleProperties, setModuleProperties] = useState<
-    ModuleProperties[] | null
-  >(null);
+    ModuleProperties[] | undefined
+  >(undefined);
   const [isLoadingLayout, setIsLoadingLayout] = useState(true);
   const [layoutError, setLayoutError] = useState<Error | null>(null);
-
+  const [routes, setRoutes] = useState<RouteObject[]>([]);
   const [collapsed, setCollapsed] = useState(false);
   const [darkMode, setDarkMode] = useState(false);
   const [mobileMenuVisible, setMobileMenuVisible] = useState(false);
@@ -65,8 +75,26 @@ export const ContextBureau: React.FC<{ children: React.ReactNode }> = ({
           modulePropertiesListDecoder,
           "modules",
         );
-        console.log("the retrievedData", data);
         setModuleProperties(data);
+        if (!getModuleRegistryService() && data) {
+          registerModule({
+            modules: data!,
+            component: {},
+          });
+        }
+
+        const routePaths = data!.flatMap((module) =>
+          module.uiComponent?.map((comp) => ({
+            path: comp.path,
+            element: getModuleRegistryService()?.get(
+              comp.component,
+              comp.meta?.properties,
+            ),
+          })),
+        );
+        console.log("the routesPaths", routePaths);
+        const r = routePaths.filter((rp) => rp !== undefined);
+        setRoutes([{ path: "/", element: <LayoutRenderer />, children: r }]);
       } catch (err) {
         console.error("Failed to fetch module properties for layout:", err);
         setLayoutError(
@@ -82,7 +110,7 @@ export const ContextBureau: React.FC<{ children: React.ReactNode }> = ({
     fetchModuleData();
   }, []); // Run only once on mount
 
-  const layoutValue: LayoutProperty = {
+  const panelControlBureau: PanelControlBureau = {
     collapsed: collapsed,
     setCollapsed,
     darkMode,
@@ -93,7 +121,12 @@ export const ContextBureau: React.FC<{ children: React.ReactNode }> = ({
     layoutLoading: isLoadingLayout,
   };
 
-  // You might want to render a loading state here if the layout depends on `componentDefinitions`
+  const mandate: UIMandate = {
+    panelControl: panelControlBureau,
+    moduleProperties: moduleProperties,
+    routes: routes,
+  };
+
   if (isLoadingLayout) {
     return <div>Loading layout...</div>; // Or a more sophisticated spinner
   }
@@ -103,13 +136,13 @@ export const ContextBureau: React.FC<{ children: React.ReactNode }> = ({
   }
 
   return (
-    <XingineContext.Provider value={layoutValue}>
+    <XingineContext.Provider value={mandate}>
       {children}
     </XingineContext.Provider>
   );
 };
 
-export const useXingineContext = (): LayoutProperty => {
+export const useXingineContext = (): UIMandate => {
   const context = useContext(XingineContext);
   if (!context) {
     throw new Error("useXingineContext must be used within a XingineContext");

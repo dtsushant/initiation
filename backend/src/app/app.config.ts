@@ -3,8 +3,9 @@
 import { RuleModule } from '../features/rule/rule.module';
 import { CategoryModule } from '../features/category/category.module';
 import { UserModule } from '../features/user/user.module';
+import { PartyModule } from '../features/party/party.module';
 
-export const moduleMap = [UserModule, CategoryModule, RuleModule];
+export const moduleMap = [UserModule, CategoryModule, RuleModule, PartyModule];
 
 /**
  * Returns an array of NestJS modules, optionally mapped using a transform function.

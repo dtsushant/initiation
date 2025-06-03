@@ -5,9 +5,11 @@ import Sidebar from "/@/lib/xingine-react/component/layout/panel/Sidebar.tsx";
 
 import { Grid, Layout as AntdLayout } from "antd";
 import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { Navigate, RouteObject } from "react-router-dom";
 
-export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
-  const { structure } = mandate;
+export const LayoutRenderer: React.FC<LayoutMandate> = () => {
+  const { panelControl, moduleProperties } = useXingineContext();
+
   const {
     collapsed,
     setCollapsed,
@@ -16,7 +18,7 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
     mobileMenuVisible,
     setMobileMenuVisible,
     partySeal,
-  } = useXingineContext();
+  } = panelControl;
 
   const toggleCollapse = () => setCollapsed((prev) => !prev);
   const toggleMobileMenu = () => setMobileMenuVisible((prev) => !prev);
@@ -35,6 +37,7 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
   const collapsedWidth = 112;
   const sidebarWidth = collapsed ? collapsedWidth : expandedWidth;
 
+  console.log("now rendering the layout");
   return (
     <Suspense fallback={<div>Loading layout...</div>}>
       <div
@@ -62,18 +65,18 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
               ? "bg-gray-900 border-gray-700 text-gray-300"
               : "bg-white border-gray-200 text-gray-600"
           }
-          order-last md:order-first // Controls visual order within flex-col
+          order-last md:order-first 
           h-16
           max-h-screen 
-          overflow-y-auto md:overflow-visible // Header content scroll
-          px-4 sm:px-8 md:px-4 // Padding: 16px mobile, 32px sm, 16px md+
+          overflow-y-auto md:overflow-visible 
+          px-4 sm:px-8 md:px-4 
           py-2
-          w-full // Fills the width of its absolute parent
-          z-30 // Still needs high z-index if anything else might overlap
+          w-full 
+          z-30 
           flex items-center justify-between flex-wrap
           shadow
-          ${isMobile ? "order-last" : "md:order-first"} // Ensure proper order within flex-col on mobile/desktop
-          ${isMobile ? "fixed bottom-0 left-0 right-0" : "md:relative md:top-auto"} // Header drops to bottom on mobile
+          ${isMobile ? "order-last" : "md:order-first"} 
+          ${isMobile ? "fixed bottom-0 left-0 right-0" : "md:relative md:top-auto"} 
         `}
           >
             <Header />
@@ -81,8 +84,8 @@ export const LayoutRenderer: React.FC<LayoutMandate> = (mandate) => {
 
           <div
             className={`flex-1 overflow-y-auto bg-white dark:bg-gray-800 p-4
-          ${!isMobile ? "mt-16" : ""} // Add top margin on desktop for header
-          ${isMobile ? "pb-16" : ""}  // Add bottom padding on mobile for header
+          ${!isMobile ? "mt-16" : ""} 
+          ${isMobile ? "pb-16" : ""}  
         `}
           >
             <Body />

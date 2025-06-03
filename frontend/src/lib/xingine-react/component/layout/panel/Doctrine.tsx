@@ -2,7 +2,8 @@ import React from "react";
 import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
 
 const Doctrine: React.FC = () => {
-  const { darkMode } = useXingineContext();
+  const { panelControl } = useXingineContext();
+  const { darkMode } = panelControl;
 
   return (
     <footer

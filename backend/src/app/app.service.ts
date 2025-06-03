@@ -1,6 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
-import { ModuleProperties } from '@xingine/core/xingine.type';
+import {
+  GroupedPermission,
+  ModuleProperties,
+} from '@xingine/core/xingine.type';
 import { XingineInspectorService } from '../lib/xingine-nest/xingine-inspector.service';
 import { ICacheService } from '../shared/cache/cache.interface';
 
@@ -14,6 +17,10 @@ export class AppService {
 
   async getModuleMetadata(): Promise<ModuleProperties[]> {
     return this.inspectorService.getAllModuleProperties();
+  }
+
+  async getAllAPIPath(): Promise<GroupedPermission> {
+    return this.inspectorService.getAllControllerPath();
   }
 
   getHello(): string {

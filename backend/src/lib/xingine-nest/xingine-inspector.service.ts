@@ -1,8 +1,10 @@
 import { Injectable, RequestMethod, Type } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
 import {
+  GroupedPermission,
   ModuleProperties,
   ModulePropertyOptions,
+  Permission,
 } from '@xingine/core/xingine.type';
 import {
   getModulePropertyMetadata,
@@ -26,33 +28,66 @@ export class XingineInspectorService {
     const modules = this.discoveryService.getProviders();
 
     return this.fetchMappedModules();
-    /*const moduleProperties: ModuleProperties[] = [];
-    for (const moduleWrapper of modules) {
-      const metatype = moduleWrapper.metatype as Type<object>;
-
-      if (!metatype || typeof metatype !== 'function') continue;
-      console.log("the metaType",metatype)
-
-      const metadata = getModulePropertyMetadata(metatype);
-
-      if (metadata) {
-        moduleProperties.push(metadata);
-      }
-    }
-
-    return moduleProperties;*/
   }
 
-  private fetchMappedModules(): ModuleProperties[] {
-    const moduleProperties: ModuleProperties[] = [];
+  getAllControllerPath(): GroupedPermission {
+    const allTheApis: GroupedPermission = {};
+    const controllers = this.getAllControllers();
+    for (const controller of controllers) {
+      const controllerPath =
+        this.reflector.get<string>(PATH_METADATA, controller) || '';
 
-    const controllers = this.discoveryService
+      const definedPaths: Permission[] = [];
+      allTheApis[controllerPath] = definedPaths;
+
+      const prototype = controller.prototype;
+
+      const methodNames = Object.getOwnPropertyNames(prototype).filter(
+        (name) =>
+          typeof prototype[name] === 'function' && name !== 'constructor',
+      );
+      for (const methodName of methodNames) {
+        const method = this.reflector.get<RequestMethod>(
+          METHOD_METADATA,
+          prototype[methodName],
+        );
+
+        if (!RequestMethod[method]) continue;
+
+        const routePath = this.reflector.get<string | string[]>(
+          PATH_METADATA,
+          prototype[methodName],
+        );
+        const fullPath = (path: string) =>
+          `${RequestMethod[method]}::/${controllerPath}/${path.replace(/^\//, '')}`;
+
+        if (typeof routePath === 'string') {
+          definedPaths.push({ name: fullPath(routePath), description: '' });
+        }
+        if (Array.isArray(routePath)) {
+          for (const path of routePath) {
+            definedPaths.push({ name: fullPath(path), description: '' });
+          }
+        }
+      }
+    }
+    return allTheApis;
+  }
+
+  private getAllControllers(): Constructor<unknown>[] {
+    return this.discoveryService
       .getControllers()
       .map((w) => w.metatype)
       .filter(
         (meta): meta is Constructor =>
           typeof meta === 'function' && !!meta.name,
       );
+  }
+
+  private fetchMappedModules(): ModuleProperties[] {
+    const moduleProperties: ModuleProperties[] = [];
+
+    const controllers = this.getAllControllers();
 
     for (const controller of controllers) {
       const provisioneerProperties = getProvisioneerProperties(controller);
@@ -62,11 +97,13 @@ export class XingineInspectorService {
       const controllerPath =
         this.reflector.get<string>(PATH_METADATA, controller) || '';
       const prototype = controller.prototype;
-      console.log(
-        'the controller name and path',
-        controller.name,
-        controllerPath,
-      );
+
+      const mod: ModuleProperties = {
+        name: provisioneerProperties.name!,
+        uiComponent: [],
+        permissions: [],
+      };
+      moduleProperties.push(mod);
 
       const methodNames = Object.getOwnPropertyNames(prototype).filter(
         (name) =>
@@ -110,9 +147,6 @@ export class XingineInspectorService {
         }*/
 
         const componentMeta = extractMeta(commissar, fullPath ?? '');
-        const mod = moduleProperties.find(
-          (modules) => modules.name === provisioneerProperties.name,
-        );
 
         const uiComponent = {
           component: commissar.component,
@@ -121,16 +155,7 @@ export class XingineInspectorService {
           meta: componentMeta,
         };
 
-        if (!mod) {
-          const module: ModuleProperties = {
-            name: provisioneerProperties.name!,
-            uiComponent: [uiComponent],
-            permissions: [],
-          };
-          moduleProperties.push(module);
-        } else {
-          mod.uiComponent?.push(uiComponent);
-        }
+        mod.uiComponent?.push(uiComponent);
       }
     }
     return moduleProperties;

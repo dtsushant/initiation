@@ -5,7 +5,10 @@ import { Permission } from '../features/user/entity/permission.entity';
 import { Collection, EntityClass } from '@mikro-orm/core';
 import { Role } from '../features/user/entity/role.entity';
 import { AppDetail } from './app.entity';
-import { ModuleProperties } from '@xingine/core/xingine.type';
+import {
+  GroupedPermission,
+  ModuleProperties,
+} from '@xingine/core/xingine.type';
 import { permissionPath } from '../shared/utils/string.utils';
 
 @Injectable()
@@ -16,18 +19,20 @@ export class AppMetaInformationPopulatorService {
 
   async run(em: EntityManager): Promise<void> {
     const moduleProperties = await this.appService.getModuleMetadata();
-    const modules = await this.loadAllModules(em, moduleProperties);
-    await this.loadAllPermission(em, moduleProperties, modules);
+    const apiPaths = await this.appService.getAllAPIPath();
+    const modules = await this.loadAllModules(em, apiPaths);
+    await this.loadAllPermission(em, apiPaths, modules);
     await this.loadSuper(em);
   }
 
   async loadAllModules(
     em: EntityManager,
-    moduleProperties: ModuleProperties[],
+    allTheApis: GroupedPermission,
   ): Promise<AppDetail[]> {
-    const appDetails = moduleProperties.map((property) => ({
-      module: property.name,
-      description: property.description ?? property.name,
+    const allKeys: string[] = Object.keys(allTheApis);
+    const appDetails = allKeys.map((property) => ({
+      module: property,
+      description: '',
     }));
     return await em.upsertMany(
       AppDetail as EntityClass<AppDetail>,
@@ -41,16 +46,18 @@ export class AppMetaInformationPopulatorService {
   }
   async loadAllPermission(
     em: EntityManager,
-    moduleProperties: ModuleProperties[],
+    allTheApis: GroupedPermission,
     modules: AppDetail[],
   ): Promise<void> {
-    const permissions = moduleProperties.flatMap((properties) =>
-      properties.permissions.map((permission) => ({
-        id: permissionPath(properties.name, permission.name),
+    const allKeys: string[] = Object.keys(allTheApis);
+    const permissions = allKeys.flatMap((key) => {
+      return allTheApis[key].map((permission) => ({
+        id: permission.name,
         description: permission.description,
-        module: modules.find((module) => module.module === properties.name)!,
-      })),
-    );
+        module: modules.find((module) => module.module === key)!,
+      }));
+    });
+
     console.log('the permissions ', permissions);
     await em.upsertMany(Permission as EntityClass<Permission>, permissions, {
       onConflictFields: ['id'],

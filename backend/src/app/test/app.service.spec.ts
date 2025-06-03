@@ -66,4 +66,9 @@ describe('AppService (with real modules)', () => {
       expect(entry).toHaveProperty('uiComponent');
     }
   });
+
+  it('should return all path in system', async () => {
+    const metadata = await appService.getAllAPIPath();
+    console.log('Module Metadata:', JSON.stringify(metadata, null, 2));
+  });
 });
