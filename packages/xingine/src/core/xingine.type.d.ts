@@ -14,6 +14,7 @@ export interface Panel {
 }
 
 export interface LayoutMandate {
+  layout: string;
   structure: Panel;
   clearanceRequired?: string[];
 }
@@ -22,7 +23,7 @@ export type UIComponent = {
   component: string;
   path: string;
   icon?: string;
-  layout: LayoutMandate;
+  layout?: string;
   roles?: string[];
   permissions?: string[];
   meta?: ComponentMeta;
@@ -61,6 +62,8 @@ export interface ProvisioneerProperties {
   clearance: Permission[];
 }
 
+export type GenericErrors = Record<string, string | Record<string, string>>;
+
 export type Provisioneer = Partial<ProvisioneerProperties> & { name: string };
 
 export type ComponentDispatchByComponent<T extends keyof ComponentMetaMap> =
@@ -82,6 +85,7 @@ export interface CommissarProperties<
   TReq = unknown,
   TOperative extends keyof ComponentMetaMap = keyof ComponentMetaMap,
 > {
+  layout?: string;
   component: string;
   operative: TOperative;
   meta?: ComponentMetaMap[TOperative];

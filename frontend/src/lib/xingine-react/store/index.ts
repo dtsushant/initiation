@@ -1,5 +1,5 @@
 import { Action, Reducer } from "@reduxjs/toolkit";
-import { store } from "/@/store";
+import { store } from "/src/initiation/store";
 
 export type ReducersMap<State = unknown> = {
   [K in string]: Reducer<State, Action>;

@@ -3,5 +3,5 @@ import { ModuleProperties } from "@xingine";
 
 export interface XingineConfig {
   component?: Record<string, FC<unknown>>;
-  modules: ModuleProperties[];
+  layout?: Record<string, FC<unknown>>;
 }

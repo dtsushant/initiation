@@ -30,7 +30,6 @@ import {
 } from "@xingine/core/component/component-meta-map.ts";
 import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";
 import { NamePath } from "antd/es/form/interface";
-import { FormGroup } from "/@/components/FormGroup/FormGroup.tsx";
 import { LookupField } from "/@/lib/xingine-react/component/group/form/LookupField.tsx";
 import { CheckboxField } from "/@/lib/xingine-react/component/group/form/CheckboxField.tsx";
 import { NestedCheckboxField } from "/@/lib/xingine-react/component/group/form/NestedCheckBoxField.tsx";

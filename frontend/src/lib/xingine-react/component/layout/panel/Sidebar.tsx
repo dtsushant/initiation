@@ -10,7 +10,7 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
 } from "@ant-design/icons";
-import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { useXingineContext } from "/src/lib/xingine-react/context/ContextBureau.tsx";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const { useBreakpoint } = Grid;

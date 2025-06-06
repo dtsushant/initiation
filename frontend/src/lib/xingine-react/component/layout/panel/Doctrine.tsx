@@ -1,5 +1,5 @@
 import React from "react";
-import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { useXingineContext } from "/src/lib/xingine-react/context/ContextBureau.tsx";
 
 const Doctrine: React.FC = () => {
   const { panelControl } = useXingineContext();

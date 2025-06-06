@@ -5,7 +5,7 @@ import {
   LogoutOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { useXingineContext } from "/src/lib/xingine-react/context/ContextBureau.tsx";
 
 const Presidium: React.FC = () => {
   const { panelControl } = useXingineContext();

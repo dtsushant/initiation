@@ -4,9 +4,8 @@ import {
 } from "@xingine/core/component/form-meta-map.ts";
 import React, { useEffect, useState } from "react";
 import { Checkbox, Spin } from "antd";
-import axios from "axios";
-import { get } from "/@/services/initiation.service.ts";
 import { nestedCheckboxOptionListDecoder } from "@xingine";
+import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
 
 interface NestedCheckboxGroupFieldProps extends NestedCheckboxTypeProperties {
   value: string[];

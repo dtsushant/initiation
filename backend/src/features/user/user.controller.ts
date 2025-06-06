@@ -38,6 +38,14 @@ import { SearchQuery } from '@xingine/core/expressions/operators';
 import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
 import { UserAnalyticsDto } from './dto/user-analytics.dto';
 import { userProvisioneer } from './constant/component/user.provisioneer';
+import {
+  addRole,
+  createUser,
+  userAnalytics,
+  userDetail,
+  userList,
+  userLogin,
+} from './constant/component/user.commissar';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -64,43 +72,27 @@ export class UserController {
     return await this.userService.fetchAllPermission();
   }
 
-  @Commissar({
-    directive: UserAnalyticsDto,
-    operative: 'ChartRenderer',
-    component: 'UserAnalytics',
-  })
+  @Commissar(userAnalytics)
   @Get('user-analytics')
   async userAnalytics(): Promise<{ msg: string }> {
     return { msg: 'success' };
   }
 
-  @Commissar({
-    directive: CreateRoleDto,
-    operative: 'FormRenderer',
-    component: 'AddRole',
-  })
+  @Commissar(addRole)
   @Post('addRole')
   async createRole(@Body() roleData: CreateRoleDto): Promise<{ msg: string }> {
     console.log('the roleData', roleData);
     return { msg: 'success' };
   }
 
-  @Commissar({
-    directive: UserDetailDto,
-    operative: 'DetailRenderer',
-    component: 'UserDetail',
-  })
+  @Commissar(userDetail)
   @Get(':username')
   async userDetail(@Param() params: Record<string, string>): Promise<IUserRO> {
     console.log('the params', params);
     return this.userService.findByUsername(params.username);
   }
 
-  @Commissar({
-    directive: UserList,
-    operative: 'TableRenderer',
-    component: 'UserList',
-  })
+  @Commissar(userList)
   @Post('userList')
   async userList(@Body() query: SearchQuery): Promise<UserList[]> {
     console.log('the search query here is', query);
@@ -137,18 +129,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Commissar({
-    directive: UserCreateDto,
-    dispatch: {
-      formSubmissionResponse: {},
-      onSuccessRedirectTo: {
-        component: 'UserDetail',
-        payloadNamePath: { username: 'user.username' },
-      },
-    },
-    operative: 'FormRenderer',
-    component: 'UserCreate',
-  })
+  @Commissar(createUser)
   @ApiBody({
     schema: {
       type: 'object',
@@ -172,11 +153,7 @@ export class UserController {
     return this.userService.delete(params.slug);
   }
 
-  @Commissar({
-    directive: UserLoginDto,
-    operative: 'FormRenderer',
-    component: 'UserLogin',
-  })
+  @Commissar(userLogin)
   @ApiBody({
     schema: {
       type: 'object',

@@ -35,7 +35,6 @@ export function formGroup(
       fullFieldName,
     );
 
-    // ✅ Use `object` field component from map
     if (field.inputType === "object") {
       return (
         <FormField

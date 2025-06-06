@@ -3,18 +3,13 @@ import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
 import {
   GroupedPermission,
   ModuleProperties,
-  ModulePropertyOptions,
   Permission,
 } from '@xingine/core/xingine.type';
-import {
-  getModulePropertyMetadata,
-  getProvisioneerProperties,
-} from '@xingine/core/xingine.decorator';
+import { getProvisioneerProperties } from '@xingine/core/xingine.decorator';
 import { Constructor, extractRouteParams } from '@xingine/core/utils/type';
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { getCommissarProperties } from './xingine-nest.decorator';
 import { extractMeta } from './utils/commissar.utils';
-import { ComponentMeta } from '@xingine/core/component/component-meta-map';
 
 @Injectable()
 export class XingineInspectorService {
@@ -150,7 +145,7 @@ export class XingineInspectorService {
 
         const uiComponent = {
           component: commissar.component,
-          layout: provisioneerProperties.layoutMandate,
+          layout: commissar.layout,
           path: uiPath,
           meta: componentMeta,
         };

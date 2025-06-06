@@ -7,7 +7,6 @@ import {
 } from "@xingine/core/component/component-meta-map.ts";
 import React, { useEffect, useState } from "react";
 import { ColumnsType } from "antd/es/table";
-import { get, post } from "/@/services/initiation.service.ts";
 import { dynamicShapeListDecoder } from "@xingine";
 import FormRenderer from "/@/lib/xingine-react/component/group/FormRenderer.tsx";
 import { loadUserIntoApp, userResponseDecoder } from "/@/types/auth.ts";
@@ -15,6 +14,7 @@ import {
   SearchCondition,
   SearchQuery,
 } from "@xingine/core/expressions/operators.ts";
+import { post } from "/@/lib/xingine-react/xingine-react.service.ts";
 
 export const TableRenderer: React.FC<TableMeta> = (meta) => {
   const {

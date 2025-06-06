@@ -1,5 +1,5 @@
 import { registerModule } from "/@/lib/xingine-react/xingine-react.service.ts";
-import { get } from "/@/services/initiation.service.ts";
+import { get } from "/src/lib/xingine-react/services/initiation.service.ts";
 import { ModuleProperties, modulePropertiesListDecoder } from "@xingine";
 import { componentMap } from "/@/config/ruled-component.config.ts";
 

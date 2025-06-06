@@ -4,7 +4,7 @@ import "./index.css";
 import Sidebar from "/@/lib/xingine-react/component/layout/panel/Sidebar.tsx";
 
 import { Grid, Layout as AntdLayout } from "antd";
-import { useXingineContext } from "/@/lib/xingine-react/component/layout/context/ContextBureau.tsx";
+import { useXingineContext } from "/src/lib/xingine-react/context/ContextBureau.tsx";
 import { Navigate, RouteObject } from "react-router-dom";
 
 export const LayoutRenderer: React.FC<LayoutMandate> = () => {
@@ -37,7 +37,6 @@ export const LayoutRenderer: React.FC<LayoutMandate> = () => {
   const collapsedWidth = 112;
   const sidebarWidth = collapsed ? collapsedWidth : expandedWidth;
 
-  console.log("now rendering the layout");
   return (
     <Suspense fallback={<div>Loading layout...</div>}>
       <div

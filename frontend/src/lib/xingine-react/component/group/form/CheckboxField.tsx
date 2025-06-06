@@ -5,8 +5,8 @@ import {
   CheckboxTypeProperties,
   LookupTypeProperties,
 } from "@xingine/core/component/form-meta-map.ts";
-import { get } from "/@/services/initiation.service.ts";
 import { checkboxOptionListDecoder, checkboxTypeDecoder } from "@xingine";
+import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
 
 interface CheckboxGroupFieldProps extends CheckboxTypeProperties {
   value: string[];
