@@ -3,9 +3,9 @@ import React, { useEffect, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 import type { NamePath } from "antd/es/form/interface";
 import type { Decoder } from "decoders";
-import { LookupTypeProperties } from "@xingine/core/component/component-meta-map.ts";
 import { array, object, string } from "decoders";
 import { get, post } from "/@/lib/xingine-react/xingine-react.service.ts";
+import { LookupTypeProperties } from "xingine/dist/core/component/form-meta-map";
 
 type OptionType = { label: string; value: string };
 

@@ -1,9 +1,9 @@
 import { UserAnalyticsDto } from '../../dto/user-analytics.dto';
-import { CommissarProperties } from '@xingine/core/xingine.type';
 import { CreateRoleDto } from '../../dto/create-role.dto';
 import { UserCreateDto, UserDetailDto } from '../../dto/user-create.dto';
 import { UserList } from '../../dto/user-list.dto';
 import { UserLoginDto } from '../../dto';
+import { CommissarProperties } from 'xingine';
 
 export const userAnalytics: CommissarProperties = {
   directive: UserAnalyticsDto,

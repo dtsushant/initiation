@@ -1,8 +1,7 @@
 import React from "react";
 import { Descriptions, Tag, Badge } from "antd";
-import { DetailFieldMeta } from "@xingine/core/component/detail-meta-map.ts";
 import { renderValue } from "/@/lib/xingine-react/component/group/detail/DetailGroup.map.tsx";
-import { resolvePath } from "@xingine/core/utils/type.ts";
+import { DetailFieldMeta } from "xingine/dist/core/component/detail-meta-map";
 
 export function renderDetailFields(
   fields: DetailFieldMeta[],

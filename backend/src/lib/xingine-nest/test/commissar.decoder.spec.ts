@@ -1,21 +1,19 @@
-import { CommissarProperties } from '@xingine/core/xingine.type';
 import { UserDetail, UserLoginDto } from './dto/commisar.dto';
 import { extractMeta } from '../utils/commissar.utils';
 import {
-  formMetaDecoder,
-  nestedCheckboxOptionListDecoder,
-} from '@xingine/core/decoders/form.decoder';
-import { detailMetaDecoder } from '@xingine/core/decoders/detail.decoder';
-import { dynamicShapeDecoder } from '@xingine/core/decoders/shared.decoder';
-import { modulePropertiesListDecoder } from '@xingine/core/xingine.decoder';
-import {
+  CommissarProperties,
+  detailMetaDecoder,
+  dynamicShapeDecoder,
   extractRouteParams,
+  formMetaDecoder,
   isGroupCondition,
+  modulePropertiesListDecoder,
+  nestedCheckboxOptionListDecoder,
   resolveDynamicPath,
   resolvePath,
-} from '@xingine/core/utils/type';
-import { searchQueryDecoder } from '@xingine/core/decoders/expression.decoder';
-import { SearchQuery } from '@xingine/core/expressions/operators';
+  SearchQuery,
+} from 'xingine';
+import { searchQueryDecoder } from 'xingine/dist/core/decoders/expression.decoder';
 
 describe('extractMeta test', () => {
   it('Search Query decoding test', () => {

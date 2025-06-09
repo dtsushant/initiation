@@ -24,13 +24,12 @@ const Sidebar: React.FC = () => {
   const isMobile = !screens.md; // Below md breakpoint
   const { pathname } = useLocation();
   const navigate = useNavigate();
-  const menuItems = moduleProperties!.flatMap((module, i) => {
-    return module.uiComponent!.map((comp, j) => ({
-      key: comp.path,
-      icon: <LockOutlined />,
-      label: comp.component,
-    }));
-  });
+
+  const menuItems = moduleProperties!.map((module, i) => ({
+    key: module.name,
+    icon: <LockOutlined />,
+    label: module.name,
+  }));
 
   const handleClick = useCallback(
     ({ key }: { key: string }) => {

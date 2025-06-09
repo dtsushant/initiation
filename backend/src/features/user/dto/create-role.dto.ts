@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsArray, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { FormField } from '@xingine/core/xingine.decorator';
+import { FormField } from 'xingine';
 
 export class CreateRoleDto {
   @ApiProperty()

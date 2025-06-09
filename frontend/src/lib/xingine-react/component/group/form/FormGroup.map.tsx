@@ -13,6 +13,12 @@ import {
   Card,
   Form,
 } from "antd";
+
+import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";
+import { NamePath } from "antd/es/form/interface";
+import { LookupField } from "/@/lib/xingine-react/component/group/form/LookupField.tsx";
+import { CheckboxField } from "/@/lib/xingine-react/component/group/form/CheckboxField.tsx";
+import { NestedCheckboxField } from "/@/lib/xingine-react/component/group/form/NestedCheckBoxField.tsx";
 import {
   ButtonTypeProperties,
   DateTypeProperties,
@@ -27,12 +33,7 @@ import {
   SwitchTypeProperties,
   TextareaTypeProperties,
   TreeSelectTypeProperties,
-} from "@xingine/core/component/component-meta-map.ts";
-import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";
-import { NamePath } from "antd/es/form/interface";
-import { LookupField } from "/@/lib/xingine-react/component/group/form/LookupField.tsx";
-import { CheckboxField } from "/@/lib/xingine-react/component/group/form/CheckboxField.tsx";
-import { NestedCheckboxField } from "/@/lib/xingine-react/component/group/form/NestedCheckBoxField.tsx";
+} from "xingine/dist/core/component/form-meta-map";
 
 export const InputField: React.FC<
   InputTypeProperties & { isSubmitting?: boolean }

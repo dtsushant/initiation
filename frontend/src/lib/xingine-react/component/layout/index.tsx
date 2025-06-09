@@ -1,11 +1,10 @@
 import React, { lazy, Suspense, useState } from "react";
-import { LayoutMandate } from "@xingine";
 import "./index.css";
 import Sidebar from "/@/lib/xingine-react/component/layout/panel/Sidebar.tsx";
 
 import { Grid, Layout as AntdLayout } from "antd";
 import { useXingineContext } from "/src/lib/xingine-react/context/ContextBureau.tsx";
-import { Navigate, RouteObject } from "react-router-dom";
+import { LayoutMandate } from "xingine";
 
 export const LayoutRenderer: React.FC<LayoutMandate> = () => {
   const { panelControl, moduleProperties } = useXingineContext();

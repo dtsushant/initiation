@@ -1,11 +1,11 @@
+import React, { useEffect, useState } from "react";
+import { Checkbox, Spin } from "antd";
+import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
 import {
   NestedCheckboxOption,
   NestedCheckboxTypeProperties,
-} from "@xingine/core/component/form-meta-map.ts";
-import React, { useEffect, useState } from "react";
-import { Checkbox, Spin } from "antd";
-import { nestedCheckboxOptionListDecoder } from "@xingine";
-import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
+} from "xingine/dist/core/component/form-meta-map";
+import { nestedCheckboxOptionListDecoder } from "xingine";
 
 interface NestedCheckboxGroupFieldProps extends NestedCheckboxTypeProperties {
   value: string[];

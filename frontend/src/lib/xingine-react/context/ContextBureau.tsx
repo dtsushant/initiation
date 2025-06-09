@@ -1,14 +1,13 @@
 import React, { createContext, useState, useContext, useEffect } from "react";
-import { ModuleProperties, modulePropertiesListDecoder } from "@xingine";
 import { RouteObject } from "react-router-dom";
 import {
   get,
   registerModule,
 } from "/src/lib/xingine-react/xingine-react.service.ts";
 import { getModuleRegistryService } from "/src/lib/xingine-react/xingine-react.registry.ts";
-import { LayoutRenderer } from "/src/lib/xingine-react/component/layout";
 import { XingineConfig } from "/src/lib/xingine-react/configuration/Configuration";
 import { mapDynamicRoutes } from "/@/lib/xingine-react/context/ContextBureau.utils.ts";
+import ModuleProperties, { modulePropertiesListDecoder } from "xingine";
 
 export interface ColorPalette {
   [key: string]: string;

@@ -1,12 +1,14 @@
 import { Injectable, RequestMethod, Type } from '@nestjs/common';
 import { DiscoveryService, MetadataScanner, Reflector } from '@nestjs/core';
 import {
+  Constructor,
+  extractRouteParams,
+  getProvisioneerProperties,
   GroupedPermission,
   ModuleProperties,
   Permission,
-} from '@xingine/core/xingine.type';
-import { getProvisioneerProperties } from '@xingine/core/xingine.decorator';
-import { Constructor, extractRouteParams } from '@xingine/core/utils/type';
+} from 'xingine';
+
 import { METHOD_METADATA, PATH_METADATA } from '@nestjs/common/constants';
 import { getCommissarProperties } from './xingine-nest.decorator';
 import { extractMeta } from './utils/commissar.utils';

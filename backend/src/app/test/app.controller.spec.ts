@@ -5,7 +5,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import ormConfig from '../../../mikro-orm.config';
 import { XingineModule } from '../../lib/xingine-nest/xingine.module';
 import { moduleMap } from '../app.config';
-import { ModulePropertyOptions } from '@xingine/core/xingine.type';
+import { ModulePropertyOptions } from 'xingine';
 
 describe('AppController', () => {
   let appController: AppController;

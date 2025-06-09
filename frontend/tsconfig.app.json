@@ -30,8 +30,6 @@
       "@shared/*": ["../packages/shared/src/*"],
       "@rule-ui": ["../packages/rule-ui/src/index.ts"],
       "@rule-ui/*": ["../packages/rule-ui/src/*"],
-      "@xingine": ["../packages/xingine/src/index.ts"],
-      "@xingine/*": ["../packages/xingine/src/*"]
     }
   },
   "include": ["src/**/*"]

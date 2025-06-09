@@ -1,14 +1,13 @@
 import { Form } from "antd";
-import { FormMeta } from "@xingine/core/component/component-meta-map.ts";
 import React, { useState } from "react";
 import { fieldTypeRenderMap } from "/@/lib/xingine-react/component/group/form/FormGroup.map.tsx";
 import { NamePath } from "antd/es/form/interface";
-import { dynamicShapeDecoder } from "@xingine";
 import { formGroup } from "/@/lib/xingine-react/component/group/form/FormGroup.tsx";
 import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
 import { useNavigate } from "react-router-dom";
-import { resolveDynamicPath } from "@xingine/core/utils/type.ts";
 import { post } from "/@/lib/xingine-react/xingine-react.service.ts";
+import { FormMeta } from "xingine/dist/core/component/component-meta-map";
+import { dynamicShapeDecoder, resolveDynamicPath } from "xingine";
 
 const FormRenderer: React.FC<
   FormMeta & {

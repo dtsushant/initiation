@@ -1,4 +1,4 @@
-import { ColumnProperty } from '@xingine/core/xingine.decorator';
+import { ColumnProperty } from 'xingine';
 
 export class UserList {
   id!: string;
@@ -36,6 +36,7 @@ export class UserList {
       inputType: 'number',
     },
   })
+  gender!: string;
   age!: number;
   assignedRoles!: string[];
 }

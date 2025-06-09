@@ -1,13 +1,12 @@
 import { Card } from "antd";
 
-import { DetailMeta } from "@xingine/core/component/component-meta-map.ts";
 import React, { useEffect, useState } from "react";
 import { renderDetailFields } from "/@/lib/xingine-react/component/group/detail/DetailGroup.tsx";
-import { dynamicShapeDecoder } from "@xingine";
 import { useParams } from "react-router-dom";
-import { resolveDynamicPath } from "@xingine/core/utils/type.ts";
 import { nestParamsSluggedParams } from "/@/lib/xingine-react/component/utils/Component.utils.ts";
 import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
+import { DetailMeta } from "xingine/dist/core/component/component-meta-map";
+import { dynamicShapeDecoder, resolveDynamicPath } from "xingine";
 
 export const DetailRenderer: React.FC<DetailMeta> = (meta) => {
   const [detailValue, setDetailValue] = useState<unknown>({});

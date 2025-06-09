@@ -1,11 +1,9 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
-import {
-  GroupedPermission,
-  ModuleProperties,
-} from '@xingine/core/xingine.type';
+
 import { XingineInspectorService } from '../lib/xingine-nest/xingine-inspector.service';
 import { ICacheService } from '../shared/cache/cache.interface';
+import { ModuleProperties, GroupedPermission } from 'xingine';
 
 @Injectable()
 export class AppService {

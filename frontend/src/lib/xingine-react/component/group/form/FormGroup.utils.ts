@@ -13,7 +13,7 @@ import {
   SwitchTypeProperties,
   TextareaTypeProperties,
   TreeSelectTypeProperties,
-} from "@xingine/core/component/component-meta-map.ts";
+} from "xingine/dist/core/component/form-meta-map";
 import { Rule } from "antd/es/form";
 
 export function generateRules(

@@ -1,20 +1,22 @@
 import { Card, Collapse, Table } from "antd";
-import {
-  ColumnMeta,
-  FieldMeta,
-  FormMeta,
-  TableMeta,
-} from "@xingine/core/component/component-meta-map.ts";
+
 import React, { useEffect, useState } from "react";
 import { ColumnsType } from "antd/es/table";
-import { dynamicShapeListDecoder } from "@xingine";
+
 import FormRenderer from "/@/lib/xingine-react/component/group/FormRenderer.tsx";
-import { loadUserIntoApp, userResponseDecoder } from "/@/types/auth.ts";
+
+import { post } from "/@/lib/xingine-react/xingine-react.service.ts";
+import {
+  ColumnMeta,
+  FormMeta,
+  TableMeta,
+} from "xingine/dist/core/component/component-meta-map";
 import {
   SearchCondition,
   SearchQuery,
-} from "@xingine/core/expressions/operators.ts";
-import { post } from "/@/lib/xingine-react/xingine-react.service.ts";
+} from "xingine/dist/core/expressions/operators";
+import { dynamicShapeListDecoder } from "xingine";
+import { FieldMeta } from "xingine/dist/core/component/form-meta-map";
 
 export const TableRenderer: React.FC<TableMeta> = (meta) => {
   const {

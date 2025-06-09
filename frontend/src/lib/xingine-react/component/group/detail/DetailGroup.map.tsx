@@ -1,11 +1,11 @@
-import { DetailMeta } from "@xingine/core/component/component-meta-map.ts";
+import { renderDetailFields } from "/@/lib/xingine-react/component/group/detail/DetailGroup.tsx";
 import {
   DetailFieldMeta,
   DetailInputTypeProperties,
-} from "@xingine/core/component/detail-meta-map.ts";
-import { formatDate } from "date-fns";
-import { renderDetailFields } from "/@/lib/xingine-react/component/group/detail/DetailGroup.tsx";
-import { resolvePath } from "@xingine/core/utils/type.ts";
+} from "xingine/dist/core/component/detail-meta-map";
+import { resolvePath } from "xingine";
+import { Badge } from "antd";
+import React from "react";
 
 export function renderValue(
   field: DetailFieldMeta,

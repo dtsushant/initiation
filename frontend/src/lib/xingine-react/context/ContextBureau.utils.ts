@@ -1,54 +1,47 @@
-import { RouteObject } from "react-router-dom";
-import { LayoutRenderer } from "/@/lib/xingine-react/component/layout";
-import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
-import { ModuleProperties } from "@xingine";
-import { XingineConfig } from "/@/lib/xingine-react/configuration/Configuration";
 import React from "react";
+import { RouteObject } from "react-router-dom";
+import ModuleProperties from "xingine";
+import { XingineConfig } from "/@/lib/xingine-react/configuration/Configuration";
+import { getModuleRegistryService } from "/@/lib/xingine-react/xingine-react.registry.ts";
+import { LayoutRenderer } from "/@/lib/xingine-react/component/layout";
+import { ModuleHome } from "/@/lib/xingine-react/component/layout/panel/ModuleHome.tsx";
 
 export function mapDynamicRoutes(
   data: ModuleProperties[],
-  config: XingineConfig, // You can strongly type this if available
+  config: XingineConfig,
 ): RouteObject[] {
-  const routeGroups = data
-    .map((module) => {
-      const components = module.uiComponent || [];
-
-      const groupedByLayout: Record<string, RouteObject[]> = {};
-
-      components.forEach((comp: any) => {
-        if (!comp?.path || !comp?.component) return;
-
-        const element = getModuleRegistryService()?.get(
-          comp.component,
-          comp.meta?.properties,
-        );
-
-        if (!element) return;
-
-        const layout = comp.layout || "default";
-        if (!groupedByLayout[layout]) groupedByLayout[layout] = [];
-
-        groupedByLayout[layout].push({
-          path: comp.path,
-          element,
-        });
-      });
-
-      return groupedByLayout;
-    })
-    .filter(Boolean);
-
-  // Merge grouped routes by layout
   const layoutRoutesMap: Record<string, RouteObject[]> = {};
 
-  routeGroups.forEach((group) => {
-    for (const layout in group) {
-      if (!layoutRoutesMap[layout]) layoutRoutesMap[layout] = [];
-      layoutRoutesMap[layout].push(...group[layout]);
-    }
-  });
+  layoutRoutesMap["default"] = [];
 
-  // Map final route objects
+  for (const module of data) {
+    const components = module.uiComponent || [];
+
+    layoutRoutesMap["default"].push({
+      path: module.name,
+      element: React.createElement(ModuleHome, module),
+    });
+
+    for (const comp of components) {
+      if (!comp?.path || !comp?.component) continue;
+
+      const element = getModuleRegistryService()?.get(
+        comp.component,
+        comp.meta?.properties,
+      );
+      if (!element) continue;
+
+      const layoutKey = comp.layout || "default";
+
+      if (!layoutRoutesMap[layoutKey]) layoutRoutesMap[layoutKey] = [];
+
+      layoutRoutesMap[layoutKey].push({
+        path: comp.path,
+        element,
+      });
+    }
+  }
+
   const routes: RouteObject[] = Object.entries(layoutRoutesMap).map(
     ([layoutName, children]) => {
       const Layout: React.FC =
@@ -63,6 +56,6 @@ export function mapDynamicRoutes(
       };
     },
   );
-  console.log("the routest", routes);
+  console.log("the routes", routes);
   return routes;
 }

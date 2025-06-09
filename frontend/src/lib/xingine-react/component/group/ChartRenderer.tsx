@@ -18,7 +18,7 @@ import axios from "axios";
 import {
   ChartConfig,
   ChartMeta,
-} from "@xingine/core/component/component-meta-map.ts";
+} from "xingine/dist/core/component/component-meta-map";
 
 const renderChart = (chart: ChartConfig, index: number) => {
   const { type, title, labels = [], datasets = [] } = chart;

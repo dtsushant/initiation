@@ -5,7 +5,6 @@ import { UserService } from './service/user.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import { GoogleStrategy } from '../../shared/auth/strategies/google.strategy';
 import { PassportModule } from '@nestjs/passport';
-import { ModuleProperty } from '@xingine/core/xingine.decorator';
 import { Group } from './entity/group.entity';
 import { Permission } from './entity/permission.entity';
 import { Role } from './entity/role.entity';

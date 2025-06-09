@@ -1,7 +1,4 @@
-import { CommissarProperties } from '@xingine/core/xingine.type';
-import { FormField } from '@xingine/core/xingine.decorator';
 import { extractMeta } from '../utils/commissar.utils';
-import { FormMeta } from '@xingine/core/component/component-meta-map';
 import {
   IsEmail,
   IsNotEmpty,
@@ -16,8 +13,8 @@ import {
   UserDetail,
   UserLoginDto,
 } from './dto/commisar.dto';
-import { chartMetaDecoder } from '@xingine/core/decoders/chart.decoder';
-import { componentMetaDecoder } from '@xingine/core/xingine.decoder';
+import { FormMeta } from 'xingine/dist/core/component/component-meta-map';
+import { CommissarProperties, componentMetaDecoder } from 'xingine';
 
 describe('extractMeta test', () => {
   it('should return module metadata from CommissarProperties', async () => {

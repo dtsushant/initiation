@@ -1,6 +1,6 @@
 import React, { FC, FunctionComponent, JSX } from "react";
-import { ModuleProperties } from "@xingine";
-import { ComponentMetaMap } from "@xingine/core/component/component-meta-map.ts";
+import ModuleProperties from "xingine";
+import { ComponentMetaMap } from "xingine/dist/core/component/component-meta-map";
 
 type ModuleRegistry = {
   moduleProperties: ModuleProperties[];

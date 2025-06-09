@@ -1,5 +1,5 @@
-import { FormField } from '@xingine/core/xingine.decorator';
 import { ApiProperty } from '@nestjs/swagger';
+import { FormField } from 'xingine';
 
 export class UserLoginDto {
   @FormField({

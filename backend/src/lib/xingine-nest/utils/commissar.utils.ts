@@ -1,6 +1,23 @@
 // utils/form-meta.util.ts
 import 'reflect-metadata';
 import { getMetadataStorage } from 'class-validator';
+
+import {
+  COLUMN_PROPERTY_METADATA,
+  CommissarProperties,
+  DETAIL_FIELD_METADATA,
+  FORM_FIELD_METADATA,
+} from 'xingine';
+
+import { extractChartMetaFromDirective } from './commissar.charts';
+import {
+  FieldInputTypeProperties,
+  FieldMeta,
+} from 'xingine/dist/core/component/form-meta-map';
+import {
+  DetailFieldMeta,
+  DetailInputTypeProperties,
+} from 'xingine/dist/core/component/detail-meta-map';
 import {
   ChartMeta,
   ColumnMeta,
@@ -8,26 +25,13 @@ import {
   ComponentMetaMap,
   DetailDispatchProperties,
   DetailMeta,
-  FieldInputTypeProperties,
-  FieldMeta,
   FormDispatchProperties,
   FormMeta,
   TabDispatchProperties,
   TableDispatchProperties,
   TableMeta,
   TabMeta,
-} from '@xingine/core/component/component-meta-map';
-import { CommissarProperties } from '@xingine/core/xingine.type';
-import {
-  COLUMN_PROPERTY_METADATA,
-  DETAIL_FIELD_METADATA,
-  FORM_FIELD_METADATA,
-} from '@xingine/core/xingine.decorator';
-import {
-  DetailFieldMeta,
-  DetailInputTypeProperties,
-} from '@xingine/core/component/detail-meta-map';
-import { extractChartMetaFromDirective } from './commissar.charts';
+} from 'xingine/dist/core/component/component-meta-map';
 
 function guessInputTypeFromType(type: unknown): keyof FieldInputTypeProperties {
   if (type === String) return 'input';

@@ -1,4 +1,4 @@
-import { ChartMeta } from '@xingine/core/component/component-meta-map';
+import { ChartMeta } from 'xingine/dist/core/component/component-meta-map';
 
 // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
 export function extractChartMetaFromDirective(dtoClass: Function): ChartMeta {

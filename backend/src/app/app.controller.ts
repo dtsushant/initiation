@@ -1,7 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
-import { ModulePropertyOptions } from '@xingine/core/xingine.type';
 import { PermissionGateKeeper } from '../shared/auth/auth-permit.decorator';
+import { ModulePropertyOptions } from 'xingine';
 
 @Controller()
 export class AppController {

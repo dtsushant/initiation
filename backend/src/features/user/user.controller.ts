@@ -27,16 +27,13 @@ import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
 import { User } from '../../shared/auth/auth-user.decorator';
 import { PermissionGateKeeper } from '../../shared/auth/auth-permit.decorator';
-import { Provisioneer } from '@xingine/core/xingine.decorator';
+
 import { Commissar } from '../../lib/xingine-nest/xingine-nest.decorator';
-import { UserRO } from './dto/user-login.dto';
 import { UserCreateDto, UserDetailDto } from './dto/user-create.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
-import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
+
 import { UserList } from './dto/user-list.dto';
-import { SearchQuery } from '@xingine/core/expressions/operators';
-import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
-import { UserAnalyticsDto } from './dto/user-analytics.dto';
+
 import { userProvisioneer } from './constant/component/user.provisioneer';
 import {
   addRole,
@@ -46,6 +43,8 @@ import {
   userList,
   userLogin,
 } from './constant/component/user.commissar';
+import { NestedCheckboxOption } from 'xingine/dist/core/component/form-meta-map';
+import { Provisioneer, SearchQuery } from 'xingine';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -105,6 +104,7 @@ export class UserController {
         firstName: 'firstName',
         lastName: 'lastName',
         age: 10,
+        gender: 'male',
         assignedRoles: [],
       };
     });

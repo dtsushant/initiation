@@ -14,11 +14,14 @@ import { CategoryService } from './category.service';
 import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
 import { User } from '../../shared/auth/auth-user.decorator';
+import { Commissar } from '../../lib/xingine-nest/xingine-nest.decorator';
+import { Provisioneer } from 'xingine';
 
 @ApiBearerAuth()
 @ApiTags('categories')
 @ApiExtraModels(CreateCategoryDto)
 @Controller('categories')
+@Provisioneer({ name: 'Category' })
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 
@@ -37,6 +40,11 @@ export class CategoryController {
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
+  @Commissar({
+    component: 'NewCategory',
+    directive: CreateCategoryDto,
+    operative: 'FormRenderer',
+  })
   @Post('/save')
   async create(
     @User('id') userId: string,

@@ -8,11 +8,8 @@ import { defaultInternalComponents } from "/@/lib/xingine-react/component/group"
 import axios from "axios";
 import { Decoder, object } from "decoders";
 import { Err, Ok, Result } from "@hqoss/monads";
-import {
-  GenericErrors,
-  genericErrorsDecoder,
-  ModuleProperties,
-} from "@xingine";
+import ModuleProperties, { genericErrorsDecoder } from "xingine";
+import GenericErrors from "xingine";
 
 const token = localStorage.getItem("token");
 

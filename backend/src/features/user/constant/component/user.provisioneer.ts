@@ -1,6 +1,6 @@
-import { Provisioneer } from '@xingine/core/xingine.type';
+import { ProvisioneerProps } from 'xingine';
 
-export const userProvisioneer: Provisioneer = {
+export const userProvisioneer: ProvisioneerProps = {
   name: 'User',
   description: 'Defines the user property ',
 };

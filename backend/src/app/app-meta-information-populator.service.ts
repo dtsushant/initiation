@@ -5,11 +5,9 @@ import { Permission } from '../features/user/entity/permission.entity';
 import { Collection, EntityClass } from '@mikro-orm/core';
 import { Role } from '../features/user/entity/role.entity';
 import { AppDetail } from './app.entity';
-import {
-  GroupedPermission,
-  ModuleProperties,
-} from '@xingine/core/xingine.type';
+
 import { permissionPath } from '../shared/utils/string.utils';
+import { GroupedPermission } from 'xingine';
 
 @Injectable()
 export class AppMetaInformationPopulatorService {

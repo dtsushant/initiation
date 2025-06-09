@@ -13,7 +13,6 @@
     "paths": {
       "@shared/*": ["packages/shared/src/*"],
       "@rule-ui/*": ["packages/rule-ui/src/*"],
-      "@xingine/*": ["packages/xingine/src/*"],
     }
   },
   "exclude": ["node_modules", "dist","generate-component-map.js"],

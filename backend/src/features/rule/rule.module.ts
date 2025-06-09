@@ -1,6 +1,5 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { RuleController } from './rule.controller';
-import { ModuleProperty } from '@xingine/core/xingine.decorator';
 /*import { RULE_PERMISSIONS } from './constant/rule.permissions';
 
 @ModuleProperty({

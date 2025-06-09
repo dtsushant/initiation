@@ -17,9 +17,8 @@ import { hmacHash } from '../../../shared/utils/crypto.utils';
 import { Role } from '../entity/role.entity';
 import { UserCreateDto } from '../dto/user-create.dto';
 import { Permission } from '../entity/permission.entity';
-import { NestedCheckboxOption } from '@xingine/core/component/form-meta-map';
-import { SearchQuery } from '@xingine/core/expressions/operators';
-import { buildMikroOrmWhereFromNestedCondition } from '@xingine/core/utils/type';
+import { NestedCheckboxOption } from 'xingine/dist/core/component/form-meta-map';
+import { buildMikroOrmWhereFromNestedCondition, SearchQuery } from 'xingine';
 
 @Injectable()
 export class UserService {

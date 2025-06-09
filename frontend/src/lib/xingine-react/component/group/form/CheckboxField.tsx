@@ -1,12 +1,12 @@
 import React, { forwardRef, useEffect, useState } from "react";
 import { Checkbox, CheckboxChangeEvent, CheckboxRef, Spin } from "antd";
+
+import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
 import {
   CheckboxOption,
   CheckboxTypeProperties,
-  LookupTypeProperties,
-} from "@xingine/core/component/form-meta-map.ts";
-import { checkboxOptionListDecoder, checkboxTypeDecoder } from "@xingine";
-import { get } from "/@/lib/xingine-react/xingine-react.service.ts";
+} from "xingine/dist/core/component/form-meta-map";
+import { checkboxOptionListDecoder } from "xingine";
 
 interface CheckboxGroupFieldProps extends CheckboxTypeProperties {
   value: string[];

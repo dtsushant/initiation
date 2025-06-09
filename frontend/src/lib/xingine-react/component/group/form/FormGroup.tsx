@@ -1,8 +1,3 @@
-import {
-  FieldMeta,
-  ObjectFieldProperties,
-  ObjectListFieldProperties,
-} from "@xingine/core/component/component-meta-map.ts";
 import { fieldTypeRenderMap } from "/@/lib/xingine-react/component/group/form/FormGroup.map.tsx";
 import { Card, Form } from "antd";
 import { NamePath } from "antd/es/form/interface";
@@ -11,6 +6,11 @@ import {
   resolveComponentProps,
 } from "/@/lib/xingine-react/component/group/form/FormGroup.utils.ts";
 import React from "react";
+import {
+  FieldMeta,
+  ObjectFieldProperties,
+  ObjectListFieldProperties,
+} from "xingine/dist/core/component/form-meta-map";
 
 export function formGroup(
   fields: FieldMeta[],

@@ -1,4 +1,3 @@
-import { FormField } from '@xingine/core/xingine.decorator';
 import {
   IsArray,
   IsEmail,
@@ -9,6 +8,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { UserRO } from './user-login.dto';
 import { IUserData, IUserRO } from '../user.interface';
+import { FormField } from 'xingine';
 
 export enum CreatedBy {
   SELF = 'SELF_REGISTRATION',

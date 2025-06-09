@@ -5,7 +5,6 @@ import { Category } from './category.entity';
 import { UserModule } from '../user/user.module';
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { User } from '../user/entity/user.entity';
-import { ModuleProperty } from '@xingine/core/xingine.decorator';
 import { CATEGORY_PERMISSIONS } from './constant/category.permissions';
 /*import { CategoryViewComponent } from './component/category-view.component';
 @ModuleProperty({

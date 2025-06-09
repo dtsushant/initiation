@@ -1,11 +1,10 @@
-import { Constructor } from '@xingine/core/utils/type';
-import { CommissarProperties } from '@xingine/core/xingine.type';
-import { PROVISIONEER_METADATA } from '@xingine/core/xingine.decorator';
-import {
-  ComponentMetaMap,
-  FormMeta,
-} from '@xingine/core/component/component-meta-map';
 import { extractMeta } from './utils/commissar.utils';
+import { ComponentMetaMap } from 'xingine/dist/core/component/component-meta-map';
+import {
+  Constructor,
+  PROVISIONEER_METADATA,
+  CommissarProperties,
+} from 'xingine';
 
 export const COMMISSAR_METADATA = 'xingine:provisioneer:commissar';
 

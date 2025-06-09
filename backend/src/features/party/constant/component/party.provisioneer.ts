@@ -1,6 +1,6 @@
-import { Provisioneer } from '@xingine/core/xingine.type';
+import { ProvisioneerProps } from 'xingine';
 
-export const partyProvisioneer: Provisioneer = {
+export const partyProvisioneer: ProvisioneerProps = {
   name: 'Party',
   description: 'Manages everything party',
 };

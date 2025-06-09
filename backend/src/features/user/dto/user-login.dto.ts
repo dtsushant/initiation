@@ -1,7 +1,7 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { IUserData, IUserRO } from '../user.interface';
-import { FormField } from '@xingine/core/xingine.decorator';
+import { FormField } from 'xingine';
 
 export class UserLoginDto {
   @FormField({
