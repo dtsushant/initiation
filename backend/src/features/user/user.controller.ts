@@ -28,7 +28,7 @@ import { Request } from 'express';
 import { User } from '../../shared/auth/auth-user.decorator';
 import { PermissionGateKeeper } from '../../shared/auth/auth-permit.decorator';
 
-import { Commissar } from '../../lib/xingine-nest/xingine-nest.decorator';
+import { Commissar } from 'xingine-nest';
 import { UserCreateDto, UserDetailDto } from './dto/user-create.dto';
 import { CreateRoleDto } from './dto/create-role.dto';
 

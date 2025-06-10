@@ -1,7 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { Logger } from '@nestjs/common';
 
-import { XingineInspectorService } from '../lib/xingine-nest/xingine-inspector.service';
+import { XingineInspectorService } from 'xingine-nest';
 import { ICacheService } from '../shared/cache/cache.interface';
 import { ModuleProperties, GroupedPermission } from 'xingine';
 

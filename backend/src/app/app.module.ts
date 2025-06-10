@@ -10,7 +10,7 @@ import { MikroOrmMiddleware, MikroOrmModule } from '@mikro-orm/nestjs';
 import ormConfig from '../../mikro-orm.config';
 import { MikroORM } from '@mikro-orm/postgresql';
 import { moduleMap } from './app.config';
-import { XingineModule } from '../lib/xingine-nest/xingine.module';
+import { XingineModule } from 'xingine-nest';
 import { TenantModule } from '../features/tenant/tenant.module';
 import { AppMetaInformationPopulatorService } from './app-meta-information-populator.service';
 import { JwtAuthGuard } from '../shared/auth/auth.guard';

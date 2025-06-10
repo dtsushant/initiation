@@ -3,7 +3,7 @@ import { AppController } from '../app.controller';
 import { AppService } from '../app.service';
 import { MikroOrmModule } from '@mikro-orm/nestjs';
 import ormConfig from '../../../mikro-orm.config';
-import { XingineModule } from '../../lib/xingine-nest/xingine.module';
+import { XingineModule } from 'xingine-nest';
 import { moduleMap } from '../app.config';
 import { ModulePropertyOptions } from 'xingine';
 
