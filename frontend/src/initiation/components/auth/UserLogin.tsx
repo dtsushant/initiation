@@ -1,11 +1,12 @@
 import React from "react";
-import { FormMeta } from "@xingine/core/component/component-meta-map.ts";
-import FormRenderer from "/src/lib/xingine-react/component/group/FormRenderer.tsx";
-import { post } from "/src/lib/xingine-react/xingine-react.service.ts";
+import { FormMeta } from "xingine/dist/core/component/component-meta-map";
+import { ChartRenderer, post } from "xingine-react";
 import {
   loadUserIntoApp,
   userResponseDecoder,
 } from "/@/initiation/components/auth/Auth.types.ts";
+import FormRenderer from "xingine-react/dist/component/group/FormRenderer";
+//import FormRenderer from "xingine-react/dist/component/group/FormRenderer";
 
 export const UserLogin: React.FC<FormMeta> = (meta) => {
   const onFinish = async (values: Record<string, unknown>): Promise<void> => {

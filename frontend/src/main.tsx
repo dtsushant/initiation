@@ -1,15 +1,13 @@
 import React, { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
-
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { Workbox } from "workbox-window";
 import InstallAppButton from "/@/InstallAppButton.tsx";
 import "./index.css";
-import { ContextBureau } from "/src/lib/xingine-react/context/ContextBureau.tsx";
 import { App } from "/src/initiation/App.tsx";
 import { layoutMap } from "/@/initiation/constants/Layout.map.ts";
 import { componentMap } from "/@/initiation/constants/Component.map.ts";
+import { ContextBureau } from "xingine-react";
 
 // Create query client for caching
 const queryClient = new QueryClient({

@@ -17,9 +17,9 @@ const PWA = VitePWA({
   registerType: "autoUpdate",
   includeAssets: ["favicon.ico", "apple-touch-icon.png", "masked-icon.png"],
   manifest: {
-    name: "Business Application",
-    short_name: "BizApp",
-    description: "A customizable business application",
+    name: "Initiation",
+    short_name: "Init",
+    description: "Take an initiative to build your dream",
     icons: [
       {
         src: "android-chrome-192x192.png",

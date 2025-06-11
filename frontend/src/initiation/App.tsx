@@ -1,6 +1,6 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import React from "react";
-import { useXingineContext } from "/src/lib/xingine-react/context/ContextBureau.tsx";
+import { useXingineContext } from "xingine-react";
 import { store } from "/@/initiation/store";
 import { Provider } from "react-redux";
 
