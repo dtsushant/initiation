@@ -115,7 +115,7 @@ export class UserService {
 
   async create(dto: UserCreateDto): Promise<IUserRO> {
     // check uniqueness of username/email
-    const { username, email, password } = dto.identity;
+    const { username, email, password, firstName, lastName } = dto.identity;
     const exists = await this.userRepository.count({
       $or: [{ username }, { email }],
     });
@@ -131,7 +131,13 @@ export class UserService {
     }
 
     // create new user
-    const user = new User(username, email, password);
+    const user = new User(
+      username,
+      email,
+      password,
+      firstName ?? '',
+      lastName ?? '',
+    );
 
     const roles = dto.accessControl?.roles;
     if (roles && roles.length > 0) {
@@ -227,6 +233,8 @@ export class UserService {
     const userRO = {
       bio: user.bio,
       email: user.email,
+      firstName: user.firstName,
+      lastName: user.lastName,
       image: user.image,
       token: this.generateJWT(user),
       username: user.username,
