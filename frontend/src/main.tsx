@@ -8,6 +8,7 @@ import { App } from "/src/initiation/App.tsx";
 import { layoutMap } from "/@/initiation/constants/Layout.map.ts";
 import { componentMap } from "/@/initiation/constants/Component.map.ts";
 import { ContextBureau } from "xingine-react";
+import { XingineConfig } from "../../../xi-engine/xingine-react/src/configuration/Configuration";
 
 // Create query client for caching
 const queryClient = new QueryClient({
@@ -39,7 +40,7 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
   });
 }
 
-const config = { component: componentMap, layout: layoutMap };
+const config = { component: componentMap, layout: layoutMap } as XingineConfig;
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

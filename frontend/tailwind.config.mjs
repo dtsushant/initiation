@@ -3,7 +3,12 @@
 export default {
   darkMode: "class",
   important: true,
-  content: ["./src/**/*.{js,jsx,ts,tsx}", "./index.html","./src/**/*.css"],
+  content: [
+      "./src/**/*.{js,jsx,ts,tsx}",
+      "./index.html","./src/**/*.css",
+    "./node_modules/xingine-react/**/*.{js,ts,jsx,tsx}",
+    "../../xi-engine/xingine-react/**/*.{js,ts,jsx,tsx}",
+    ],
   plugins: [
   ],
   attributify: true,
