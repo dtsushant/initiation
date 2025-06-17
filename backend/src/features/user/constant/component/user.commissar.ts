@@ -42,6 +42,11 @@ export const createUser: CommissarProperties = {
 
 export const userLogin: CommissarProperties = {
   directive: UserLoginDto,
+  expositionRule: {
+    icon: {
+      name: 'LoginOutlined',
+    },
+  },
   operative: 'FormRenderer',
   component: 'UserLogin',
   layout: 'LoginLayout',

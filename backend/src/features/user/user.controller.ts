@@ -131,6 +131,7 @@ export class UserController {
 
   @Commissar(createUser)
   @ApiBody({
+    description: 'Api to create user',
     schema: {
       type: 'object',
       properties: {
@@ -148,6 +149,7 @@ export class UserController {
     return this.userService.create(userData);
   }
 
+  @ApiBody({ description: 'API to delete the user', type: UserList })
   @Delete('users/:slug')
   async delete(@Param() params: Record<string, string>): Promise<number> {
     return this.userService.delete(params.slug);

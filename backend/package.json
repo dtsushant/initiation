@@ -49,7 +49,7 @@
     "rxjs": "^7.8.1",
     "slug": "^10.0.0",
     "swagger-ui-express": "^5.0.1",
-    "xingine-nest": "1.0.0"
+    "xingine-nest": "file:.yalc/xingine-nest"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",
