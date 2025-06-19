@@ -36,6 +36,24 @@ class Identity {
   })
   email!: string;
   @FormField({
+    label: 'FirstName',
+    inputType: 'input',
+    required: true,
+    properties: {
+      placeholder: 'Enter First Name',
+    },
+  })
+  firstName?: string;
+  @FormField({
+    label: 'LastName',
+    inputType: 'input',
+    required: true,
+    properties: {
+      placeholder: 'Enter Last Name',
+    },
+  })
+  lastName?: string;
+  @FormField({
     label: 'Password',
     inputType: 'password',
     required: true,
@@ -44,8 +62,6 @@ class Identity {
     },
   })
   password!: string;
-  firstName?: string;
-  lastName?: string;
 }
 
 class ContactInfo {
@@ -103,6 +119,8 @@ export class UserCreateDto {
 export class UserData {
   bio!: string;
   email!: string;
+  firstName!: string;
+  lastName!: string;
   image?: string;
   token!: string;
   username!: string;

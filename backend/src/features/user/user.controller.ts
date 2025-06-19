@@ -100,8 +100,8 @@ export class UserController {
         id: user.id,
         username: user.username,
         email: user.email,
-        firstName: 'firstName',
-        lastName: 'lastName',
+        firstName: user.firstName,
+        lastName: user.lastName,
         age: 10,
         gender: 'male',
         assignedRoles: [],
@@ -177,8 +177,8 @@ export class UserController {
       throw new HttpException({ errors }, 401);
     }
     const token = this.userService.generateJWT(foundUser);
-    const { email, username, bio, image } = foundUser;
-    const user = { email, token, username, bio, image };
+    const { email, username, bio, image, firstName, lastName } = foundUser;
+    const user = { email, token, username, bio, image, firstName, lastName };
     return { user };
   }
 
