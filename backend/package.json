@@ -49,6 +49,7 @@
     "rxjs": "^7.8.1",
     "slug": "^10.0.0",
     "swagger-ui-express": "^5.0.1",
+    "uuid": "^11.1.0",
     "xingine-nest": "^1.0.2"
   },
   "devDependencies": {
@@ -67,6 +68,7 @@
     "@types/node": "^22.10.7",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/supertest": "^6.0.2",
+    "@types/uuid": "^10.0.0",
     "eslint": "^9.18.0",
     "eslint-config-prettier": "^10.0.1",
     "eslint-plugin-prettier": "^5.2.2",
@@ -91,6 +93,8 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"],
+    "preset": "ts-jest",
     "moduleNameMapper": {
       "^@shared/(.*)$": "<rootDir>/../packages/shared/src/$1",
       "^@rule-ui/(.*)$": "<rootDir>/../packages/rule-ui/src/$1"
