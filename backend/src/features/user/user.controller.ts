@@ -80,8 +80,7 @@ export class UserController {
   @Commissar(addRole)
   @Post('addRole')
   async createRole(@Body() roleData: CreateRoleDto): Promise<{ msg: string }> {
-    console.log('the roleData', roleData);
-    return { msg: 'success' };
+    return this.userService.addUpdateRole(roleData);
   }
 
   @Commissar(userDetail)
@@ -101,8 +100,8 @@ export class UserController {
         id: user.id,
         username: user.username,
         email: user.email,
-        firstName: 'firstName',
-        lastName: 'lastName',
+        firstName: user.firstName,
+        lastName: user.lastName,
         age: 10,
         gender: 'male',
         assignedRoles: [],
@@ -131,6 +130,7 @@ export class UserController {
 
   @Commissar(createUser)
   @ApiBody({
+    description: 'Api to create user',
     schema: {
       type: 'object',
       properties: {
@@ -148,6 +148,7 @@ export class UserController {
     return this.userService.create(userData);
   }
 
+  @ApiBody({ description: 'API to delete the user', type: UserList })
   @Delete('users/:slug')
   async delete(@Param() params: Record<string, string>): Promise<number> {
     return this.userService.delete(params.slug);
@@ -176,8 +177,8 @@ export class UserController {
       throw new HttpException({ errors }, 401);
     }
     const token = this.userService.generateJWT(foundUser);
-    const { email, username, bio, image } = foundUser;
-    const user = { email, token, username, bio, image };
+    const { email, username, bio, image, firstName, lastName } = foundUser;
+    const user = { email, token, username, bio, image, firstName, lastName };
     return { user };
   }
 

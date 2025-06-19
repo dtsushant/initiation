@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import React from "react";
+import React, { useMemo } from "react";
 import { useXingineContext } from "xingine-react";
 import { store } from "/@/initiation/store";
 import { Provider } from "react-redux";
@@ -7,11 +7,14 @@ import { Provider } from "react-redux";
 export function App() {
   const { routes, moduleProperties } = useXingineContext();
 
+  const router = useMemo(() => {
+    if (routes.length === 0) return null;
+    return createBrowserRouter(routes);
+  }, [routes]);
+
   return (
     <Provider store={store}>
-      {routes.length > 0 && (
-        <RouterProvider router={createBrowserRouter(routes)} />
-      )}
+      {router && <RouterProvider router={router} />}
     </Provider>
   );
 }

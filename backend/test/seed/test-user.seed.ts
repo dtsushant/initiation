@@ -11,6 +11,8 @@ export async function createTestUser(
       username: 'testuser2',
       email: 'test2@test.com',
       password: 'secret123',
+      firstName: 'Test',
+      lastName: 'User',
     },
   };
   try {

@@ -30,6 +30,12 @@ export class User {
   @IsEmail()
   email: string;
 
+  @Property({ fieldName: 'firstname' })
+  firstName: string;
+
+  @Property({ fieldName: 'lastname' })
+  lastName: string;
+
   @Property({ fieldName: 'bio' })
   bio = '';
 
@@ -124,9 +130,17 @@ export class User {
   })
   followed = new Collection<User>(this);
 
-  constructor(username: string, email: string, password: string) {
+  constructor(
+    username: string,
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string,
+  ) {
     this.username = username;
     this.email = email;
+    this.firstName = firstName;
+    this.lastName = lastName;
 
     const userPassword = new UserPassword();
     userPassword.passwordHash = hmacHash(password);
