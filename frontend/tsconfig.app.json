@@ -30,6 +30,7 @@
       "@shared/*": ["../packages/shared/src/*"],
       "@rule-ui": ["../packages/rule-ui/src/index.ts"],
       "@rule-ui/*": ["../packages/rule-ui/src/*"],
+      "xingine-react": [".yalc/xingine-react/dist/index.js"]
     }
   },
   "include": ["src/**/*"]

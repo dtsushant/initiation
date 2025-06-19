@@ -4,7 +4,8 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "npm run clean && vite",
+    "clean": "rimraf .node_modules/.vite",
     "start": "vite",
     "build": "tsc -b && vite build",
     "lint": "eslint .",
@@ -36,8 +37,7 @@
     "recharts": "^2.15.3",
     "redux-persist": "^6.0.0",
     "use-debounce": "^10.0.4",
-    "vite-plugin-pwa": "^1.0.0",
-    "xingine-react": "file:.yalc/xingine-react"
+    "vite-plugin-pwa": "^1.0.0"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
@@ -55,6 +55,7 @@
     "postcss-load-config": "^6.0.1",
     "postcss-nesting": "^13.0.1",
     "postcss-styled-syntax": "^0.7.1",
+    "rimraf": "^6.0.1",
     "simple-git-hooks": "^2.12.1",
     "stylelint": "^16.17.0",
     "stylelint-config-standard": "^37.0.0",

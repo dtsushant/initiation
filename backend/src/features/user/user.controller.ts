@@ -80,8 +80,7 @@ export class UserController {
   @Commissar(addRole)
   @Post('addRole')
   async createRole(@Body() roleData: CreateRoleDto): Promise<{ msg: string }> {
-    console.log('the roleData', roleData);
-    return { msg: 'success' };
+    return this.userService.addUpdateRole(roleData);
   }
 
   @Commissar(userDetail)

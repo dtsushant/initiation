@@ -6,21 +6,19 @@ export class CreateRoleDto {
   @ApiProperty()
   @IsNotEmpty()
   @IsString()
-  readonly name!: string;
-
   @FormField({
-    label: 'Permission assigned',
-    inputType: 'checkbox',
+    label: 'Role Name',
+    inputType: 'input',
     required: true,
     properties: {
-      fetchAction: 'users/role-lookup',
+      placeholder: 'Enter Role Name',
+      maxLength: 20,
+      validationRegex: '^ROLE_[a-zA-Z0-9_]{0,15}$',
+      regexValidationMessage:
+        'Role name must start with "ROLE_" and can contain alphanumeric characters and underscores, up to 20 characters in total.',
     },
   })
-  @ApiProperty()
-  @IsOptional()
-  @IsArray()
-  @IsString({ each: true })
-  readonly permissions?: string[];
+  readonly name!: string;
 
   @FormField({
     label: 'Actual Permission assigned',
@@ -31,7 +29,6 @@ export class CreateRoleDto {
     },
   })
   @ApiProperty()
-  @IsOptional()
   @IsArray()
   @IsString({ each: true })
   readonly moduledPermission?: string[];

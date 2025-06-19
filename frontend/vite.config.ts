@@ -2,7 +2,6 @@ import { ConfigEnv, defineConfig, UserConfig } from "vite";
 import fs from "node:fs";
 import { fileURLToPath } from "url";
 import { dirname, resolve } from "path";
-import { resolve } from "node:path";
 import react from "@vitejs/plugin-react";
 import dotenv from "dotenv";
 import checker from "vite-plugin-checker";
@@ -106,6 +105,11 @@ export default ({ mode }: ConfigEnv) => {
     plugins: [react(), checker({ typescript: true }), viteCompression(), PWA],
     resolve: {
       alias: [
+        {
+          find: "xingine-react",
+          replacement: resolve(__dirname, "./.yalc/xingine-react/dist/"),
+        }, // added with yalc add xingine-react --pure
+        //   { find: "xingine", replacement: resolve(__dirname, "./.yalc/xingine/dist/") }, // added with yalc add xingine-react --pure
         { find: "/@", replacement: resolve(__dirname, "./src") },
         {
           find: "@shared",

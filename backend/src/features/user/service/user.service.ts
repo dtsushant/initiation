@@ -19,6 +19,7 @@ import { UserCreateDto } from '../dto/user-create.dto';
 import { Permission } from '../entity/permission.entity';
 import { NestedCheckboxOption } from 'xingine/dist/core/component/form-meta-map';
 import { buildMikroOrmWhereFromNestedCondition, SearchQuery } from 'xingine';
+import { CreateRoleDto } from '../dto/create-role.dto';
 
 @Injectable()
 export class UserService {
@@ -260,5 +261,45 @@ export class UserService {
       users: users.map((user) => user.toJSON()),
       usersCount: usersCount.count,
     };
+  }
+
+  async addUpdateRole(roleData: CreateRoleDto): Promise<{ msg: string }> {
+    const { name, moduledPermission } = roleData;
+
+    let role: Role | null = await this.roleRepository.findOne({ id: name });
+
+    if (!role) {
+      // Create a new role if it doesn't exist
+      role = new Role();
+      role.id = name;
+      role.createdAt = new Date();
+    }
+
+    // Update permissions
+    if (moduledPermission && moduledPermission.length > 0) {
+      const permissions = await this.permissionRepository.find({
+        id: { $in: moduledPermission },
+      });
+
+      if (permissions.length !== moduledPermission.length) {
+        throw new HttpException(
+          {
+            message: 'Input data validation failed',
+            errors: { permissions: "One or more permissions don't exist" },
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      role.permissions.set(permissions);
+    }
+
+    // Update the updatedAt field
+    role.updatedAt = new Date();
+
+    // Persist the role
+    await this.em.persistAndFlush(role);
+
+    return { msg: 'Role successfully added/updated' };
   }
 }
