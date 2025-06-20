@@ -71,6 +71,4 @@ export class Inventory {
   trackers?: InventoryTracker[];
 }
 
-export interface InventoryDTO
-  extends EntityDTO<Inventory>,
-    Record<string, never> {}
+export type InventoryDTO = EntityDTO<Inventory>;

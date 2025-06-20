@@ -52,6 +52,4 @@ export class InventoryTracker {
   transactionDate!: Date;
 }
 
-export interface InventoryTrackerDTO
-  extends EntityDTO<InventoryTracker>,
-    Record<string, never> {}
+export type InventoryTrackerDTO = EntityDTO<InventoryTracker>;

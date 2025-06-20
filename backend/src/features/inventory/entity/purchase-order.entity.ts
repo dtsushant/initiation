@@ -55,6 +55,4 @@ export class PurchaseOrder {
   notes?: string;
 }
 
-export interface PurchaseOrderDTO
-  extends EntityDTO<PurchaseOrder>,
-    Record<string, never> {}
+export type PurchaseOrderDTO = EntityDTO<PurchaseOrder>;

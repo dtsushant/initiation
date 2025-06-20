@@ -29,6 +29,4 @@ export class Category extends BaseEntity {
   children?: Category[];
 }
 
-export interface CategoryDTO
-  extends EntityDTO<Category>,
-    Record<string, never> {}
+export type CategoryDTO = EntityDTO<Category>;
