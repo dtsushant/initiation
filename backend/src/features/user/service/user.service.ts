@@ -5,6 +5,8 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import { CreateUserDto, UserLoginDto, UpdateUserDto } from '../dto';
 import { User, UserDTO } from '../entity/user.entity';
+import { UserProfile } from '../entity/user-profile.entity';
+import { Group } from '../entity/group.entity';
 import { IUserRO } from '../user.interface';
 import { InjectRepository } from '@mikro-orm/nestjs';
 import {
@@ -20,6 +22,8 @@ import { Permission } from '../entity/permission.entity';
 import { NestedCheckboxOption } from 'xingine/dist/core/component/form-meta-map';
 import { buildMikroOrmWhereFromNestedCondition, SearchQuery } from 'xingine';
 import { CreateRoleDto } from '../dto/create-role.dto';
+import { CreateUserProfileDto, UpdateUserProfileDto } from '../dto/user-profile.dto';
+import { CreateGroupDto, UpdateGroupDto } from '../dto/group.dto';
 
 @Injectable()
 export class UserService {
@@ -30,6 +34,10 @@ export class UserService {
     private readonly roleRepository: EntityRepository<Role>,
     @InjectRepository(Permission)
     private readonly permissionRepository: EntityRepository<Permission>,
+    @InjectRepository(UserProfile)
+    private readonly userProfileRepository: EntityRepository<UserProfile>,
+    @InjectRepository(Group)
+    private readonly groupRepository: EntityRepository<Group>,
     @Inject()
     private readonly em: EntityManager,
   ) {}
@@ -309,5 +317,213 @@ export class UserService {
     await this.em.persistAndFlush(role);
 
     return { msg: 'Role successfully added/updated' };
+  }
+
+  // UserProfile Management
+  async createUserProfile(userId: string, profileData: CreateUserProfileDto): Promise<UserProfile> {
+    const user = await this.userRepository.findOne(userId);
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (user.profile) {
+      throw new HttpException('User already has a profile', HttpStatus.CONFLICT);
+    }
+
+    const profile = new UserProfile();
+    Object.assign(profile, profileData);
+    profile.user = user;
+
+    if (profileData.dateOfBirth) {
+      profile.dateOfBirth = new Date(profileData.dateOfBirth);
+    }
+
+    await this.em.persistAndFlush(profile);
+    return profile;
+  }
+
+  async updateUserProfile(userId: string, profileData: UpdateUserProfileDto): Promise<UserProfile> {
+    const user = await this.userRepository.findOne(userId, { populate: ['profile'] });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!user.profile) {
+      throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    Object.assign(user.profile, profileData);
+    if (profileData.dateOfBirth) {
+      user.profile.dateOfBirth = new Date(profileData.dateOfBirth);
+    }
+    user.profile.updatedAt = new Date();
+
+    await this.em.flush();
+    return user.profile;
+  }
+
+  async getUserProfile(userId: string): Promise<UserProfile> {
+    const user = await this.userRepository.findOne(userId, { populate: ['profile'] });
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    if (!user.profile) {
+      throw new HttpException('User profile not found', HttpStatus.NOT_FOUND);
+    }
+
+    return user.profile;
+  }
+
+  // Group Management
+  async createGroup(groupData: CreateGroupDto): Promise<Group> {
+    const group = new Group();
+    group.name = groupData.name;
+    group.description = groupData.description;
+
+    if (groupData.commandId) {
+      const command = await this.userRepository.findOne(groupData.commandId);
+      if (!command) {
+        throw new HttpException('Command user not found', HttpStatus.NOT_FOUND);
+      }
+      group.command = command;
+    }
+
+    if (groupData.secondInCommandId) {
+      const secondInCommand = await this.userRepository.findOne(groupData.secondInCommandId);
+      if (!secondInCommand) {
+        throw new HttpException('Second in command user not found', HttpStatus.NOT_FOUND);
+      }
+      group.secondInCommand = secondInCommand;
+    }
+
+    await this.em.persistAndFlush(group);
+
+    // Add members if provided
+    if (groupData.memberIds && groupData.memberIds.length > 0) {
+      const members = await this.userRepository.find({ id: { $in: groupData.memberIds } });
+      group.members.set(members);
+    }
+
+    // Add roles if provided
+    if (groupData.roleIds && groupData.roleIds.length > 0) {
+      const roles = await this.roleRepository.find({ id: { $in: groupData.roleIds } });
+      group.roles.set(roles);
+    }
+
+    await this.em.flush();
+    return group;
+  }
+
+  async updateGroup(groupId: string, groupData: UpdateGroupDto): Promise<Group> {
+    const group = await this.groupRepository.findOne(groupId, { 
+      populate: ['command', 'secondInCommand', 'members', 'roles'] 
+    });
+    if (!group) {
+      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+    }
+
+    group.name = groupData.name || group.name;
+    group.description = groupData.description || group.description;
+
+    if (groupData.commandId) {
+      const command = await this.userRepository.findOne(groupData.commandId);
+      if (!command) {
+        throw new HttpException('Command user not found', HttpStatus.NOT_FOUND);
+      }
+      group.command = command;
+    }
+
+    if (groupData.secondInCommandId) {
+      const secondInCommand = await this.userRepository.findOne(groupData.secondInCommandId);
+      if (!secondInCommand) {
+        throw new HttpException('Second in command user not found', HttpStatus.NOT_FOUND);
+      }
+      group.secondInCommand = secondInCommand;
+    }
+
+    // Update members if provided
+    if (groupData.memberIds) {
+      const members = await this.userRepository.find({ id: { $in: groupData.memberIds } });
+      group.members.set(members);
+    }
+
+    // Update roles if provided
+    if (groupData.roleIds) {
+      const roles = await this.roleRepository.find({ id: { $in: groupData.roleIds } });
+      group.roles.set(roles);
+    }
+
+    group.updatedAt = new Date();
+    await this.em.flush();
+    return group;
+  }
+
+  async getGroup(groupId: string): Promise<Group> {
+    const group = await this.groupRepository.findOne(groupId, { 
+      populate: ['command', 'secondInCommand', 'members', 'roles'] 
+    });
+    if (!group) {
+      throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
+    }
+    return group;
+  }
+
+  async getAllGroups(): Promise<Group[]> {
+    return this.groupRepository.findAll({ 
+      populate: ['command', 'secondInCommand', 'members', 'roles'] 
+    });
+  }
+
+  // Role Aggregation Logic
+  async getUserAggregatedRoles(userId: string): Promise<Role[]> {
+    const user = await this.userRepository.findOne(userId, { 
+      populate: ['roles', 'groups.roles'] 
+    });
+    
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.NOT_FOUND);
+    }
+
+    const roleMap = new Map<string, Role>();
+
+    // Add direct user roles
+    user.roles.getItems().forEach(role => {
+      roleMap.set(role.id, role);
+    });
+
+    // Add roles from groups
+    user.groups.getItems().forEach(group => {
+      group.roles.getItems().forEach(role => {
+        roleMap.set(role.id, role);
+      });
+    });
+
+    return Array.from(roleMap.values());
+  }
+
+  async getUserAggregatedPermissions(userId: string): Promise<Permission[]> {
+    const roles = await this.getUserAggregatedRoles(userId);
+    const permissionMap = new Map<string, Permission>();
+
+    // Populate permissions for each role
+    for (const role of roles) {
+      await this.em.populate(role, ['permissions']);
+      role.permissions.getItems().forEach(permission => {
+        permissionMap.set(permission.id, permission);
+      });
+    }
+
+    return Array.from(permissionMap.values());
+  }
+
+  async userHasPermission(userId: string, permissionId: string): Promise<boolean> {
+    const permissions = await this.getUserAggregatedPermissions(userId);
+    return permissions.some(permission => permission.id === permissionId);
+  }
+
+  async userHasRole(userId: string, roleId: string): Promise<boolean> {
+    const roles = await this.getUserAggregatedRoles(userId);
+    return roles.some(role => role.id === roleId);
   }
 }

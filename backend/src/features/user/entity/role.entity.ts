@@ -17,6 +17,9 @@ export class Role {
   @PrimaryKey({ type: 'uuid' })
   id: string = v4();
 
+  @Property()
+  name!: string;
+
   @Property({ nullable: true })
   description?: string;
 

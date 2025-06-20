@@ -3,6 +3,7 @@ import {
   Entity,
   EntityClass,
   ManyToMany,
+  ManyToOne,
   OneToMany,
   PrimaryKey,
   Property,
@@ -21,6 +22,18 @@ export class Group {
 
   @Property({ nullable: true })
   description?: string;
+
+  @ManyToOne(() => User as EntityClass<User>, { nullable: true })
+  command?: User;
+
+  @ManyToOne(() => User as EntityClass<User>, { nullable: true })
+  secondInCommand?: User;
+
+  @Property()
+  createdAt: Date = new Date();
+
+  @Property()
+  updatedAt: Date = new Date();
 
   @ManyToMany(() => User as EntityClass<User>, (user: User) => user.groups)
   members = new Collection<User>(this);

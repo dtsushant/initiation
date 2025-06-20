@@ -9,7 +9,8 @@ import { Group } from './entity/group.entity';
 import { Permission } from './entity/permission.entity';
 import { Role } from './entity/role.entity';
 import { UserPassword } from './entity/user-password.entity';
-import { USER_PERMISSIONS } from './constant/user.permissions';
+import { UserProfile } from './entity/user-profile.entity';
+// import { USER_PERMISSIONS } from './constant/user.permissions';
 import { EntityClass } from '@mikro-orm/core';
 
 @Module({
@@ -23,6 +24,7 @@ import { EntityClass } from '@mikro-orm/core';
         Permission,
         Role,
         UserPassword,
+        UserProfile,
       ] as EntityClass<unknown>[],
     }),
     PassportModule.register({ session: true }),
