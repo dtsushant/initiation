@@ -376,7 +376,7 @@ export class UserService {
   }
 
   // Group Management
-  async createGroup(groupData: CreateGroupDto): Promise<Group> {
+  async createGroup(groupData: CreateGroupDto): Promise<any> {
     const group = new Group();
     group.name = groupData.name;
     group.description = groupData.description;
@@ -412,10 +412,16 @@ export class UserService {
     }
 
     await this.em.flush();
-    return group;
+    
+    // Reload with relations for DTO transformation
+    const groupWithRelations = await this.groupRepository.findOne(group.id, { 
+      populate: ['command', 'secondInCommand', 'members', 'roles'] 
+    });
+    
+    return this.transformGroupToDto(groupWithRelations!);
   }
 
-  async updateGroup(groupId: string, groupData: UpdateGroupDto): Promise<Group> {
+  async updateGroup(groupId: string, groupData: UpdateGroupDto): Promise<any> {
     const group = await this.groupRepository.findOne(groupId, { 
       populate: ['command', 'secondInCommand', 'members', 'roles'] 
     });
@@ -456,23 +462,24 @@ export class UserService {
 
     group.updatedAt = new Date();
     await this.em.flush();
-    return group;
+    return this.transformGroupToDto(group);
   }
 
-  async getGroup(groupId: string): Promise<Group> {
+  async getGroup(groupId: string): Promise<any> {
     const group = await this.groupRepository.findOne(groupId, { 
       populate: ['command', 'secondInCommand', 'members', 'roles'] 
     });
     if (!group) {
       throw new HttpException('Group not found', HttpStatus.NOT_FOUND);
     }
-    return group;
+    return this.transformGroupToDto(group);
   }
 
-  async getAllGroups(): Promise<Group[]> {
-    return this.groupRepository.findAll({ 
+  async getAllGroups(): Promise<any[]> {
+    const groups = await this.groupRepository.findAll({ 
       populate: ['command', 'secondInCommand', 'members', 'roles'] 
     });
+    return groups.map(group => this.transformGroupToDto(group));
   }
 
   // Role Aggregation Logic
@@ -525,5 +532,39 @@ export class UserService {
   async userHasRole(userId: string, roleId: string): Promise<boolean> {
     const roles = await this.getUserAggregatedRoles(userId);
     return roles.some(role => role.id === roleId);
+  }
+
+  // Helper methods to transform entities to DTOs
+  private transformGroupToDto(group: Group): any {
+    return {
+      id: group.id,
+      name: group.name,
+      description: group.description,
+      command: group.command ? {
+        id: group.command.id,
+        username: group.command.username,
+        firstName: group.command.firstName,
+        lastName: group.command.lastName
+      } : undefined,
+      secondInCommand: group.secondInCommand ? {
+        id: group.secondInCommand.id,
+        username: group.secondInCommand.username,
+        firstName: group.secondInCommand.firstName,
+        lastName: group.secondInCommand.lastName
+      } : undefined,
+      members: group.members?.isInitialized() ? group.members.getItems().map(user => ({
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName
+      })) : [],
+      roles: group.roles?.isInitialized() ? group.roles.getItems().map(role => ({
+        id: role.id,
+        name: role.name,
+        description: role.description
+      })) : [],
+      createdAt: group.createdAt,
+      updatedAt: group.updatedAt
+    };
   }
 }
