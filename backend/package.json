@@ -78,6 +78,8 @@
     "ts-jest": "^29.4.0"
   },
   "jest": {
+    "preset": "ts-jest",
+    "testEnvironment": "node",
     "moduleFileExtensions": [
       "js",
       "json",
@@ -96,7 +98,8 @@
     "moduleNameMapper": {
       "^@shared/(.*)$": "<rootDir>/../packages/shared/src/$1",
       "^@rule-ui/(.*)$": "<rootDir>/../packages/rule-ui/src/$1"
-    }
+    },
+    "setupFilesAfterEnv": ["<rootDir>/jest.setup.ts"]
   },
   "mikro-orm": {
     "useTsNode": true,
