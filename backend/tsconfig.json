@@ -5,6 +5,7 @@
     "rootDir": "./src",
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
+    "types": ["jest", "node"]
   },
   "include": ["src",  "mikro-orm.config.ts"],
   "exclude": ["node_modules", "dist"]
