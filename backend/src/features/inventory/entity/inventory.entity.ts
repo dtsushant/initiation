@@ -1,4 +1,12 @@
-import { Entity, PrimaryKey, Property, ManyToOne, OneToMany, EntityDTO, Enum } from '@mikro-orm/core';
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  ManyToOne,
+  OneToMany,
+  EntityDTO,
+  Enum,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../../../shared/base.entity';
 import { Category } from '../../category/category.entity';
 import { PurchaseOrder } from './purchase-order.entity';
@@ -9,8 +17,8 @@ export enum InventoryType {
   NON_PERISHABLE = 'NON_PERISHABLE',
 }
 
-@Entity({ schema: "shared" })
-export class Inventory extends BaseEntity {
+@Entity({ schema: 'shared', tableName: 'inventories' })
+export class Inventory {
   @PrimaryKey()
   id!: string;
 
@@ -56,12 +64,13 @@ export class Inventory extends BaseEntity {
   @Property({ default: true })
   isActive!: boolean;
 
-  @OneToMany(() => PurchaseOrder, purchaseOrder => purchaseOrder.inventory)
+  @OneToMany(() => PurchaseOrder, (purchaseOrder) => purchaseOrder.inventory)
   purchaseOrders?: PurchaseOrder[];
 
-  @OneToMany(() => InventoryTracker, tracker => tracker.inventory)
+  @OneToMany(() => InventoryTracker, (tracker) => tracker.inventory)
   trackers?: InventoryTracker[];
 }
 
-export interface InventoryDTO extends EntityDTO<Inventory> {
-}
+export interface InventoryDTO
+  extends EntityDTO<Inventory>,
+    Record<string, never> {}

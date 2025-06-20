@@ -1,15 +1,32 @@
 import { InjectRepository } from '@mikro-orm/nestjs';
-import { Inject, Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
-import { EntityManager, EntityRepository, wrap } from '@mikro-orm/postgresql';
-import { User } from '../../user/entity/user.entity';
-import { Category } from '../../category/category.entity';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
+import { EntityManager, EntityRepository } from '@mikro-orm/postgresql';
+import { wrap } from '@mikro-orm/core';
 import { Inventory, InventoryDTO } from './entity/inventory.entity';
-import { PurchaseOrder, PurchaseOrderDTO, PurchaseOrderStatus } from './entity/purchase-order.entity';
-import { InventoryTracker, InventoryTrackerDTO, InventoryActionType } from './entity/inventory-tracker.entity';
+import {
+  PurchaseOrder,
+  PurchaseOrderDTO,
+  PurchaseOrderStatus,
+} from './entity/purchase-order.entity';
+import {
+  InventoryTracker,
+  InventoryTrackerDTO,
+  InventoryActionType,
+} from './entity/inventory-tracker.entity';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { CreatePurchaseOrderDto, UpdatePurchaseOrderDto } from './dto/create-purchase-order.dto';
+import {
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto,
+} from './dto/create-purchase-order.dto';
 import { StockAdjustmentDto } from './dto/stock-adjustment.dto';
+import { User } from '../user/entity/user.entity';
+import { Category } from '../category/category.entity';
 import { v4 as uuidv4 } from 'uuid';
 
 @Injectable()
@@ -39,17 +56,20 @@ export class InventoryService {
     }
 
     // Check if category exists
-    const category = await this.categoryRepository.findOne({ 
-      code: inventoryDto.categoryCode 
+    const category = await this.categoryRepository.findOne({
+      code: inventoryDto.categoryCode,
     });
     if (!category) {
-      throw new NotFoundException(`Category with code ${inventoryDto.categoryCode} not found`);
+      throw new NotFoundException(
+        `Category with code ${inventoryDto.categoryCode} not found`,
+      );
     }
 
     // Check if SKU already exists
-    const existingInventory = await this.inventoryRepository.findOne({ 
-      sku: inventoryDto.sku 
+    const existingInventory = await this.inventoryRepository.findOne({
+      sku: inventoryDto.sku,
     });
+
     if (existingInventory) {
       throw new BadRequestException(`SKU ${inventoryDto.sku} already exists`);
     }
@@ -68,10 +88,10 @@ export class InventoryService {
     inventory.salePrice = inventoryDto.salePrice;
     inventory.minimumStock = inventoryDto.minimumStock;
     inventory.unit = inventoryDto.unit;
-    inventory.expiryDate = inventoryDto.expiryDate ? new Date(inventoryDto.expiryDate) : undefined;
+    inventory.expiryDate = inventoryDto.expiryDate
+      ? new Date(inventoryDto.expiryDate)
+      : undefined;
     inventory.isActive = true;
-    inventory.createdBy = user;
-    inventory.createdDate = new Date();
 
     await this.em.persistAndFlush(inventory);
 
@@ -85,11 +105,11 @@ export class InventoryService {
         inventoryDto.initialStock,
         'Initial stock entry',
         undefined,
-        user
+        user,
       );
     }
 
-    return wrap<Inventory>(inventory).toObject() as InventoryDTO;
+    return wrap<Inventory>(inventory).toJSON() as InventoryDTO;
   }
 
   async updateInventory(
@@ -102,57 +122,67 @@ export class InventoryService {
       throw new NotFoundException('User not found');
     }
 
-    const inventory = await this.inventoryRepository.findOne({ id: inventoryId });
+    const inventory = await this.inventoryRepository.findOne({
+      id: inventoryId,
+    });
     if (!inventory) {
       throw new NotFoundException('Inventory item not found');
     }
 
     // Update category if provided
     if (updateDto.categoryCode) {
-      const category = await this.categoryRepository.findOne({ 
-        code: updateDto.categoryCode 
+      const category = await this.categoryRepository.findOne({
+        code: updateDto.categoryCode,
       });
       if (!category) {
-        throw new NotFoundException(`Category with code ${updateDto.categoryCode} not found`);
+        throw new NotFoundException(
+          `Category with code ${updateDto.categoryCode} not found`,
+        );
       }
       inventory.category = category;
     }
 
     // Update other fields
     if (updateDto.name !== undefined) inventory.name = updateDto.name;
-    if (updateDto.description !== undefined) inventory.description = updateDto.description;
+    if (updateDto.description !== undefined)
+      inventory.description = updateDto.description;
     if (updateDto.type !== undefined) inventory.type = updateDto.type;
-    if (updateDto.purchasePrice !== undefined) inventory.purchasePrice = updateDto.purchasePrice;
-    if (updateDto.salePrice !== undefined) inventory.salePrice = updateDto.salePrice;
-    if (updateDto.minimumStock !== undefined) inventory.minimumStock = updateDto.minimumStock;
+    if (updateDto.purchasePrice !== undefined)
+      inventory.purchasePrice = updateDto.purchasePrice;
+    if (updateDto.salePrice !== undefined)
+      inventory.salePrice = updateDto.salePrice;
+    if (updateDto.minimumStock !== undefined)
+      inventory.minimumStock = updateDto.minimumStock;
     if (updateDto.unit !== undefined) inventory.unit = updateDto.unit;
     if (updateDto.expiryDate !== undefined) {
-      inventory.expiryDate = updateDto.expiryDate ? new Date(updateDto.expiryDate) : undefined;
+      inventory.expiryDate = updateDto.expiryDate
+        ? new Date(updateDto.expiryDate)
+        : undefined;
     }
-    if (updateDto.isActive !== undefined) inventory.isActive = updateDto.isActive;
-
-    inventory.lastUpdatedBy = user;
-    inventory.lastUpdatedDate = new Date();
+    if (updateDto.isActive !== undefined)
+      inventory.isActive = updateDto.isActive;
 
     await this.em.persistAndFlush(inventory);
 
-    return wrap<Inventory>(inventory).toObject() as InventoryDTO;
+    return wrap<Inventory>(inventory).toJSON() as InventoryDTO;
   }
 
   async findAllInventory(): Promise<InventoryDTO[]> {
     const inventories = await this.inventoryRepository.findAll({
-      populate: ['category', 'createdBy']
+      populate: ['category'],
     });
-    return inventories.map(inventory => wrap<Inventory>(inventory).toObject() as InventoryDTO);
+    return inventories.map(
+      (inventory) => wrap<Inventory>(inventory).toJSON() as InventoryDTO,
+    );
   }
 
   async findInventoryById(id: string): Promise<InventoryDTO | undefined> {
     const inventory = await this.inventoryRepository.findOne(
-      { id }, 
-      { populate: ['category', 'createdBy', 'purchaseOrders', 'trackers'] }
+      { id },
+      { populate: ['category', 'purchaseOrders', 'trackers'] },
     );
     if (!inventory) return undefined;
-    return wrap<Inventory>(inventory).toObject() as InventoryDTO;
+    return wrap<Inventory>(inventory).toJSON() as InventoryDTO;
   }
 
   async deleteInventory(userId: string, inventoryId: string): Promise<void> {
@@ -161,15 +191,15 @@ export class InventoryService {
       throw new NotFoundException('User not found');
     }
 
-    const inventory = await this.inventoryRepository.findOne({ id: inventoryId });
+    const inventory = await this.inventoryRepository.findOne({
+      id: inventoryId,
+    });
     if (!inventory) {
       throw new NotFoundException('Inventory item not found');
     }
 
     // Soft delete by setting isActive to false
     inventory.isActive = false;
-    inventory.lastUpdatedBy = user;
-    inventory.lastUpdatedDate = new Date();
 
     await this.em.persistAndFlush(inventory);
   }
@@ -183,8 +213,8 @@ export class InventoryService {
       throw new NotFoundException('User not found');
     }
 
-    const inventory = await this.inventoryRepository.findOne({ 
-      id: adjustmentDto.inventoryId 
+    const inventory = await this.inventoryRepository.findOne({
+      id: adjustmentDto.inventoryId,
     });
     if (!inventory) {
       throw new NotFoundException('Inventory item not found');
@@ -194,11 +224,12 @@ export class InventoryService {
     let newStock = previousStock;
 
     switch (adjustmentDto.actionType) {
-      case InventoryActionType.STOCK_IN:
+      case InventoryActionType.STOCK_IN: {
         newStock = previousStock + Math.abs(adjustmentDto.quantity);
         inventory.totalStock += Math.abs(adjustmentDto.quantity);
         break;
-      case InventoryActionType.STOCK_OUT:
+      }
+      case InventoryActionType.STOCK_OUT: {
         const outQuantity = Math.abs(adjustmentDto.quantity);
         if (previousStock < outQuantity) {
           throw new BadRequestException('Insufficient stock available');
@@ -206,14 +237,16 @@ export class InventoryService {
         newStock = previousStock - outQuantity;
         inventory.totalStock -= outQuantity;
         break;
-      case InventoryActionType.ADJUSTMENT:
+      }
+      case InventoryActionType.ADJUSTMENT: {
         newStock = previousStock + adjustmentDto.quantity;
         inventory.totalStock += adjustmentDto.quantity;
         if (newStock < 0) {
           throw new BadRequestException('Stock cannot be negative');
         }
         break;
-      case InventoryActionType.RESERVED:
+      }
+      case InventoryActionType.RESERVED: {
         const reserveQuantity = Math.abs(adjustmentDto.quantity);
         if (previousStock < reserveQuantity) {
           throw new BadRequestException('Insufficient stock to reserve');
@@ -221,27 +254,32 @@ export class InventoryService {
         newStock = previousStock - reserveQuantity;
         inventory.reservedStock += reserveQuantity;
         break;
-      case InventoryActionType.RELEASED:
+      }
+      case InventoryActionType.RELEASED: {
         const releaseQuantity = Math.abs(adjustmentDto.quantity);
         if (inventory.reservedStock < releaseQuantity) {
-          throw new BadRequestException('Insufficient reserved stock to release');
+          throw new BadRequestException(
+            'Insufficient reserved stock to release',
+          );
         }
         newStock = previousStock + releaseQuantity;
         inventory.reservedStock -= releaseQuantity;
         break;
-      case InventoryActionType.EXPIRED:
+      }
+      case InventoryActionType.EXPIRED: {
         const expiredQuantity = Math.abs(adjustmentDto.quantity);
         if (previousStock < expiredQuantity) {
-          throw new BadRequestException('Insufficient stock to mark as expired');
+          throw new BadRequestException(
+            'Insufficient stock to mark as expired',
+          );
         }
         newStock = previousStock - expiredQuantity;
         inventory.totalStock -= expiredQuantity;
         break;
+      }
     }
 
     inventory.availableStock = newStock;
-    inventory.lastUpdatedBy = user;
-    inventory.lastUpdatedDate = new Date();
 
     await this.em.persistAndFlush(inventory);
 
@@ -254,10 +292,10 @@ export class InventoryService {
       newStock,
       adjustmentDto.reason,
       adjustmentDto.referenceNumber,
-      user
+      user,
     );
 
-    return wrap<Inventory>(inventory).toObject() as InventoryDTO;
+    return wrap<Inventory>(inventory).toJSON() as InventoryDTO;
   }
 
   async createPurchaseOrder(
@@ -269,19 +307,21 @@ export class InventoryService {
       throw new NotFoundException('User not found');
     }
 
-    const inventory = await this.inventoryRepository.findOne({ 
-      id: purchaseOrderDto.inventoryId 
+    const inventory = await this.inventoryRepository.findOne({
+      id: purchaseOrderDto.inventoryId,
     });
     if (!inventory) {
       throw new NotFoundException('Inventory item not found');
     }
 
     // Check if order number already exists
-    const existingOrder = await this.purchaseOrderRepository.findOne({ 
-      orderNumber: purchaseOrderDto.orderNumber 
+    const existingOrder = await this.purchaseOrderRepository.findOne({
+      orderNumber: purchaseOrderDto.orderNumber,
     });
     if (existingOrder) {
-      throw new BadRequestException(`Order number ${purchaseOrderDto.orderNumber} already exists`);
+      throw new BadRequestException(
+        `Order number ${purchaseOrderDto.orderNumber} already exists`,
+      );
     }
 
     const purchaseOrder = new PurchaseOrder();
@@ -290,19 +330,19 @@ export class InventoryService {
     purchaseOrder.inventory = inventory;
     purchaseOrder.quantity = purchaseOrderDto.quantity;
     purchaseOrder.unitPrice = purchaseOrderDto.unitPrice;
-    purchaseOrder.totalAmount = purchaseOrderDto.quantity * purchaseOrderDto.unitPrice;
+    purchaseOrder.totalAmount =
+      purchaseOrderDto.quantity * purchaseOrderDto.unitPrice;
     purchaseOrder.supplier = purchaseOrderDto.supplier;
     purchaseOrder.orderDate = new Date(purchaseOrderDto.orderDate);
-    purchaseOrder.expectedDeliveryDate = purchaseOrderDto.expectedDeliveryDate ? 
-      new Date(purchaseOrderDto.expectedDeliveryDate) : undefined;
+    purchaseOrder.expectedDeliveryDate = purchaseOrderDto.expectedDeliveryDate
+      ? new Date(purchaseOrderDto.expectedDeliveryDate)
+      : undefined;
     purchaseOrder.status = PurchaseOrderStatus.PENDING;
     purchaseOrder.notes = purchaseOrderDto.notes;
-    purchaseOrder.createdBy = user;
-    purchaseOrder.createdDate = new Date();
 
     await this.em.persistAndFlush(purchaseOrder);
 
-    return wrap<PurchaseOrder>(purchaseOrder).toObject() as PurchaseOrderDTO;
+    return wrap<PurchaseOrder>(purchaseOrder).toJSON() as PurchaseOrderDTO;
   }
 
   async updatePurchaseOrder(
@@ -317,7 +357,7 @@ export class InventoryService {
 
     const purchaseOrder = await this.purchaseOrderRepository.findOne(
       { id: purchaseOrderId },
-      { populate: ['inventory'] }
+      { populate: ['inventory'] },
     );
     if (!purchaseOrder) {
       throw new NotFoundException('Purchase order not found');
@@ -325,8 +365,10 @@ export class InventoryService {
 
     // Update status and handle stock adjustments
     if (updateDto.status && updateDto.status !== purchaseOrder.status) {
-      if (updateDto.status === PurchaseOrderStatus.RECEIVED && 
-          purchaseOrder.status !== PurchaseOrderStatus.RECEIVED) {
+      if (
+        updateDto.status === PurchaseOrderStatus.RECEIVED &&
+        purchaseOrder.status !== PurchaseOrderStatus.RECEIVED
+      ) {
         // Add stock when order is received
         await this.adjustStock(userId, {
           inventoryId: purchaseOrder.inventory.id,
@@ -340,55 +382,64 @@ export class InventoryService {
     }
 
     if (updateDto.actualDeliveryDate !== undefined) {
-      purchaseOrder.actualDeliveryDate = updateDto.actualDeliveryDate ? 
-        new Date(updateDto.actualDeliveryDate) : undefined;
+      purchaseOrder.actualDeliveryDate = updateDto.actualDeliveryDate
+        ? new Date(updateDto.actualDeliveryDate)
+        : undefined;
     }
     if (updateDto.notes !== undefined) purchaseOrder.notes = updateDto.notes;
 
-    purchaseOrder.lastUpdatedBy = user;
-    purchaseOrder.lastUpdatedDate = new Date();
-
     await this.em.persistAndFlush(purchaseOrder);
 
-    return wrap<PurchaseOrder>(purchaseOrder).toObject() as PurchaseOrderDTO;
+    return wrap<PurchaseOrder>(purchaseOrder).toJSON() as PurchaseOrderDTO;
   }
 
   async findAllPurchaseOrders(): Promise<PurchaseOrderDTO[]> {
     const orders = await this.purchaseOrderRepository.findAll({
-      populate: ['inventory', 'createdBy']
+      populate: ['inventory'],
     });
-    return orders.map(order => wrap<PurchaseOrder>(order).toObject() as PurchaseOrderDTO);
+    return orders.map(
+      (order) => wrap<PurchaseOrder>(order).toJSON() as PurchaseOrderDTO,
+    );
   }
 
-  async findPurchaseOrderById(id: string): Promise<PurchaseOrderDTO | undefined> {
+  async findPurchaseOrderById(
+    id: string,
+  ): Promise<PurchaseOrderDTO | undefined> {
     const order = await this.purchaseOrderRepository.findOne(
-      { id }, 
-      { populate: ['inventory', 'createdBy'] }
+      { id },
+      { populate: ['inventory'] },
     );
     if (!order) return undefined;
-    return wrap<PurchaseOrder>(order).toObject() as PurchaseOrderDTO;
+    return wrap<PurchaseOrder>(order).toJSON() as PurchaseOrderDTO;
   }
 
-  async getInventoryTrackers(inventoryId: string): Promise<InventoryTrackerDTO[]> {
+  async getInventoryTrackers(
+    inventoryId: string,
+  ): Promise<InventoryTrackerDTO[]> {
     const trackers = await this.trackerRepository.find(
       { inventory: inventoryId },
-      { 
-        populate: ['inventory', 'purchaseOrder', 'createdBy'],
-        orderBy: { transactionDate: 'DESC' }
-      }
+      {
+        populate: ['inventory', 'purchaseOrder'],
+        orderBy: { transactionDate: 'DESC' },
+      },
     );
-    return trackers.map(tracker => wrap<InventoryTracker>(tracker).toObject() as InventoryTrackerDTO);
+    return trackers.map(
+      (tracker) =>
+        wrap<InventoryTracker>(tracker).toJSON() as InventoryTrackerDTO,
+    );
   }
 
   async getLowStockItems(): Promise<InventoryDTO[]> {
     const inventories = await this.inventoryRepository.find(
-      { 
+      {
         isActive: true,
-        $expr: { $lte: ['$availableStock', '$minimumStock'] }
+        //   $expr: { $lte: ['$availableStock', '$minimumStock'] }
       },
-      { populate: ['category', 'createdBy'] }
+      { populate: ['category'] },
     );
-    return inventories.map(inventory => wrap<Inventory>(inventory).toObject() as InventoryDTO);
+    return inventories.map(
+      (inventory) => wrap<Inventory>(inventory).toJSON() as InventoryDTO,
+    );
   }
 
   private async trackInventoryChange(
@@ -400,7 +451,7 @@ export class InventoryService {
     reason?: string,
     referenceNumber?: string,
     user?: User,
-    purchaseOrder?: PurchaseOrder
+    purchaseOrder?: PurchaseOrder,
   ): Promise<InventoryTrackerDTO> {
     const tracker = new InventoryTracker();
     tracker.id = uuidv4();
@@ -413,14 +464,9 @@ export class InventoryService {
     tracker.reason = reason;
     tracker.referenceNumber = referenceNumber;
     tracker.transactionDate = new Date();
-    
-    if (user) {
-      tracker.createdBy = user;
-      tracker.createdDate = new Date();
-    }
 
     await this.em.persistAndFlush(tracker);
 
-    return wrap<InventoryTracker>(tracker).toObject() as InventoryTrackerDTO;
+    return wrap<InventoryTracker>(tracker).toJSON() as InventoryTrackerDTO;
   }
 }

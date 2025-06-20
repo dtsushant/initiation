@@ -1,4 +1,11 @@
-import { Entity, PrimaryKey, Property, ManyToOne, EntityDTO, Enum } from '@mikro-orm/core';
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  ManyToOne,
+  EntityDTO,
+  Enum,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../../../shared/base.entity';
 import { Inventory } from './inventory.entity';
 import { PurchaseOrder } from './purchase-order.entity';
@@ -12,8 +19,8 @@ export enum InventoryActionType {
   EXPIRED = 'EXPIRED',
 }
 
-@Entity({ schema: "shared" })
-export class InventoryTracker extends BaseEntity {
+@Entity({ schema: 'shared', tableName: 'inventory_trackers' })
+export class InventoryTracker {
   @PrimaryKey()
   id!: string;
 
@@ -45,5 +52,6 @@ export class InventoryTracker extends BaseEntity {
   transactionDate!: Date;
 }
 
-export interface InventoryTrackerDTO extends EntityDTO<InventoryTracker> {
-}
+export interface InventoryTrackerDTO
+  extends EntityDTO<InventoryTracker>,
+    Record<string, never> {}

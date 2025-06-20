@@ -1,5 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsOptional, IsString, IsNumber, IsEnum, IsDateString, Min, IsBoolean } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsNumber,
+  IsEnum,
+  IsDateString,
+  Min,
+  IsBoolean,
+} from 'class-validator';
 import { FormField } from 'xingine';
 import { InventoryType } from '../entity/inventory.entity';
 
@@ -144,9 +152,6 @@ export class UpdateInventoryDto {
     label: 'Active',
     inputType: 'checkbox',
     required: false,
-    properties: {
-      defaultValue: true,
-    },
   })
   isActive?: boolean;
 }

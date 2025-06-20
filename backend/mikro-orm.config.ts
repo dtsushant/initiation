@@ -17,6 +17,9 @@ import { Tenant } from './src/features/tenant/tenant.entity';
 import { Party } from './src/features/party/party.entity';
 import { PartyTenant } from './src/features/party/party-tenant.entity';
 import { AppDetail } from './src/app/app.entity';
+import { Inventory } from './src/features/inventory/entity/inventory.entity';
+import { InventoryTracker } from './src/features/inventory/entity/inventory-tracker.entity';
+import { PurchaseOrder } from './src/features/inventory/entity/purchase-order.entity';
 
 dotenv.config();
 
@@ -53,6 +56,9 @@ export default defineConfig({
     Tenant,
     Party,
     PartyTenant,
+    Inventory,
+    InventoryTracker,
+    PurchaseOrder,
   ] as EntityClass<unknown>[],
   discovery: { disableDynamicFileAccess: true },
   seeder: {

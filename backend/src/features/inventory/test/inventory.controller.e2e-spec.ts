@@ -14,6 +14,8 @@ import { CreatePurchaseOrderDto } from '../dto/create-purchase-order.dto';
 import { StockAdjustmentDto } from '../dto/stock-adjustment.dto';
 import { JwtAuthGuard } from '../../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../../shared/pipes/validation.pipes';
+import ormConfig from '../../../../mikro-orm.config';
+import { RequestContext } from '@mikro-orm/core';
 
 describe('InventoryController (e2e)', () => {
   let app: INestApplication;
@@ -21,7 +23,7 @@ describe('InventoryController (e2e)', () => {
   let em: EntityManager;
 
   const mockUser = {
-    id: 'user-1',
+    id: '46fc9ccf-1862-4e24-8940-13aad8a60717',
     email: 'test@example.com',
     username: 'testuser',
   };
@@ -30,35 +32,28 @@ describe('InventoryController (e2e)', () => {
     const moduleFixture: TestingModule = await Test.createTestingModule({
       imports: [
         MikroOrmModule.forRoot({
-          type: 'postgresql',
-          host: 'localhost',
-          port: 5432,
-          user: 'test',
-          password: 'test',
-          dbName: 'test',
-          entities: ['dist/**/*.entity.js'],
-          entitiesTs: ['src/**/*.entity.ts'],
-          debug: false,
+          ...ormConfig,
+          registerRequestContext: false,
         }),
         InventoryModule,
       ],
     })
-    .overrideGuard(JwtAuthGuard)
-    .useValue({
-      canActivate: jest.fn((context) => {
-        const request = context.switchToHttp().getRequest();
-        request.user = mockUser;
-        return true;
-      }),
-    })
-    .compile();
+      .overrideGuard(JwtAuthGuard)
+      .useValue({
+        canActivate: jest.fn((context) => {
+          const request = context.switchToHttp().getRequest();
+          request.user = mockUser;
+          return true;
+        }),
+      })
+      .compile();
 
     app = moduleFixture.createNestApplication();
     app.useGlobalPipes(new ValidationPipe());
-    
+
     inventoryService = moduleFixture.get<InventoryService>(InventoryService);
     em = moduleFixture.get<EntityManager>(EntityManager);
-    
+
     await app.init();
   });
 
@@ -70,42 +65,44 @@ describe('InventoryController (e2e)', () => {
     let createdInventoryId: string;
 
     it('/inventory (POST) - should create new inventory item', async () => {
-      const createInventoryDto: CreateInventoryDto = {
-        name: 'Test Inventory Item',
-        description: 'Test description',
-        sku: 'TEST001',
-        type: InventoryType.NON_PERISHABLE,
-        categoryCode: 'CAT001',
-        initialStock: 100,
-        purchasePrice: 50.00,
-        salePrice: 75.00,
-        minimumStock: 20,
-        unit: 'pieces',
-      };
+      await RequestContext.create(em.fork(), async () => {
+        const createInventoryDto: CreateInventoryDto = {
+          name: 'Test Inventory Item',
+          description: 'Test description',
+          sku: 'TEST001',
+          type: InventoryType.NON_PERISHABLE,
+          categoryCode: 'CAT001',
+          initialStock: 100,
+          purchasePrice: 50.0,
+          salePrice: 75.0,
+          minimumStock: 20,
+          unit: 'pieces',
+        };
 
-      // Mock the service method
-      const mockCreatedInventory = {
-        id: 'inv-1',
-        ...createInventoryDto,
-        totalStock: 100,
-        availableStock: 100,
-        reservedStock: 0,
-        isActive: true,
-        createdDate: new Date().toISOString(),
-      };
+        // Mock the service method
+        const mockCreatedInventory = {
+          id: 'inv-1',
+          ...createInventoryDto,
+          totalStock: 100,
+          availableStock: 100,
+          reservedStock: 0,
+          isActive: true,
+          createdDate: new Date().toISOString(),
+        };
 
-      jest.spyOn(inventoryService, 'createInventory').mockResolvedValue(mockCreatedInventory as any);
+        // jest.spyOn(inventoryService, 'createInventory').mockResolvedValue(mockCreatedInventory as any);
 
-      const response = await request(app.getHttpServer())
-        .post('/inventory')
-        .send(createInventoryDto)
-        .expect(201);
+        const response = await request(app.getHttpServer())
+          .post('/inventory')
+          .send(createInventoryDto)
+          .expect(201);
 
-      expect(response.body).toBeDefined();
-      expect(response.body.name).toBe(createInventoryDto.name);
-      expect(response.body.sku).toBe(createInventoryDto.sku);
-      
-      createdInventoryId = response.body.id;
+        expect(response.body).toBeDefined();
+        expect(response.body.name).toBe(createInventoryDto.name);
+        expect(response.body.sku).toBe(createInventoryDto.sku);
+
+        createdInventoryId = response.body.id;
+      });
     });
 
     it('/inventory (GET) - should get all inventory items', async () => {
@@ -121,7 +118,9 @@ describe('InventoryController (e2e)', () => {
         },
       ];
 
-      jest.spyOn(inventoryService, 'findAllInventory').mockResolvedValue(mockInventories as any);
+      jest
+        .spyOn(inventoryService, 'findAllInventory')
+        .mockResolvedValue(mockInventories as any);
 
       const response = await request(app.getHttpServer())
         .get('/inventory')
@@ -143,7 +142,9 @@ describe('InventoryController (e2e)', () => {
         isActive: true,
       };
 
-      jest.spyOn(inventoryService, 'findInventoryById').mockResolvedValue(mockInventory as any);
+      jest
+        .spyOn(inventoryService, 'findInventoryById')
+        .mockResolvedValue(mockInventory as any);
 
       const response = await request(app.getHttpServer())
         .get('/inventory/inv-1')
@@ -157,18 +158,20 @@ describe('InventoryController (e2e)', () => {
     it('/inventory/:id (PUT) - should update inventory item', async () => {
       const updateInventoryDto: UpdateInventoryDto = {
         name: 'Updated Inventory Item',
-        salePrice: 80.00,
+        salePrice: 80.0,
       };
 
       const mockUpdatedInventory = {
         id: 'inv-1',
         name: 'Updated Inventory Item',
         sku: 'TEST001',
-        salePrice: 80.00,
+        salePrice: 80.0,
         isActive: true,
       };
 
-      jest.spyOn(inventoryService, 'updateInventory').mockResolvedValue(mockUpdatedInventory as any);
+      jest
+        .spyOn(inventoryService, 'updateInventory')
+        .mockResolvedValue(mockUpdatedInventory as any);
 
       const response = await request(app.getHttpServer())
         .put('/inventory/inv-1')
@@ -181,11 +184,11 @@ describe('InventoryController (e2e)', () => {
     });
 
     it('/inventory/:id (DELETE) - should delete inventory item', async () => {
-      jest.spyOn(inventoryService, 'deleteInventory').mockResolvedValue(undefined);
+      jest
+        .spyOn(inventoryService, 'deleteInventory')
+        .mockResolvedValue(undefined);
 
-      await request(app.getHttpServer())
-        .delete('/inventory/inv-1')
-        .expect(200);
+      await request(app.getHttpServer()).delete('/inventory/inv-1').expect(200);
     });
   });
 
@@ -206,7 +209,9 @@ describe('InventoryController (e2e)', () => {
         reservedStock: 0,
       };
 
-      jest.spyOn(inventoryService, 'adjustStock').mockResolvedValue(mockAdjustedInventory as any);
+      jest
+        .spyOn(inventoryService, 'adjustStock')
+        .mockResolvedValue(mockAdjustedInventory as any);
 
       const response = await request(app.getHttpServer())
         .post('/inventory/adjust-stock')
@@ -228,7 +233,9 @@ describe('InventoryController (e2e)', () => {
         },
       ];
 
-      jest.spyOn(inventoryService, 'getLowStockItems').mockResolvedValue(mockLowStockItems as any);
+      jest
+        .spyOn(inventoryService, 'getLowStockItems')
+        .mockResolvedValue(mockLowStockItems as any);
 
       const response = await request(app.getHttpServer())
         .get('/inventory/low-stock')
@@ -250,7 +257,9 @@ describe('InventoryController (e2e)', () => {
         },
       ];
 
-      jest.spyOn(inventoryService, 'getInventoryTrackers').mockResolvedValue(mockTrackers as any);
+      jest
+        .spyOn(inventoryService, 'getInventoryTrackers')
+        .mockResolvedValue(mockTrackers as any);
 
       const response = await request(app.getHttpServer())
         .get('/inventory/inv-1/trackers')
@@ -267,7 +276,7 @@ describe('InventoryController (e2e)', () => {
         orderNumber: 'PO001',
         inventoryId: 'inv-1',
         quantity: 100,
-        unitPrice: 45.00,
+        unitPrice: 45.0,
         supplier: 'Test Supplier',
         orderDate: '2024-01-01',
         expectedDeliveryDate: '2024-01-10',
@@ -277,12 +286,14 @@ describe('InventoryController (e2e)', () => {
       const mockCreatedPurchaseOrder = {
         id: 'po-1',
         ...createPurchaseOrderDto,
-        totalAmount: 4500.00,
+        totalAmount: 4500.0,
         status: PurchaseOrderStatus.PENDING,
         createdDate: new Date().toISOString(),
       };
 
-      jest.spyOn(inventoryService, 'createPurchaseOrder').mockResolvedValue(mockCreatedPurchaseOrder as any);
+      jest
+        .spyOn(inventoryService, 'createPurchaseOrder')
+        .mockResolvedValue(mockCreatedPurchaseOrder as any);
 
       const response = await request(app.getHttpServer())
         .post('/inventory/purchase-orders')
@@ -290,8 +301,10 @@ describe('InventoryController (e2e)', () => {
         .expect(201);
 
       expect(response.body).toBeDefined();
-      expect(response.body.orderNumber).toBe(createPurchaseOrderDto.orderNumber);
-      expect(response.body.totalAmount).toBe(4500.00);
+      expect(response.body.orderNumber).toBe(
+        createPurchaseOrderDto.orderNumber,
+      );
+      expect(response.body.totalAmount).toBe(4500.0);
       expect(response.body.status).toBe(PurchaseOrderStatus.PENDING);
     });
 
@@ -301,13 +314,15 @@ describe('InventoryController (e2e)', () => {
           id: 'po-1',
           orderNumber: 'PO001',
           quantity: 100,
-          unitPrice: 45.00,
-          totalAmount: 4500.00,
+          unitPrice: 45.0,
+          totalAmount: 4500.0,
           status: PurchaseOrderStatus.PENDING,
         },
       ];
 
-      jest.spyOn(inventoryService, 'findAllPurchaseOrders').mockResolvedValue(mockPurchaseOrders as any);
+      jest
+        .spyOn(inventoryService, 'findAllPurchaseOrders')
+        .mockResolvedValue(mockPurchaseOrders as any);
 
       const response = await request(app.getHttpServer())
         .get('/inventory/purchase-orders/all')
@@ -322,12 +337,14 @@ describe('InventoryController (e2e)', () => {
         id: 'po-1',
         orderNumber: 'PO001',
         quantity: 100,
-        unitPrice: 45.00,
-        totalAmount: 4500.00,
+        unitPrice: 45.0,
+        totalAmount: 4500.0,
         status: PurchaseOrderStatus.PENDING,
       };
 
-      jest.spyOn(inventoryService, 'findPurchaseOrderById').mockResolvedValue(mockPurchaseOrder as any);
+      jest
+        .spyOn(inventoryService, 'findPurchaseOrderById')
+        .mockResolvedValue(mockPurchaseOrder as any);
 
       const response = await request(app.getHttpServer())
         .get('/inventory/purchase-orders/po-1')
@@ -353,7 +370,9 @@ describe('InventoryController (e2e)', () => {
         notes: 'Order received early',
       };
 
-      jest.spyOn(inventoryService, 'updatePurchaseOrder').mockResolvedValue(mockUpdatedPurchaseOrder as any);
+      jest
+        .spyOn(inventoryService, 'updatePurchaseOrder')
+        .mockResolvedValue(mockUpdatedPurchaseOrder as any);
 
       const response = await request(app.getHttpServer())
         .put('/inventory/purchase-orders/po-1')

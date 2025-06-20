@@ -1,4 +1,11 @@
-import { Entity, PrimaryKey, Property, ManyToOne, EntityDTO, Enum } from '@mikro-orm/core';
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  ManyToOne,
+  EntityDTO,
+  Enum,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../../../shared/base.entity';
 import { Inventory } from './inventory.entity';
 
@@ -9,8 +16,8 @@ export enum PurchaseOrderStatus {
   CANCELLED = 'CANCELLED',
 }
 
-@Entity({ schema: "shared" })
-export class PurchaseOrder extends BaseEntity {
+@Entity({ schema: 'shared', tableName: 'purchase_orders' })
+export class PurchaseOrder {
   @PrimaryKey()
   id!: string;
 
@@ -48,5 +55,6 @@ export class PurchaseOrder extends BaseEntity {
   notes?: string;
 }
 
-export interface PurchaseOrderDTO extends EntityDTO<PurchaseOrder> {
-}
+export interface PurchaseOrderDTO
+  extends EntityDTO<PurchaseOrder>,
+    Record<string, never> {}

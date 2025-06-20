@@ -2,6 +2,7 @@
 /// <reference types="jest" />
 
 // Make sure Jest globals are available
+/*
 declare global {
   var jest: typeof import('jest');
   var describe: typeof import('jest').describe;
@@ -13,4 +14,4 @@ declare global {
   var afterAll: typeof import('jest').afterAll;
 }
 
-export {};
+export {};*/

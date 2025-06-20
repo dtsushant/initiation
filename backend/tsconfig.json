@@ -7,6 +7,6 @@
     "experimentalDecorators": true,
     "types": ["jest", "node"]
   },
-  "include": ["src",  "mikro-orm.config.ts", "jest.setup.ts"],
+  "include": ["src",  "mikro-orm.config.ts"],
   "exclude": ["node_modules", "dist"]
 }

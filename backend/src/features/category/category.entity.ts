@@ -1,26 +1,34 @@
-import { Entity, PrimaryKey, Property, ManyToOne, OneToMany, EntityDTO } from '@mikro-orm/core';
+import {
+  Entity,
+  PrimaryKey,
+  Property,
+  ManyToOne,
+  OneToMany,
+  EntityDTO,
+} from '@mikro-orm/core';
 import { BaseEntity } from '../../shared/base.entity';
 
-@Entity({ schema: "shared" })
+@Entity({ schema: 'shared', tableName: 'categories' })
 export class Category extends BaseEntity {
-    @PrimaryKey()
-    code!: string;
+  @PrimaryKey()
+  code!: string;
 
-    @Property({ nullable: true })
-    label!: string;
+  @Property({ nullable: true })
+  label!: string;
 
-    @Property({ nullable: true })
-    description?: string;
+  @Property({ nullable: true })
+  description?: string;
 
-    @Property({ default: 0 })
-    level!: number;
+  @Property({ default: 0 })
+  level!: number;
 
-    @ManyToOne(() => Category, { nullable: true })
-    parentCategory?: Category;
+  @ManyToOne(() => Category, { nullable: true })
+  parentCategory?: Category;
 
-    @OneToMany(() => Category, category => category.parentCategory)
-    children?: Category[];
+  @OneToMany(() => Category, (category) => category.parentCategory)
+  children?: Category[];
 }
 
-export interface CategoryDTO extends EntityDTO<Category> {
-}
+export interface CategoryDTO
+  extends EntityDTO<Category>,
+    Record<string, never> {}
