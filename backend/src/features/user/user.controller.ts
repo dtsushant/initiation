@@ -61,7 +61,7 @@ import { Provisioneer, SearchQuery } from 'xingine';
   UpdateGroupDto,
   GroupResponseDto
 )
-@Controller('api')
+@Controller('users')
 @Provisioneer(userProvisioneer)
 export class UserController {
   constructor(private readonly userService: UserService) {}
@@ -218,6 +218,11 @@ export class UserController {
   // UserProfile Management Endpoints
   @Post('users/:userId/profile')
   @ApiBody({ type: CreateUserProfileDto })
+  @Commissar({
+    directive: CreateUserProfileDto,
+    operative: 'FormRenderer',
+    component: 'CreateUserProfile',
+  })
   async createUserProfile(
     @Param('userId') userId: string,
     @Body() profileData: CreateUserProfileDto
@@ -227,6 +232,11 @@ export class UserController {
 
   @Put('users/:userId/profile')
   @ApiBody({ type: UpdateUserProfileDto })
+  @Commissar({
+    directive: UpdateUserProfileDto,
+    operative: 'FormRenderer',
+    component: 'UpdateUserProfile',
+  })
   async updateUserProfile(
     @Param('userId') userId: string,
     @Body() profileData: UpdateUserProfileDto
@@ -235,6 +245,11 @@ export class UserController {
   }
 
   @Get('users/:userId/profile')
+  @Commissar({
+    directive: UserProfileResponseDto,
+    operative: 'DetailRenderer',
+    component: 'UserProfileDetail',
+  })
   async getUserProfile(
     @Param('userId') userId: string
   ): Promise<UserProfileResponseDto> {
@@ -244,6 +259,11 @@ export class UserController {
   // Group Management Endpoints
   @Post('groups')
   @ApiBody({ type: CreateGroupDto })
+  @Commissar({
+    directive: CreateGroupDto,
+    operative: 'FormRenderer',
+    component: 'CreateGroup',
+  })
   async createGroup(
     @Body() groupData: CreateGroupDto
   ) {
@@ -252,6 +272,11 @@ export class UserController {
 
   @Put('groups/:groupId')
   @ApiBody({ type: UpdateGroupDto })
+  @Commissar({
+    directive: UpdateGroupDto,
+    operative: 'FormRenderer',
+    component: 'UpdateGroup',
+  })
   async updateGroup(
     @Param('groupId') groupId: string,
     @Body() groupData: UpdateGroupDto
@@ -260,6 +285,11 @@ export class UserController {
   }
 
   @Get('groups/:groupId')
+  @Commissar({
+    directive: GroupResponseDto,
+    operative: 'DetailRenderer',
+    component: 'GroupDetail',
+  })
   async getGroup(
     @Param('groupId') groupId: string
   ) {
@@ -267,6 +297,11 @@ export class UserController {
   }
 
   @Get('groups')
+  @Commissar({
+    directive: GroupResponseDto,
+    operative: 'TableRenderer',
+    component: 'GroupList',
+  })
   async getAllGroups() {
     return this.userService.getAllGroups();
   }

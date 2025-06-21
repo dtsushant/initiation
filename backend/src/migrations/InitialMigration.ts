@@ -29,6 +29,91 @@ export class InitialMigration extends Migration {
     this.addSql(
       'create table "iam"."user_to_followers" ("follower" UUID REFERENCES iam.users(id) ON DELETE CASCADE, "following" UUID REFERENCES iam.users(id) ON DELETE CASCADE);',
     );
+
+    // Create UserProfile table
+    this.addSql(`CREATE TABLE "iam"."user_profiles" (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      user_id UUID NOT NULL UNIQUE REFERENCES iam.users(id) ON DELETE CASCADE,
+      phone VARCHAR(20),
+      alternate_phone VARCHAR(20),
+      address TEXT,
+      city VARCHAR(100),
+      state VARCHAR(100),
+      country VARCHAR(100),
+      postal_code VARCHAR(20),
+      date_of_birth DATE,
+      organization VARCHAR(255),
+      department VARCHAR(255),
+      job_title VARCHAR(255),
+      pan_vat_no VARCHAR(50),
+      emergency_contact_name VARCHAR(255),
+      emergency_contact_phone VARCHAR(20),
+      emergency_contact_relation VARCHAR(100),
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );`);
+
+    // Create Roles table
+    this.addSql(`CREATE TABLE "iam"."roles" (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name VARCHAR(255) NOT NULL,
+      description TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );`);
+
+    // Create Permissions table
+    this.addSql(`CREATE TABLE "iam"."permissions" (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name VARCHAR(255) NOT NULL,
+      resource VARCHAR(255),
+      action VARCHAR(255),
+      description TEXT,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );`);
+
+    // Create Groups table
+    this.addSql(`CREATE TABLE "iam"."groups" (
+      id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+      name VARCHAR(255) NOT NULL,
+      description TEXT,
+      command_id UUID REFERENCES iam.users(id) ON DELETE SET NULL,
+      second_in_command_id UUID REFERENCES iam.users(id) ON DELETE SET NULL,
+      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+    );`);
+
+    // Create junction tables for many-to-many relationships
+    this.addSql(`CREATE TABLE "iam"."user_roles" (
+      user_id UUID REFERENCES iam.users(id) ON DELETE CASCADE,
+      role_id UUID REFERENCES iam.roles(id) ON DELETE CASCADE,
+      PRIMARY KEY (user_id, role_id)
+    );`);
+
+    this.addSql(`CREATE TABLE "iam"."role_permissions" (
+      role_id UUID REFERENCES iam.roles(id) ON DELETE CASCADE,
+      permission_id UUID REFERENCES iam.permissions(id) ON DELETE CASCADE,
+      PRIMARY KEY (role_id, permission_id)
+    );`);
+
+    this.addSql(`CREATE TABLE "iam"."group_members" (
+      group_id UUID REFERENCES iam.groups(id) ON DELETE CASCADE,
+      user_id UUID REFERENCES iam.users(id) ON DELETE CASCADE,
+      PRIMARY KEY (group_id, user_id)
+    );`);
+
+    this.addSql(`CREATE TABLE "iam"."group_managers" (
+      group_id UUID REFERENCES iam.groups(id) ON DELETE CASCADE,
+      user_id UUID REFERENCES iam.users(id) ON DELETE CASCADE,
+      PRIMARY KEY (group_id, user_id)
+    );`);
+
+    this.addSql(`CREATE TABLE "iam"."group_roles" (
+      group_id UUID REFERENCES iam.groups(id) ON DELETE CASCADE,
+      role_id UUID REFERENCES iam.roles(id) ON DELETE CASCADE,
+      PRIMARY KEY (group_id, role_id)
+    );`);
     // Create Shared schema and Merchant, Category tables
     this.addSql('CREATE SCHEMA IF NOT EXISTS "shared";');
 
@@ -109,14 +194,33 @@ export class InitialMigration extends Migration {
   }
 
   async down(): Promise<void> {
-    this.addSql('DROP TABLE "iam"."users";');
-    this.addSql('DROP TABLE "iam"."user_to_followers";');
-    this.addSql('DROP TABLE "shared"."parties";');
-    this.addSql('DROP TABLE "shared"."categories";');
-    this.addSql('DROP TABLE "shared"."inventories";');
-    this.addSql('DROP TABLE "shared"."inventory_tracker";');
-    this.addSql('DROP TABLE "shared"."purchase_orders";');
-    this.addSql('DROP SCHEMA "iam";');
-    this.addSql('DROP SCHEMA "shared";');
+    // Drop junction tables first (they have foreign key constraints)
+    this.addSql('DROP TABLE IF EXISTS "iam"."group_roles";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."group_managers";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."group_members";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."role_permissions";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."user_roles";');
+    
+    // Drop main IAM tables
+    this.addSql('DROP TABLE IF EXISTS "iam"."groups";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."permissions";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."roles";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."user_profiles";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."user_to_followers";');
+    this.addSql('DROP TABLE IF EXISTS "iam"."users";');
+    
+    // Drop shared tables
+    this.addSql('DROP TABLE IF EXISTS "shared"."purchase_orders";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."inventory_tracker";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."inventories";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."party_tenants";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."tenants";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."categories";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."app_details";');
+    this.addSql('DROP TABLE IF EXISTS "shared"."parties";');
+    
+    // Drop schemas
+    this.addSql('DROP SCHEMA IF EXISTS "iam";');
+    this.addSql('DROP SCHEMA IF EXISTS "shared";');
   }
 }
