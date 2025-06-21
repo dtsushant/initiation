@@ -12,7 +12,6 @@ export class CreateUserProfileDto {
     required: false,
     properties: {
       placeholder: 'Enter phone number',
-      type: 'tel',
     },
   })
   phone?: string;
@@ -26,7 +25,6 @@ export class CreateUserProfileDto {
     required: false,
     properties: {
       placeholder: 'Enter alternate phone number',
-      type: 'tel',
     },
   })
   alternatePhone?: string;
@@ -184,7 +182,6 @@ export class CreateUserProfileDto {
     required: false,
     properties: {
       placeholder: 'Enter emergency contact phone',
-      type: 'tel',
     },
   })
   emergencyContactPhone?: string;
