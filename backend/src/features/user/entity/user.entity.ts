@@ -8,11 +8,13 @@ import {
   ManyToMany,
   ManyToOne,
   OneToMany,
+  OneToOne,
   PrimaryKey,
   Property,
   wrap,
 } from '@mikro-orm/core';
 import { UserPassword } from './user-password.entity';
+import { UserProfile } from './user-profile.entity';
 import { Role } from './role.entity';
 import { Group } from './group.entity';
 import { hmacHash } from '../../../shared/utils/crypto.utils';
@@ -83,6 +85,13 @@ export class User {
     (password) => password.user,
   )
   passwords = new Collection<UserPassword>(this);
+
+  @OneToOne(
+    () => UserProfile as EntityClass<UserProfile>, 
+    (profile: UserProfile) => profile.user,
+    { nullable: true }
+  )
+  profile?: UserProfile;
 
   @ManyToMany({
     entity: () => Role as EntityClass<Role>,

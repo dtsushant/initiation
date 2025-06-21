@@ -23,7 +23,7 @@ export class AuthMiddleware implements NestMiddleware {
     if (authHeaders && (authHeaders as string).split(' ')[1]) {
       const token = (authHeaders as string).split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-        id: number;
+        id: string;
       };
       const user = await this.userService.findById(decoded.id);
 
@@ -32,7 +32,7 @@ export class AuthMiddleware implements NestMiddleware {
       }
 
       req.user = user.user;
-      req.user.id = decoded.id;
+      // req.user.id = decoded.id;
       next();
     } else {
       throw new HttpException('Not authorized.', HttpStatus.UNAUTHORIZED);

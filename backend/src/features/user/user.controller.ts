@@ -22,6 +22,8 @@ import {
 import { UserService } from './service/user.service';
 import { IUserData, IUserRO } from './user.interface';
 import { CreateUserDto, UserLoginDto, UpdateUserDto } from './dto';
+import { CreateUserProfileDto, UpdateUserProfileDto, UserProfileResponseDto } from './dto/user-profile.dto';
+import { CreateGroupDto, UpdateGroupDto, GroupResponseDto } from './dto/group.dto';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
 import { AuthGuard } from '@nestjs/passport';
 import { Request } from 'express';
@@ -48,7 +50,17 @@ import { Provisioneer, SearchQuery } from 'xingine';
 
 @ApiBearerAuth()
 @ApiTags('user')
-@ApiExtraModels(UserLoginDto, CreateUserDto, UserCreateDto)
+@ApiExtraModels(
+  UserLoginDto, 
+  CreateUserDto, 
+  UserCreateDto, 
+  CreateUserProfileDto, 
+  UpdateUserProfileDto, 
+  UserProfileResponseDto,
+  CreateGroupDto,
+  UpdateGroupDto,
+  GroupResponseDto
+)
 @Controller('users')
 @Provisioneer(userProvisioneer)
 export class UserController {
@@ -201,5 +213,125 @@ export class UserController {
       message: 'User info from Google',
       user: req.user,
     };
+  }
+
+  // UserProfile Management Endpoints
+  @Post('users/:userId/profile')
+  @ApiBody({ type: CreateUserProfileDto })
+  @Commissar({
+    directive: CreateUserProfileDto,
+    operative: 'FormRenderer',
+    component: 'CreateUserProfile',
+  })
+  async createUserProfile(
+    @Param('userId') userId: string,
+    @Body() profileData: CreateUserProfileDto
+  ): Promise<UserProfileResponseDto> {
+    return this.userService.createUserProfile(userId, profileData);
+  }
+
+  @Put('users/:userId/profile')
+  @ApiBody({ type: UpdateUserProfileDto })
+  @Commissar({
+    directive: UpdateUserProfileDto,
+    operative: 'FormRenderer',
+    component: 'UpdateUserProfile',
+  })
+  async updateUserProfile(
+    @Param('userId') userId: string,
+    @Body() profileData: UpdateUserProfileDto
+  ): Promise<UserProfileResponseDto> {
+    return this.userService.updateUserProfile(userId, profileData);
+  }
+
+  @Get('users/:userId/profile')
+  @Commissar({
+    directive: UserProfileResponseDto,
+    operative: 'DetailRenderer',
+    component: 'UserProfileDetail',
+  })
+  async getUserProfile(
+    @Param('userId') userId: string
+  ): Promise<UserProfileResponseDto> {
+    return this.userService.getUserProfile(userId);
+  }
+
+  // Group Management Endpoints
+  @Post('groups')
+  @ApiBody({ type: CreateGroupDto })
+  @Commissar({
+    directive: CreateGroupDto,
+    operative: 'FormRenderer',
+    component: 'CreateGroup',
+  })
+  async createGroup(
+    @Body() groupData: CreateGroupDto
+  ) {
+    return this.userService.createGroup(groupData);
+  }
+
+  @Put('groups/:groupId')
+  @ApiBody({ type: UpdateGroupDto })
+  @Commissar({
+    directive: UpdateGroupDto,
+    operative: 'FormRenderer',
+    component: 'UpdateGroup',
+  })
+  async updateGroup(
+    @Param('groupId') groupId: string,
+    @Body() groupData: UpdateGroupDto
+  ) {
+    return this.userService.updateGroup(groupId, groupData);
+  }
+
+  @Get('groups/:groupId')
+  @Commissar({
+    directive: GroupResponseDto,
+    operative: 'DetailRenderer',
+    component: 'GroupDetail',
+  })
+  async getGroup(
+    @Param('groupId') groupId: string
+  ) {
+    return this.userService.getGroup(groupId);
+  }
+
+  @Get('groups')
+  @Commissar({
+    directive: GroupResponseDto,
+    operative: 'TableRenderer',
+    component: 'GroupList',
+  })
+  async getAllGroups() {
+    return this.userService.getAllGroups();
+  }
+
+  // Role Aggregation Endpoints
+  @Get('users/:userId/roles/aggregated')
+  async getUserAggregatedRoles(@Param('userId') userId: string) {
+    return this.userService.getUserAggregatedRoles(userId);
+  }
+
+  @Get('users/:userId/permissions/aggregated')
+  async getUserAggregatedPermissions(@Param('userId') userId: string) {
+    return this.userService.getUserAggregatedPermissions(userId);
+  }
+
+  @Get('users/:userId/permissions/:permissionId/check')
+  async checkUserPermission(
+    @Param('userId') userId: string,
+    @Param('permissionId') permissionId: string
+  ) {
+    const hasPermission = await this.userService.userHasPermission(userId, permissionId);
+    return { hasPermission };
+  }
+
+  @Get('users/:userId/roles/:roleId/check')
+  async checkUserRole(
+    @Param('userId') userId: string,
+    @Param('roleId') roleId: string
+  ) {
+    const hasRole = await this.userService.userHasRole(userId, roleId);
+    return { hasRole };
   }
 }

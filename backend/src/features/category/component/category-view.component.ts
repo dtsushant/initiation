@@ -1,4 +1,4 @@
-import { UIComponent } from '@xingine/core/xingine.type';
+// import { UIComponent } from '@xingine/core/xingine.type';
 
 /*export const CategoryViewComponent: UIComponent = {
   component: 'CategoryView',

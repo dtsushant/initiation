@@ -1,8 +1,8 @@
-import { EntityClass, EntityManager, EntityRepository } from '@mikro-orm/core';
+import { EntityClass, EntityManager, EntityRepository, EntityName } from '@mikro-orm/core';
 
-export function getForkedRepository<T>(
+export function getForkedRepository<T extends object>(
   em: EntityManager,
-  entity: T,
+  entity: EntityName<T>,
 ): EntityRepository<T> {
   return em.fork().getRepository(entity);
 }
