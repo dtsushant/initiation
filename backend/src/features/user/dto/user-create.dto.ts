@@ -62,6 +62,24 @@ class Identity {
     },
   })
   password!: string;
+
+  @FormField({
+    label: 'Profile Picture',
+    inputType: 'file',
+    required: true,
+    properties: {
+      allowedFileTypes: ['.jpg', '.jpeg', '.png'],
+      maxFileSizeMB: 5,
+      maxFileCount: 1,
+      captureFilename: true,
+      captureUploadPath: true,
+      allowDragDrop: true,
+      placeholder: 'Upload your profile picture',
+      fileTypeValidationMessage: 'Only JPG, JPEG, and PNG files are allowed',
+      fileSizeValidationMessage: 'File size must be less than 5MB',
+    },
+  })
+  profilePicture!: string;
 }
 
 class ContactInfo {

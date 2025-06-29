@@ -38,7 +38,8 @@
     "redux-persist": "^6.0.0",
     "use-debounce": "^10.0.4",
     "vite-plugin-pwa": "^1.0.0",
-    "xingine-react": "^1.0.8"
+    "xingine": "file:.yalc/xingine",
+    "xingine-react": "file:.yalc/xingine-react"
   },
   "devDependencies": {
     "@antfu/eslint-config": "^4.11.0",
