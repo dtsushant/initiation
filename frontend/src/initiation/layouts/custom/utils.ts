@@ -1,8 +1,11 @@
 import {
   ComponentMeta,
   ComponentMetaMap,
+  EventBindings,
+  getActionRef,
   LayoutComponentDetail,
 } from "xingine";
+import { useXingineContext } from "xingine-react";
 
 export class LayoutComponent implements LayoutComponentDetail {
   // path?: string;
@@ -50,4 +53,54 @@ export class LayoutComponent implements LayoutComponentDetail {
 
         return this;
     }*/
+}
+
+/*export function getActionRef(
+    expression: string,
+    scope: Record<string, unknown>
+): ((...args: unknown[]) => void) | undefined {
+  if (!expression.startsWith('#this.')) return undefined;
+
+  const path = expression.slice('#this.'.length).split('.');
+  let current: any = scope;
+
+  for (const segment of path) {
+    if (current && typeof current === 'object' && segment in current) {
+      current = current[segment];
+    } else {
+      return undefined;
+    }
+  }
+
+  return typeof current === 'function' ? current : undefined;
+}*/
+
+export function bindMultipleEvents(
+  bindings?: EventBindings,
+  scope?: Record<string, unknown>,
+): Record<string, (...args: unknown[]) => void> {
+  const result: Record<string, (...args: unknown[]) => void> = {};
+  if (!bindings) return result;
+
+  const { panelControl } = useXingineContext();
+  const { headerActionContext } = panelControl;
+  const combinedScope = { ...headerActionContext, ...scope };
+  for (const [event, action] of Object.entries(bindings)) {
+    const fn = getActionRef(action, combinedScope);
+    console.info(
+      "binding event",
+      event,
+      "to function",
+      fn,
+      "from ref",
+      action,
+      "with scope",
+      combinedScope,
+    );
+    if (typeof fn === "function") {
+      result[event] = fn;
+    }
+  }
+
+  return result;
 }

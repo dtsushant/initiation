@@ -1,7 +1,8 @@
 // Sample data for dashboard components
-import { FieldMeta } from "xingine";
+import { ButtonMeta, FieldMeta } from "xingine";
 import { LayoutComponent } from "/@/initiation/layouts/custom/utils.ts";
 import { LayoutComponentDetail, LayoutRenderer } from "xingine";
+import React from "react";
 
 const chartData = {
   barChart: [
@@ -119,6 +120,54 @@ const userDetailData = {
     bio: "Experienced administrator with 5+ years in system management.",
     department: "IT",
     phone: "+1234567890",
+  },
+};
+
+export const buttonMeta: ButtonMeta = {
+  name: "collapseButton",
+  content: ` <svg
+    class="w-6 h-6"
+    fill="none"
+    stroke="currentColor"
+    viewBox="0 0 24 24"
+    xmlns="http://www.w3.org/2000/svg"
+  >
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      stroke-width="2"
+      d="M4 6h16M4 12h16M4 18h16"
+    />
+  </svg>`,
+  event: {
+    onClick: "headerActionContext.handleToggleCollapsed",
+  },
+  style: {
+    className: "p-2 rounded-md hover:bg-gray-100 transition-colors",
+  },
+};
+
+export const buttonMeta2: ButtonMeta = {
+  name: "collapseButton",
+  content: `<span>clickme from content</span>`,
+  event: {
+    onClick: "headerActionContext.handleToggleCollapsed",
+  },
+  style: {
+    className: "p-2 rounded-md hover:bg-gray-100 transition-colors",
+  },
+};
+
+export const buttonMeta3: ButtonMeta = {
+  name: "collapseButton",
+  content: {
+    name: "UserOutlined",
+  },
+  event: {
+    onClick: "headerActionContext.handleToggleCollapsed",
+  },
+  style: {
+    className: "p-2 rounded-md hover:bg-gray-100 transition-colors",
   },
 };
 
@@ -296,7 +345,9 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
 
     meta: {
       component: "WrapperRenderer",
+
       properties: {
+        showMeta: true,
         className:
           " min-h-full max-w-full w-full grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8",
         children: [
@@ -307,7 +358,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
             meta: {
               component: "WrapperRenderer",
               properties: {
-                showMeta: true,
                 className: "grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8",
                 style: {
                   background: "linear-gradient(135deg, #ff7e5f, #feb47b)", // orange to peach gradient
@@ -382,6 +432,191 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
       },
       meta: {
         component: "HeaderRenderer",
+        meta: {
+          component: "WrapperRenderer",
+          properties: {
+            showMeta: true,
+            className: "h-16 px-4 flex items-center justify-between",
+            children: [
+              {
+                component: "WrapperRenderer",
+                meta: {
+                  properties: {
+                    className: "flex items-center space-x-4",
+                    /*event:{
+                      onClick:'headerActionContext.handleToggleCollapsed'
+                    },*/
+                    children: [
+                      {
+                        component: "IconRenderer",
+                        meta: {
+                          component: "IconRenderer",
+                          properties: {
+                            name: "UserOutlined",
+                            onClick: "toggleSidebar",
+                            className:
+                              "p-2 rounded-md hover:bg-gray-100 transition-colors",
+                          },
+                        },
+                      },
+
+                      {
+                        component: "ButtonRenderer",
+                        meta: {
+                          component: "ButtonRenderer",
+                          properties: {
+                            name: "collapseButton",
+                            content: `<svg
+                              class="w-6 h-6"
+                              fill="none"
+                              stroke="currentColor"
+                              viewBox="0 0 24 24"
+                              xmlns="http://www.w3.org/2000/svg"
+                            >
+                              <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M4 6h16M4 12h16M4 18h16"
+                              />
+                            </svg>`,
+                            event: {
+                              onClick:
+                                "headerActionContext.handleToggleCollapsed",
+                            },
+                            style: {
+                              className:
+                                "p-2 rounded-md hover:bg-gray-100 transition-colors",
+                            },
+                          },
+                        },
+                      },
+                      {
+                        component: "ButtonRenderer",
+                        meta: {
+                          component: "ButtonRenderer",
+                          properties: {
+                            name: "HomeButton",
+                            content: `<svg
+                                class="w-6 h-6"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                                xmlns="http://www.w3.org/2000/svg"
+                            >
+                               <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                    d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"
+                                />
+                            </svg>`,
+
+                            style: {
+                              className: "p-2 rounded-md transition-colors",
+                            },
+                          },
+                        },
+                      },
+                      {
+                        component: "WrapperRenderer",
+                        meta: {
+                          component: "WrapperRenderer",
+                          properties: {
+                            className: "flex-1 max-w-md mx-4",
+                            children: [
+                              {
+                                component: "WrapperRenderer",
+                                meta: {
+                                  component: "WrapperRenderer",
+                                  properties: {
+                                    className: "relative",
+                                    children: [
+                                      {
+                                        component: "InputRenderer",
+                                        meta: {
+                                          component: "InputRenderer",
+                                          properties: {
+                                            placeholder: "Search with Icon...",
+                                            style: {
+                                              className:
+                                                "w-full h-10 px-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
+                                            },
+                                            icon: {
+                                              svg: {
+                                                svg: `<svg 
+                                                          viewBox="0 0 24 24" 
+                                                          fill="none" 
+                                                          stroke="currentColor" 
+                                                          class="w-5 h-5">
+                                                            <path 
+                                                            stroke-linecap="round" 
+                                                            stroke-linejoin="round" 
+                                                            stroke-width="2"
+                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>`,
+                                              },
+                                            },
+                                          },
+                                        },
+                                      },
+                                      {
+                                        component: "WrapperRenderer",
+                                        meta: {
+                                          component: "WrapperRenderer",
+                                          properties: {
+                                            className:
+                                              '"absolute inset-y-0 left-0 pl-3 flex items-center',
+                                            content: `<svg
+                                                        class="w-5 h-5"
+                                                        fill="none"
+                                                        stroke="currentColor"
+                                                        viewBox="0 0 24 24"
+                                                    >
+                                                        <path
+                                                            stroke-linecap="round"
+                                                            stroke-linejoin="round"
+                                                            stroke-width="2"
+                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                                                        />
+                                                    </svg>
+                                                  `,
+                                          },
+                                        },
+                                      },
+                                    ],
+                                  },
+                                },
+                              },
+                            ],
+                          },
+                        },
+                      },
+                      /*{
+                        component: "ButtonRenderer",
+                        meta: {
+                          component: "ButtonRenderer",
+                          properties: {
+                            name: "collapseButton",
+                            content: {
+                              name:'DashboardOutlined'
+                            },
+                            event: {
+                              onClick: 'headerActionContext.handleDarkMode'
+                            },
+                            style: {
+                              className: 'p-2 rounded-md hover:bg-gray-100 transition-colors',
+                            }
+                          }
+                        },
+                      }*/
+                    ],
+                  },
+                },
+              },
+            ],
+          },
+        },
       },
     },
     content: {

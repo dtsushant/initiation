@@ -3,9 +3,9 @@ import {
   DangerousRenderer,
   getDefaultInternalComponents,
   getLayoutComponentRegistryService,
+  RenderComponent,
 } from "xingine-react";
 import { LayoutComponentDetail } from "xingine";
-import { RenderComponent } from "/@/initiation/layouts/custom/Component.utils.tsx";
 
 interface TailwindContentComponentProps {
   renderer?: LayoutComponentDetail;
