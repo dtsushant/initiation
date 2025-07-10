@@ -173,7 +173,6 @@ export const buttonMeta3: ButtonMeta = {
 
 export const createTailwindDashboardLayout = (): LayoutRenderer => {
   const chartData: LayoutComponentDetail = {
-    component: "ChartRenderer",
     meta: {
       component: "ChartRenderer",
       properties: {
@@ -246,7 +245,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
   const chartDetail: LayoutComponent = new LayoutComponent(chartData);
 
   const formData = new LayoutComponent({
-    component: "FormRenderer",
     meta: {
       component: "FormRenderer",
       properties: {
@@ -260,7 +258,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
   });
 
   const tableData: LayoutComponent = new LayoutComponent({
-    component: "TableRenderer",
     meta: {
       component: "TableRenderer",
       properties: {
@@ -281,7 +278,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
   });
 
   const detailData: LayoutComponent = new LayoutComponent({
-    component: "DetailRenderer",
     meta: {
       component: "DetailRenderer",
       properties: {
@@ -300,7 +296,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
   });
 
   const popupData = new LayoutComponent({
-    component: "PopupRenderer",
     meta: {
       component: "PopupRenderer",
       properties: {
@@ -340,9 +335,6 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
   });
 
   const dashboardContent: LayoutComponent = new LayoutComponent({
-    component: "WrapperRenderer",
-    content: "<div>This content is rendered dangerously</div>",
-
     meta: {
       component: "WrapperRenderer",
 
@@ -420,53 +412,29 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
       },
     },
   });
-
-  return {
-    type: "tailwind",
-    style: {
-      className: "min-h-screen",
-    },
-    header: {
-      style: {
-        className: "fixed top-0 left-0 right-0 h-16 z-50 shadow-sm",
-      },
-      meta: {
-        component: "HeaderRenderer",
-        meta: {
-          component: "WrapperRenderer",
-          properties: {
-            showMeta: true,
-            className: "h-16 px-4 flex items-center justify-between",
-            children: [
-              {
-                component: "WrapperRenderer",
-                meta: {
-                  properties: {
-                    className: "flex items-center space-x-4",
-                    /*event:{
-                      onClick:'headerActionContext.handleToggleCollapsed'
-                    },*/
-                    children: [
-                      {
-                        component: "IconRenderer",
-                        meta: {
-                          component: "IconRenderer",
-                          properties: {
-                            name: "UserOutlined",
-                            onClick: "toggleSidebar",
-                            className:
-                              "p-2 rounded-md hover:bg-gray-100 transition-colors",
-                          },
-                        },
-                      },
-
-                      {
-                        component: "ButtonRenderer",
-                        meta: {
-                          component: "ButtonRenderer",
-                          properties: {
-                            name: "collapseButton",
-                            content: `<svg
+  const header: LayoutComponentDetail = {
+    meta: {
+      component: "WrapperRenderer",
+      properties: {
+        style: {
+          className:
+            "h-16 px-4 flex items-center #{darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} justify-between",
+        },
+        children: [
+          {
+            meta: {
+              component: "WrapperRenderer",
+              properties: {
+                style: {
+                  className: "flex items-center space-x-4",
+                },
+                children: [
+                  {
+                    meta: {
+                      component: "ButtonRenderer",
+                      properties: {
+                        name: "collapseButton",
+                        content: `<svg
                               class="w-6 h-6"
                               fill="none"
                               stroke="currentColor"
@@ -480,24 +448,22 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                                 d="M4 6h16M4 12h16M4 18h16"
                               />
                             </svg>`,
-                            event: {
-                              onClick:
-                                "headerActionContext.handleToggleCollapsed",
-                            },
-                            style: {
-                              className:
-                                "p-2 rounded-md hover:bg-gray-100 transition-colors",
-                            },
-                          },
+                        event: {
+                          onClick: "headerActionContext.handleToggleCollapsed",
+                        },
+                        style: {
+                          className:
+                            "p-2 rounded-md hover:#{darkMode ? 'bg-gray-700':'bg-gray-100'} transition-colors",
                         },
                       },
-                      {
-                        component: "ButtonRenderer",
-                        meta: {
-                          component: "ButtonRenderer",
-                          properties: {
-                            name: "HomeButton",
-                            content: `<svg
+                    },
+                  },
+                  {
+                    meta: {
+                      component: "ButtonRenderer",
+                      properties: {
+                        name: "HomeButton",
+                        content: `<svg
                                 class="w-6 h-6"
                                 fill="none"
                                 stroke="currentColor"
@@ -512,125 +478,284 @@ export const createTailwindDashboardLayout = (): LayoutRenderer => {
                                 />
                             </svg>`,
 
-                            style: {
-                              className: "p-2 rounded-md transition-colors",
-                            },
-                          },
+                        style: {
+                          className:
+                            "p-2 rounded-md hover:#{darkMode ? 'bg-gray-700':'bg-gray-100'} transition-colors",
                         },
                       },
-                      {
-                        component: "WrapperRenderer",
-                        meta: {
-                          component: "WrapperRenderer",
-                          properties: {
-                            className: "flex-1 max-w-md mx-4",
-                            children: [
-                              {
-                                component: "WrapperRenderer",
-                                meta: {
-                                  component: "WrapperRenderer",
-                                  properties: {
-                                    className: "relative",
-                                    children: [
-                                      {
-                                        component: "InputRenderer",
-                                        meta: {
-                                          component: "InputRenderer",
-                                          properties: {
-                                            placeholder: "Search with Icon...",
-                                            style: {
-                                              className:
-                                                "w-full h-10 px-4 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500",
-                                            },
-                                            icon: {
-                                              svg: {
-                                                svg: `<svg 
-                                                          viewBox="0 0 24 24" 
-                                                          fill="none" 
-                                                          stroke="currentColor" 
-                                                          class="w-5 h-5">
-                                                            <path 
-                                                            stroke-linecap="round" 
-                                                            stroke-linejoin="round" 
-                                                            stroke-width="2"
-                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                                        </svg>`,
-                                              },
-                                            },
-                                          },
-                                        },
-                                      },
-                                      {
-                                        component: "WrapperRenderer",
-                                        meta: {
-                                          component: "WrapperRenderer",
-                                          properties: {
-                                            className:
-                                              '"absolute inset-y-0 left-0 pl-3 flex items-center',
-                                            content: `<svg
-                                                        class="w-5 h-5"
-                                                        fill="none"
-                                                        stroke="currentColor"
-                                                        viewBox="0 0 24 24"
-                                                    >
-                                                        <path
+                    },
+                  },
+                ],
+              },
+            },
+          },
+          {
+            meta: {
+              component: "WrapperRenderer",
+              properties: {
+                style: {
+                  className: "flex-1 max-w-md mx-4",
+                },
+                children: [
+                  {
+                    meta: {
+                      component: "InputRenderer",
+                      properties: {
+                        placeholder: "Search with Icon...",
+                        style: {
+                          className:
+                            "w-full h-10 px-4 border rounded-md #{darkMode ? 'bg-gray-700 border-gray-600 text-white placeholder-gray-400':'bg-gray-50 border-gray-300 text-gray-900 placeholder-gray-500'} focus:outline-none focus:ring-2 focus:ring-blue-500",
+                        },
+                        icon: {
+                          svg: {
+                            svg: `<svg
+                                                          viewBox="0 0 24 24"
+                                                          fill="none"
+                                                          stroke="currentColor"
+                                                          class="w-5 h-5 ">
+                                                            <path
                                                             stroke-linecap="round"
                                                             stroke-linejoin="round"
                                                             stroke-width="2"
-                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                                                        />
-                                                    </svg>
-                                                  `,
-                                          },
-                                        },
-                                      },
-                                    ],
-                                  },
-                                },
-                              },
-                            ],
+                                                            d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                                        </svg>`,
                           },
                         },
                       },
-                      /*{
-                        component: "ButtonRenderer",
-                        meta: {
-                          component: "ButtonRenderer",
-                          properties: {
-                            name: "collapseButton",
-                            content: {
-                              name:'DashboardOutlined'
-                            },
-                            event: {
-                              onClick: 'headerActionContext.handleDarkMode'
-                            },
-                            style: {
-                              className: 'p-2 rounded-md hover:bg-gray-100 transition-colors',
-                            }
-                          }
-                        },
-                      }*/
-                    ],
+                    },
                   },
-                },
+                ],
               },
-            ],
+            },
           },
-        },
+          {
+            meta: {
+              component: "WrapperRenderer",
+              properties: {
+                className:
+                  "flex items-center #{darkMode ? 'bg-gray-700':'bg-gray-100'} space-x-3",
+                children: [
+                  {
+                    meta: {
+                      component: "ConditionalRenderer",
+                      properties: {
+                        condition: {
+                          field: "darkMode",
+                          operator: "eq",
+                          value: false,
+                        },
+                        trueComponent: {
+                          meta: {
+                            component: "ButtonRenderer",
+                            properties: {
+                              name: "DarkModeToggle",
+                              content: `<svg
+                                      class="w-6 h-6"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"
+                                      />
+                                    </svg>`,
+                              event: {
+                                onClick: "headerActionContext.handleDarkMode",
+                              },
+                              style: {
+                                className:
+                                  "p-2 rounded-md #{darkMode ? 'bg-gray-700':'bg-gray-100'} hover:bg-gray-100 transition-colors",
+                              },
+                            },
+                          },
+                        },
+                        falseComponent: {
+                          meta: {
+                            component: "ButtonRenderer",
+                            properties: {
+                              name: "DarkModeToggle",
+                              content: `<svg
+                                      class="w-6 h-6"
+                                      fill="none"
+                                      stroke="currentColor"
+                                      viewBox="0 0 24 24"
+                                    >
+                                      <path
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        stroke-width="2"
+                                        d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z"
+                                      />
+                                    </svg>`,
+                              event: {
+                                onClick: "headerActionContext.handleDarkMode",
+                              },
+                              style: {
+                                className:
+                                  "p-2 rounded-md #{darkMode ? 'bg-gray-700':'bg-gray-100'} transition-colors",
+                              },
+                            },
+                          },
+                        },
+                      },
+                    },
+                  },
+                  {
+                    meta: {
+                      component: "ButtonRenderer",
+                      properties: {
+                        className:
+                          "p-2 rounded-md transition-colors #{darkMode ? 'bg-gray-700':'bg-gray-100'} relative",
+                        content: `<svg
+                                    class="w-6 h-6"
+                                    fill="none"
+                                    stroke="currentColor"
+                                    viewBox="0 0 24 24"
+                                  >
+                                    <path
+                                      stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width='2'
+                                      d="M15 17h5l-5 5v-5zM15 17H9a6 6 0 01-6-6V9a6 6 0 016-6h6a6 6 0 016 6v2"
+                                    />
+                                  </svg>
+                                  <span class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white rounded-full text-xs flex items-center justify-center">
+                                    3
+                                  </span>
+                                                  `,
+                      },
+                    },
+                  },
+                  {
+                    meta: {
+                      component: "WrapperRenderer",
+                      properties: {
+                        className: "relative",
+                        children: [
+                          {
+                            meta: {
+                              component: "ButtonRenderer",
+                              properties: {
+                                event: {
+                                  onClick:
+                                    "headerActionContext.setUserDropdownOpen",
+                                },
+                                style: {
+                                  className:
+                                    "flex items-center space-x-2 p-2 rounded-md transition-colors #{darkMode ? 'bg-gray-700':'bg-gray-100'}",
+                                },
+                                content: `<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                                    U
+                                                  </div>
+                                                  <svg
+                                                    class="w-4 h-4 transition-transform #{userDropdownOpen ? 'rotate-180' : ''}"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <path
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width='2'
+                                                      d="M19 9l-7 7-7-7"
+                                                    />
+                                                  </svg>`,
+                              },
+                            },
+                          },
+                          {
+                            meta: {
+                              component: "ConditionalRenderer",
+                              properties: {
+                                condition: {
+                                  field: "userDropdownOpen",
+                                  operator: "eq",
+                                  value: true,
+                                },
+                                trueComponent: {
+                                  meta: {
+                                    component: "WrapperRenderer",
+                                    properties: {
+                                      className: `absolute right-0 mt-2 w-48 bg-white border #{darkMode ? 'bg-gray-800 border-gray-700':'bg-white border-gray-200'} rounded-md shadow-lg z-50`,
+                                      children: [
+                                        {
+                                          meta: {
+                                            component: "WrapperRenderer",
+                                            properties: {
+                                              className: "p-y-1",
+                                              children: [
+                                                {
+                                                  meta: {
+                                                    component: "ButtonRenderer",
+                                                    properties: {
+                                                      name: "ProfileSettingsButton",
+                                                      content: "Settings",
+                                                      style: {
+                                                        className:
+                                                          "w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md",
+                                                      },
+                                                    },
+                                                  },
+                                                },
+                                                {
+                                                  meta: {
+                                                    component: "ButtonRenderer",
+                                                    properties: {
+                                                      name: "LogoutButton",
+                                                      content: "Logout",
+                                                      style: {
+                                                        className:
+                                                          "w-full text-left px-4 py-2 hover:bg-gray-100 rounded-md text-red-600",
+                                                      },
+                                                    },
+                                                  },
+                                                },
+                                              ],
+                                            },
+                                          },
+                                        },
+                                      ],
+                                    },
+                                  },
+                                },
+                              },
+                            },
+                          },
+                        ],
+                      },
+                    },
+                  },
+                ],
+              },
+            },
+          },
+        ],
       },
+    },
+  };
+
+  return {
+    type: "tailwind",
+    style: {
+      className: "min-h-screen",
+    },
+    header: {
+      style: {
+        className: "fixed top-0 left-0 right-0 h-16 z-50 shadow-sm",
+      },
+      meta: header,
     },
     content: {
       meta: dashboardContent,
     },
     sider: {
-      meta: {
-        component: "SidebarRenderer",
-      },
+      meta: {},
     },
     footer: {
-      meta: {
-        component: "FooterRenderer",
-      },
+      meta: {},
     },
   };
 };

@@ -1,4 +1,5 @@
 import {
+  ActionContext,
   ComponentMeta,
   ComponentMetaMap,
   EventBindings,
@@ -18,8 +19,8 @@ export class LayoutComponent implements LayoutComponentDetail {
   constructor(data: LayoutComponentDetail) {
     //   this.path = data.path;
     //  this.isMenuItem = data.isMenuItem;
-    this.component = data.component;
-    this.content = data.content;
+    this.component = "data.component";
+    this.content = "data.content";
     this.meta = data.meta;
 
     // recursively wrap children if they exist

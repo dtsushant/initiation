@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
   Row,
   Col,
@@ -22,19 +22,30 @@ import {
   LogoutOutlined,
   BulbOutlined,
 } from "@ant-design/icons";
-import { LayoutComponentDetail, SvgMeta, WrapperMeta } from "xingine";
+import {
+  ButtonMeta,
+  ConditionalMeta,
+  extrapolate,
+  LayoutComponentDetail,
+  SvgMeta,
+  WrapperMeta,
+} from "xingine";
 import {
   bindMultipleEvents,
   getDefaultInternalComponents,
   IconRenderer,
   InputRenderer,
-  RenderComponent,
   SvgRenderer,
+  toCSSClassName,
   useXingineContext,
+  WrapperRenderer,
 } from "xingine-react";
 import {
   ButtonRenderer,
+  ConditionalRenderer,
   InputWithIcon,
+  MyCustomRenderer,
+  RenderComponent,
 } from "/@/initiation/layouts/custom/Component.utils.tsx";
 import {
   buttonMeta,
@@ -75,7 +86,10 @@ const useVerySmallScreen = () => {
   return isVerySmall;
 };
 
-export const HeaderComponent: React.FC<WrapperMeta> = (meta) => {
+export const HeaderComponent: React.FC<LayoutComponentDetail> = (meta) => {
+  const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [hasHeader, setHasHeader] = useState(true);
+
   const { panelControl, menuItems } = useXingineContext();
 
   const {
@@ -152,16 +166,29 @@ export const HeaderComponent: React.FC<WrapperMeta> = (meta) => {
     });
   };
 
-  const scope = {
-    handleSearch,
-    handleHomeClick,
-    handleToggleCollapsed,
-    handleDarkMode,
-  };
+  const scope = useMemo(
+    () => ({
+      handleSearch,
+      handleHomeClick,
+      handleToggleCollapsed,
+      handleDarkMode,
+      collapsed,
+      darkMode,
+      hasHeader,
+      userDropdownOpen,
+      setUserDropdownOpen: () => {
+        setUserDropdownOpen((prev) => !prev);
+      },
+    }),
+    [userDropdownOpen, darkMode, collapsed],
+  );
 
   useEffect(() => {
-    setHeaderActionContext(scope);
-  }, []);
+    setHeaderActionContext((prev) => ({
+      ...prev,
+      ...scope,
+    }));
+  }, [scope]);
 
   const svgMeta: SvgMeta = {
     svg: `
@@ -178,15 +205,134 @@ export const HeaderComponent: React.FC<WrapperMeta> = (meta) => {
     alt: "Menu icon",
   };
 
+  const conditional: ConditionalMeta = {
+    condition: {
+      field: "headerActionContext.darkMode",
+      operator: "eq",
+      value: true,
+    },
+    trueComponent: {
+      meta: {
+        component: "SvgRenderer",
+        properties: svgMeta,
+      },
+    },
+    falseComponent: {
+      meta: {
+        component: "IconRenderer",
+        properties: {
+          name: "UserOutlined",
+        },
+      },
+    },
+  };
+
+  const wrapperMeta: WrapperMeta = {
+    component: "WrapperRenderer",
+    meta: {
+      children: [
+        {
+          component: "SvgRenderer",
+          meta: {
+            component: "SvgRenderer",
+            properties: svgMeta,
+          },
+        },
+      ],
+    },
+  };
+  const wm: WrapperMeta = {
+    content: "This is a wrapper renderer",
+    children: [
+      {
+        meta: {
+          component: "SvgRenderer",
+          properties: svgMeta,
+        },
+      },
+    ],
+  };
+
+  const lcd: LayoutComponentDetail = {
+    meta: {
+      component: "WrapperRenderer",
+      properties: wm,
+    },
+  };
+  const button: ButtonMeta = {
+    name: "userProfile",
+    style: {
+      className:
+        "flex items-center space-x-2 p-2 rounded-md transition-colors #{darkMode ? 'bg-gray-700':'bg-gray-100'}",
+    },
+    event: {
+      onClick: "headerActionContext.setUserDropdownOpen",
+    },
+    content: `<div class="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center text-white text-sm font-medium">
+                                                    U
+                                                  </div>
+                                                  <svg
+                                                    class="w-4 h-4 transition-transform #{userDropdownOpen ? 'rotate-180' : ''}"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                  >
+                                                    <path
+                                                      stroke-linecap="round"
+                                                      stroke-linejoin="round"
+                                                      stroke-width='2'
+                                                      d="M19 9l-7 7-7-7"
+                                                    />
+                                                  </svg>`,
+  };
+  /*console.info("the lcd", JSON.stringify(meta,null,2))
+  console.info("the lcd that renders", JSON.stringify(lcd,null,2))*/
+  /*
+  console.info("the wrapperMeta", JSON.stringify(wrapperMeta,null,2))
+*/
+
   return (
     <>
-      {meta.children
+      {/*{meta.children
         ?.filter((child) => !!child.meta)
         .map((child, index) => {
           //  const Comp = compMap[child.meta!.component];
 
           return <RenderComponent {...child} key={index} />;
-        })}
+        })}*/}
+      {/*
+      <RenderComponent {...lcd} />
+*/}
+      <RenderComponent {...meta} />
+      {/*<ButtonRenderer {...button}/>*/}
+
+      {/*
+      <div>{extrapolate("h-16 px-4 flex items-center #{headerActionContext.darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'} justify-between",panelControl)}</div>
+*/}
+
+      {/*
+      <MyCustomRenderer className="h-16 px-4 flex items-center justify-between #{darkMode ? 'bg-gray-800 text-white' : 'bg-white text-gray-900'}" content="This is a custom renderer" />
+*/}
+      {/*<ConditionalRenderer {...conditional}/>*/}
+
+      {/*<WrapperRenderer {...meta.properties}/>*/}
+      {/* <WrapperRenderer {...wm}/>*/}
+      {/*<WrapperRenderer {...{
+        content:"This is a wrapper renderer",
+        children:[{
+            component:"SvgRenderer",
+            meta:{
+                component:"SvgRenderer",
+                properties:svgMeta
+            }
+        }]
+      }} />*/}
+
+      {/*<div>{extrapolate(" this is extrapolated string darkMode her is #{userDropdownOpen} te value",headerActionContext)}</div>*/}
+      {/*<Button onClick={scope.setUserDropdownOpen}>Click me</Button>
+      <ConditionalRenderer {...conditional}/>*/}
+      {/*{userDropdownOpen && <div>this is shown or hidden</div>}*/}
+
       {/*<SvgRenderer {...svgMeta} />*/}
       {/*<IconRenderer {...{svg:svgMeta}}/>*/}
       {/*<IconRenderer {...{name:'SearchOutlined'}}/>*/}
@@ -212,56 +358,6 @@ export const HeaderComponent: React.FC<WrapperMeta> = (meta) => {
                     />
                 </svg>
             </button>*/}
-      {/*<div style={{
-        padding: '0 16px',
-            height: '100%',
-            display: 'flex',
-            alignItems: 'center'
-    }}>
-    <Row justify="space-between" align="middle" style={{ width: '100%' }}>
-    <Col>
-        <Space>
-            <Button
-                type="text"
-    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-    onClick={handleToggleCollapsed}
-    />
-    <Button
-    type="text"
-    icon={<HomeOutlined />}
-    onClick={handleHomeClick}
-    />
-    </Space>
-    </Col>
-     Hide search on very small screens to save space
-    {!isVerySmallScreen && (
-        <Col flex="auto" style={{ maxWidth: 400, margin: '0 16px' }}>
-        <Search
-            placeholder="Search..."
-        allowClear
-        enterButton={<SearchOutlined />}
-        onSearch={handleSearch}
-        />
-        </Col>
-    )}
-    <Col>
-        <Space>
-            <Badge count={5}>
-    <Button type="text" icon={<BellOutlined />} />
-    </Badge>
-    <Switch
-    checkedChildren={<BulbOutlined />}
-    unCheckedChildren={<BulbOutlined />}
-    checked={darkMode}
-    onChange={setDarkMode}
-    />
-    <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-    <Avatar icon={<UserOutlined />} style={{ cursor: 'pointer' }} />
-    </Dropdown>
-    </Space>
-    </Col>
-    </Row>
-    </div>*/}
     </>
   );
 };

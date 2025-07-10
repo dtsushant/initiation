@@ -10,6 +10,7 @@ import {
 import { CustomHeaderComponent } from "/@/initiation/layouts/custom/CustomHeaderComponent.tsx";
 import { CustomContentComponent } from "/@/initiation/layouts/custom/CustomContentComponent.tsx";
 import { LayoutRenderer } from "xingine";
+import { SiderComponent } from "/@/initiation/layouts/exposition/SiderComponent.tsx";
 
 interface TailwindLayoutProps {
   layout: LayoutRenderer;
@@ -44,29 +45,19 @@ export const CustomLayoutComponent: React.FC<TailwindLayoutProps> = ({
 
       <div className={`flex ${layout.header ? "mt-16" : ""}`}>
         {/* Sidebar */}
-        {layout.sider && (
-          <aside
-            className={`fixed left-0 top-0 h-screen z-40 transition-all duration-200 ${
-              layout.header ? "mt-16" : "mt-0"
-            } ${collapsed ? "w-0 overflow-hidden" : "w-52"} ${
-              darkMode
-                ? "bg-gray-800 border-r border-gray-700"
-                : "bg-white border-r border-gray-200"
-            }`}
-          >
-            <TailwindSidebarComponent
-              renderer={layout.sider.meta}
-              panelControl={panelControl}
-              menuItems={menuItems}
-            />
-          </aside>
-        )}
+        {layout.sider && <SiderComponent {...layout.sider.meta} />}
 
         {/* Main Content Area */}
+        {/***
+         TODO:-
+         * 1. If no sider, the main content should take full width.
+         * 2. If sider is present, the main content should adjust its margin based on the collapsed state.
+         * 3. this should be moved to ContentRenderer
+         * */}
         <div
-          className={`flex-1 transition-all duration-200 ${
-            !collapsed && layout.sider ? "ml-52" : "ml-0"
-          }`}
+          className={toCSSClassName(`flex-1 transition-all duration-200 #{
+                collapsed && hasSider  ? "ml-20" : "ml-52"
+            }`)}
         >
           {/* Content */}
           <main
