@@ -18,6 +18,7 @@ import ormConfig from '../../../mikro-orm.config';
 import { XingineModule } from 'xingine-nest';
 import { moduleMap } from '../app.config';
 import { CacheModule } from '../../shared/cache/cache.module';
+import { layoutRendererDecoder } from 'xingine';
 
 describe('AppService (with real modules)', () => {
   let appService: AppService;
@@ -69,5 +70,12 @@ describe('AppService (with real modules)', () => {
   it('should return all path in system', async () => {
     const metadata = await appService.getAllAPIPath();
     console.log('Module Metadata:', JSON.stringify(metadata, null, 2));
+  });
+
+  it('should return "All Layout Renderer"', async () => {
+    await appService.registerLayout();
+    const layouts = await appService.getAllLayoutRenderer();
+    const renderer = layoutRendererDecoder.decode(layouts[0]);
+    console.log('the renderer', JSON.stringify(renderer, null, 2));
   });
 });

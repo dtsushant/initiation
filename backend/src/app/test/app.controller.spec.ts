@@ -6,6 +6,7 @@ import ormConfig from '../../../mikro-orm.config';
 import { XingineModule } from 'xingine-nest';
 import { moduleMap } from '../app.config';
 import { ModulePropertyOptions } from 'xingine';
+import { CacheModule } from '../../shared/cache/cache.module';
 
 describe('AppController', () => {
   let appController: AppController;
@@ -19,6 +20,7 @@ describe('AppController', () => {
           registerRequestContext: false,
         }),
         XingineModule,
+        CacheModule,
         ...moduleMap,
       ],
       providers: [AppService],

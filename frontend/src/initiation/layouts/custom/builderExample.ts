@@ -1,4 +1,5 @@
 import {
+  CommissarBuilder,
   ConditionalMeta,
   IconMeta,
   LayoutComponentDetail,
@@ -33,8 +34,7 @@ const userFormFields = [
   {
     name: "role",
     label: "Role",
-    inputType: "select" as const,
-    required: true,
+    inputType: "select",
     properties: {},
   },
 ];
@@ -75,6 +75,8 @@ const userDetailData = {
 };
 
 // Create chart component using the builder
+//const chartWrapperClass = `min-w-[150px] flex-1 sm:max-w-[calc(25%-1rem)] bg-gray-100 p-4 rounded`;
+const chartWrapperClass = `w-full h-[300px] bg-white p-4 shadow rounded`;
 const chartComponent = LayoutComponentDetailBuilder.create()
   .chart()
   .charts([
@@ -91,6 +93,9 @@ const chartComponent = LayoutComponentDetailBuilder.create()
           backgroundColor: "#1890ff",
         },
       ],
+      style: {
+        className: chartWrapperClass,
+      },
     },
     {
       type: "line",
@@ -105,6 +110,9 @@ const chartComponent = LayoutComponentDetailBuilder.create()
           borderColor: "#52c41a",
         },
       ],
+      style: {
+        className: chartWrapperClass,
+      },
     },
     {
       type: "pie",
@@ -118,6 +126,9 @@ const chartComponent = LayoutComponentDetailBuilder.create()
           backgroundColor: "#1890ff",
         },
       ],
+      style: {
+        className: chartWrapperClass,
+      },
       labels: ["Desktop", "Mobile", "Tablet", "Other"],
     },
     {
@@ -138,6 +149,9 @@ const chartComponent = LayoutComponentDetailBuilder.create()
           backgroundColor: "#722ed1",
         },
       ],
+      style: {
+        className: chartWrapperClass,
+      },
     },
   ])
   .build();
@@ -147,6 +161,14 @@ const formComponent = LayoutComponentDetailBuilder.create()
   .withMeta("FormRenderer", {
     action: "handleUserCreate",
     fields: userFormFields,
+    event: {
+      onSubmit: {
+        action: "navigate",
+        args: {
+          path: "/thank-you",
+        },
+      },
+    },
     properties: {
       title: "Create User",
       submitText: "Create User",
@@ -245,16 +267,17 @@ const popupComponent = LayoutComponentDetailBuilder.create()
   .build();
 
 // Create dashboard content with nested structure
-const dashboardContent = LayoutComponentDetailBuilder.create()
+const dashboardContent = CommissarBuilder.create()
+  .path("/dashboard")
   .wrapper()
-  .className(
-    "min-h-full max-w-full w-full grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8",
-  )
+  .className("min-h-full max-w-full w-full")
   .addChild(
     // Charts Row
     LayoutComponentDetailBuilder.create()
       .wrapper()
-      .className("grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8")
+      .className(
+        "grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 mb-4 p-4 rounded #{darkMode ? bg-gray-800 shadow-lg text-white : bg-white shadow-md}",
+      )
       .style({
         background: "linear-gradient(135deg, #ff7e5f, #feb47b)",
         color: "#ffffff",
@@ -268,43 +291,101 @@ const dashboardContent = LayoutComponentDetailBuilder.create()
     // Form and Table Row
     LayoutComponentDetailBuilder.create()
       .wrapper()
-      .className("grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8")
-      .addChild(tableComponent)
+      .className(
+        "w-full bg-white shadow mb-4 p-4 rounded #{darkMode ? bg-gray-800 shadow-lg text-white : bg-white shadow-md}",
+      )
       .addChild(formComponent)
+      .build(),
+  )
+  .addChild(
+    // Form and Table Row
+    LayoutComponentDetailBuilder.create()
+      .wrapper()
+      .className(
+        "w-full bg-white mb-4 p-4 rounded #{darkMode ? bg-gray-800 shadow-lg text-white : bg-white shadow-md}",
+      )
+      .addChild(tableComponent)
       .build(),
   )
   .addChild(
     // Detail and Popup Row
     LayoutComponentDetailBuilder.create()
       .wrapper()
-      .className("grid grid-cols-1 gap-6")
+      .className(
+        "grid grid-cols-1 gap-6 mb-4 p-4 rounded #{darkMode ? bg-gray-800 shadow-lg text-white : bg-white shadow-md}",
+      )
       .addChild(
         LayoutComponentDetailBuilder.create()
           .wrapper()
-          .className("bg-white dark:bg-gray-800 p-6 rounded-lg shadow")
+          .className(
+            "mb-4 p-4 rounded #{darkMode ? bg-gray-800 shadow-lg text-white : bg-white shadow-md}",
+          )
           .addChild(detailComponent)
           .addChild(popupComponent)
           .build(),
       )
       .build(),
   )
+  .addChild(
+    LayoutComponentDetailBuilder.create()
+      .wrapper()
+      .className(
+        "flex gap-4 mb-4 p-4 rounded #{darkMode ? bg-gray-800 shadow-lg text-white : bg-white shadow-md}",
+      ) // row layout with gap
+      .addChildren([
+        // Left (Progress / Chart) - 80%
+        LayoutComponentDetailBuilder.create()
+          .wrapper()
+          .className("basis-[80%] grow bg-white p-4 rounded shadow")
+          .content("Progress Chart Section")
+          .build(),
+
+        // Right (User Stats) - 20%
+        LayoutComponentDetailBuilder.create()
+          .wrapper()
+          .className("basis-[20%] bg-white p-4 rounded shadow")
+          .content("User Stats List")
+          .build(),
+      ])
+      .build(),
+  )
+  .build();
+
+const sampleCommissar = CommissarBuilder.create()
+  .path("/sample-commissar")
+  .wrapper()
+  .content("this is rendered from sample Commisar")
   .build();
 
 const collapseButton = LayoutComponentDetailBuilder.create()
   .button()
   .name("collapseButton")
-  .content(collapseIconMeta)
+  .icon(collapseIconMeta)
   .event({
-    onClick: "headerActionContext.handleToggleCollapsed",
+    onClick: {
+      action: "toggleState",
+      args: {
+        key: "collapsed",
+      },
+    },
   })
   .className("p-2 rounded-md hover:bg-gray-100 transition-colors")
   .build();
 
-const homeButton = LayoutComponentDetailBuilder.create()
+/*const homeButton = LayoutComponentDetailBuilder.create()
   .button()
   .name("HomeButton")
-  .content(homeIconMeta)
+  .icon(homeIconMeta)
   .className("p-2 rounded-md hover:bg-gray-100 transition-colors")
+  .build();*/
+
+const homeButton = LayoutComponentDetailBuilder.create()
+  .dynamic("LinkRenderer")
+  .property("path", "/dashboard")
+  .property("icon", homeIconMeta)
+  .property("style", {
+    className: "p-2 rounded-md hover:bg-gray-100 transition-colors",
+  })
   .build();
 
 const leftSection = LayoutComponentDetailBuilder.create()
@@ -332,11 +413,16 @@ const middleSection = LayoutComponentDetailBuilder.create()
 
 const darkModeButton = LayoutComponentDetailBuilder.create()
   .button()
-  .name("DarkModeButton")
-  .content(darkModeIcon)
   .event({
-    onClick: "headerActionContext.handleDarkMode",
+    onClick: {
+      action: "toggleState",
+      args: {
+        key: "darkMode",
+      },
+    },
   })
+  .name("DarkModeButton")
+  .icon(darkModeIcon)
   .className(
     `p-2 rounded-md #{darkMode ? 'bg-gray-700':'bg-gray-100'} hover:bg-gray-100 transition-colors`,
   )
@@ -344,11 +430,16 @@ const darkModeButton = LayoutComponentDetailBuilder.create()
 
 const lightModeButton = LayoutComponentDetailBuilder.create()
   .button()
-  .name("LightModeButton")
-  .content(lightModeIcon)
   .event({
-    onClick: "headerActionContext.handleDarkMode",
+    onClick: {
+      action: "toggleState",
+      args: {
+        key: "darkMode",
+      },
+    },
   })
+  .name("LightModeButton")
+  .icon(lightModeIcon)
   .className(
     `p-2 rounded-md #{darkMode ? 'bg-gray-700':'bg-gray-100'} transition-colors`,
   )
@@ -380,7 +471,12 @@ const notificationComponent = LayoutComponentDetailBuilder.create()
 const userMenuToggle = LayoutComponentDetailBuilder.create()
   .button()
   .event({
-    onClick: "headerActionContext.setUserDropdownOpen",
+    onClick: {
+      action: "toggleState",
+      args: {
+        key: "userDropdownOpen",
+      },
+    },
   })
   .name("userDropdown")
   .content(
@@ -581,7 +677,13 @@ const siderMenuWrapper = LayoutComponentDetailBuilder.create()
 const siderComponent = LayoutComponentDetailBuilder.create()
   .dynamic("SiderRenderer")
   .property("event", {
-    onInit: "loadSomefunction",
+    onInit: {
+      action: "setState",
+      args: {
+        key: "hasSider",
+        value: true,
+      },
+    },
   })
   .property("style", {
     className: `fixed left-0 top-0 h-screen z-40 transition-all duration-200 #{
@@ -595,17 +697,84 @@ const siderComponent = LayoutComponentDetailBuilder.create()
   .property("children", [siderMenuWrapper])
   .build();
 
-const footerComponent = LayoutComponentDetailBuilder.create().build();
+const footerLeft = LayoutComponentDetailBuilder.create()
+  .wrapper()
+  .className(`flex items-center space-x-4`)
+  .content(`<span class="text-sm">© 2024 Xingine</span>`)
+  .build();
+const privacyPolicyLink = LayoutComponentDetailBuilder.create()
+  .dynamic("LinkRenderer")
+  .property("path", "/privacy-policy")
+  .property("label", "Privacy Policy")
+  .property("icon", {
+    name: "UserOutlined",
+  })
+  .build();
+const termsOfServiceLink = LayoutComponentDetailBuilder.create()
+  .dynamic("LinkRenderer")
+  .property("path", "/terms-of-service")
+  .property("label", "Terms of Service")
+  .build();
+const supportLink = LayoutComponentDetailBuilder.create()
+  .dynamic("LinkRenderer")
+  .property("path", "/support")
+  .property("label", "Support")
+  .build();
+const footerCenter = LayoutComponentDetailBuilder.create()
+  .wrapper()
+  .className(`hidden md:flex items-center space-x-6`)
+  .addChild(privacyPolicyLink)
+  .addChild(termsOfServiceLink)
+  .addChild(supportLink)
+  .build();
+
+const footerRight = LayoutComponentDetailBuilder.create()
+  .wrapper()
+  .className(`flex items-center space-x-4`)
+  .content(
+    `<span className="text-xs px-2 py-1 rounded-full bg-blue-100 text-blue-800 dark:bg-blue-900 dark:text-blue-200">
+          v1.0.8
+        </span>`,
+  )
+  .build();
+const footerContent = LayoutComponentDetailBuilder.create()
+  .wrapper()
+  .className(
+    `h-16 px-6 flex items-center justify-between #{
+        darkMode ? 'bg-gray-800 text-gray-300' : 'bg-white text-gray-600'
+    }`,
+  )
+  .addChild(footerLeft)
+  .addChild(footerCenter)
+  .addChild(footerRight)
+  .build();
+const footerComponent = LayoutComponentDetailBuilder.create()
+  .wrapper()
+  .addChild(footerContent)
+  .build();
 
 export function getDefaultTemplate(): LayoutRenderer {
   return LayoutRendererBuilder.create()
     .type("tailwind")
     .className("min-h-screen")
     .withHeader(headerComponent, {
-      className: "fixed top-0 left-0 right-0 h-16 z-50 shadow-sm",
+      className: `fixed top-0 left-0 right-0 h-16 z-50 shadow-sm #{
+                    darkMode
+                        ? "bg-gray-800 border-r border-gray-700"
+                        : "bg-white border-r border-gray-200"
+                }`,
     })
-    .withContent(dashboardContent)
+    .addContentCommissar(dashboardContent)
+    .addContentCommissar(sampleCommissar)
     .withSider(siderComponent)
-    .withFooter(footerComponent)
+    .withFooter(footerComponent, {
+      className: `fixed bottom-0 left-0 right-0 h-16 z-30 transition-all duration-200 
+        #{hasSider && collapsed ? "ml-20" : hasSider && collapsed === false ? "ml-52" : ""}
+        #{
+                darkMode
+                  ? "bg-gray-800 border-t border-gray-700"
+                  : "bg-white border-t border-gray-200"
+              } shadow-sm`,
+    })
     .build();
 }

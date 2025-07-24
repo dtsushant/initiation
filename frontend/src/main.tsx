@@ -7,7 +7,17 @@ import "./index.css";
 import { App } from "/src/initiation/App.tsx";
 import { layoutMap } from "/@/initiation/constants/Layout.map.ts";
 import { componentMap } from "/@/initiation/constants/Component.map.ts";
-import { ContextBureau, XingineContextBureau } from "xingine-react";
+import {
+  ActionProvider,
+  ContextBureau,
+  XingineContextBureau,
+} from "xingine-react";
+import { BrowserRouter, RouteObject } from "react-router-dom";
+import {
+  getRoutes,
+  Sample,
+  sampleRoutes,
+} from "/@/initiation/components/auth/Sample.tsx";
 
 // Create query client for caching
 const queryClient = new QueryClient({
@@ -39,7 +49,22 @@ if ("serviceWorker" in navigator && "PushManager" in window) {
   });
 }
 
-const config = { component: componentMap, layout: layoutMap };
+const config = {
+  component: componentMap,
+  layout: layoutMap,
+  additionalRoutes: [
+    ...getRoutes(),
+    {
+      path: "/sample",
+      index: true,
+      element: (
+        <ActionProvider>
+          <Sample />
+        </ActionProvider>
+      ),
+    } as RouteObject,
+  ],
+};
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>

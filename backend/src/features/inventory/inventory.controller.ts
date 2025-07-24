@@ -9,7 +9,12 @@ import {
   UseGuards,
   UsePipes,
 } from '@nestjs/common';
-import { ApiBearerAuth, ApiExtraModels, ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiExtraModels,
+  ApiTags,
+  ApiOperation,
+} from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
 import { User } from '../../shared/auth/auth-user.decorator';
@@ -21,7 +26,10 @@ import { PurchaseOrderDTO } from './entity/purchase-order.entity';
 import { InventoryTrackerDTO } from './entity/inventory-tracker.entity';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { CreatePurchaseOrderDto, UpdatePurchaseOrderDto } from './dto/create-purchase-order.dto';
+import {
+  CreatePurchaseOrderDto,
+  UpdatePurchaseOrderDto,
+} from './dto/create-purchase-order.dto';
 import { StockAdjustmentDto } from './dto/stock-adjustment.dto';
 
 @ApiBearerAuth()
@@ -31,7 +39,7 @@ import { StockAdjustmentDto } from './dto/stock-adjustment.dto';
   UpdateInventoryDto,
   CreatePurchaseOrderDto,
   UpdatePurchaseOrderDto,
-  StockAdjustmentDto
+  StockAdjustmentDto,
 )
 @Controller('inventory')
 @Provisioneer({ name: 'Inventory' })
@@ -52,7 +60,7 @@ export class InventoryController {
   }
 
   @UseGuards(JwtAuthGuard)
-  @Get(':id')  
+  @Get(':id')
   @ApiOperation({ summary: 'Get inventory item by ID' })
   async findOne(@Param('id') id: string): Promise<InventoryDTO | undefined> {
     return this.inventoryService.findInventoryById(id);
@@ -67,11 +75,11 @@ export class InventoryController {
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  @Commissar({
+  /*@Commissar({
     component: 'CreateInventory',
     directive: CreateInventoryDto,
     operative: 'FormRenderer',
-  })
+  })*/
   @Post()
   @ApiOperation({ summary: 'Create new inventory item' })
   async create(
@@ -83,11 +91,11 @@ export class InventoryController {
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  @Commissar({
+  /* @Commissar({
     component: 'UpdateInventory',
     directive: UpdateInventoryDto,
     operative: 'FormRenderer',
-  })
+  })*/
   @Put(':id')
   @ApiOperation({ summary: 'Update inventory item' })
   async update(
@@ -95,7 +103,11 @@ export class InventoryController {
     @Param('id') id: string,
     @Body() updateInventoryDto: UpdateInventoryDto,
   ): Promise<InventoryDTO> {
-    return this.inventoryService.updateInventory(userId, id, updateInventoryDto);
+    return this.inventoryService.updateInventory(
+      userId,
+      id,
+      updateInventoryDto,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
@@ -110,11 +122,11 @@ export class InventoryController {
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  @Commissar({
+  /*@Commissar({
     component: 'StockAdjustment',
     directive: StockAdjustmentDto,
     operative: 'FormRenderer',
-  })
+  })*/
   @Post('adjust-stock')
   @ApiOperation({ summary: 'Adjust inventory stock' })
   async adjustStock(
@@ -135,33 +147,38 @@ export class InventoryController {
   @UseGuards(JwtAuthGuard)
   @Get('purchase-orders/:id')
   @ApiOperation({ summary: 'Get purchase order by ID' })
-  async findOnePurchaseOrder(@Param('id') id: string): Promise<PurchaseOrderDTO | undefined> {
+  async findOnePurchaseOrder(
+    @Param('id') id: string,
+  ): Promise<PurchaseOrderDTO | undefined> {
     return this.inventoryService.findPurchaseOrderById(id);
   }
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  @Commissar({
+  /*@Commissar({
     component: 'CreatePurchaseOrder',
     directive: CreatePurchaseOrderDto,
     operative: 'FormRenderer',
-  })
+  })*/
   @Post('purchase-orders')
   @ApiOperation({ summary: 'Create new purchase order' })
   async createPurchaseOrder(
     @User('id') userId: string,
     @Body() createPurchaseOrderDto: CreatePurchaseOrderDto,
   ): Promise<PurchaseOrderDTO> {
-    return this.inventoryService.createPurchaseOrder(userId, createPurchaseOrderDto);
+    return this.inventoryService.createPurchaseOrder(
+      userId,
+      createPurchaseOrderDto,
+    );
   }
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  @Commissar({
+  /*@Commissar({
     component: 'UpdatePurchaseOrder',
     directive: UpdatePurchaseOrderDto,
     operative: 'FormRenderer',
-  })
+  })*/
   @Put('purchase-orders/:id')
   @ApiOperation({ summary: 'Update purchase order' })
   async updatePurchaseOrder(
@@ -169,6 +186,10 @@ export class InventoryController {
     @Param('id') id: string,
     @Body() updatePurchaseOrderDto: UpdatePurchaseOrderDto,
   ): Promise<PurchaseOrderDTO> {
-    return this.inventoryService.updatePurchaseOrder(userId, id, updatePurchaseOrderDto);
+    return this.inventoryService.updatePurchaseOrder(
+      userId,
+      id,
+      updatePurchaseOrderDto,
+    );
   }
 }

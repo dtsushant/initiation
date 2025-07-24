@@ -7,26 +7,23 @@ import React, { useMemo } from "react";
 import { store } from "/@/initiation/store";
 import { Provider } from "react-redux";
 import { Sample } from "/@/initiation/components/auth/Sample.tsx";
-import { useXingineContext } from "xingine-react";
+import { ActionProvider, useXingineContext } from "xingine-react";
 
 export function App() {
-  const { routes, moduleProperties } = useXingineContext();
+  return (
+    <Provider store={store}>
+      <AppWithRouter />
+    </Provider>
+  );
+}
+
+function AppWithRouter() {
+  const { routes } = useXingineContext();
 
   const router = useMemo(() => {
     if (routes.length === 0) return null;
-    const routeObjec: RouteObject = {
-      path: "/sample",
-      index: true,
-      element: <Sample />,
-    };
-
-    routes.push(routeObjec);
     return createBrowserRouter(routes);
   }, [routes]);
 
-  return (
-    <Provider store={store}>
-      {router && <RouterProvider router={router} />}
-    </Provider>
-  );
+  return router ? <RouterProvider router={router} /> : <div>Loading...</div>;
 }

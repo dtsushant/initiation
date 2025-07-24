@@ -45,34 +45,6 @@ export const NotCleanSider: React.FC<LayoutComponentDetail> = (meta) => {
     headerActionContext,
   } = panelControl;
 
-  const customActionContext: ActionContext = {
-    navigate: (path: string) => {
-      console.info("Navigating to", path);
-    },
-    setState: (key: string, value: unknown) => {
-      setHeaderActionContext((prev) => ({
-        ...prev,
-        [key]: value,
-      }));
-    },
-    makeApiCall: async (params: {
-      url: string;
-      method?: string;
-      body?: unknown;
-    }) => {
-      console.info(
-        "Making API call to",
-        params.url,
-        "with method",
-        params.method,
-        "and body",
-        params.body,
-      );
-    },
-    getState: (key) => {
-      return headerActionContext[key];
-    },
-  };
   const sAction: SerializableAction = {
     action: "setState",
     args: { key: "user", value: "Alice" },
@@ -81,10 +53,6 @@ export const NotCleanSider: React.FC<LayoutComponentDetail> = (meta) => {
   const gAction: SerializableAction = {
     action: "getState",
     args: { key: "user", value: "Alice" },
-  };
-
-  const oc = () => {
-    runAction(sAction, customActionContext);
   };
 
   console.info("the meta", meta);

@@ -2,10 +2,12 @@ import {
   ButtonMeta,
   ConditionalMeta,
   evaluateCondition,
-  extrapolate,
+  EventBindings,
+  //extrapolate,
   getActionRef,
   getTypedValue,
   LayoutComponentDetail,
+  runAction,
   StyleMeta,
 } from "xingine";
 import {
@@ -15,29 +17,52 @@ import {
   IconRenderer,
   toCSSClassName,
   toCSSProperties,
+  useActionContext,
   useXingineContext,
 } from "xingine-react";
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Button, Input } from "antd";
-
+/*
 export const RenderComponent: React.FC<LayoutComponentDetail> = (component) => {
   const { meta } = component;
-  if (!component) return null;
+  const actionContext = useActionContext();
+  const hasRunInit = useRef<Record<string, boolean>>({});
 
-  if (!meta) return null;
+  useEffect(() => {
+    if (!meta) return;
+    const compId = meta.component;
+    if (hasRunInit.current[compId]) return;
+
+    const events = meta.properties?.event as EventBindings;
+    const init = events?.onInit;
+    if (init) {
+      runAction(init, actionContext);
+      hasRunInit.current[compId] = true;
+    }
+  }, [meta, actionContext]);
 
   const compMap = getAllComponentMap();
+  const Comp = compMap[meta?.component];
 
-  const Comp = compMap[meta.component];
+  return <ComponentRenderer Component={Comp} props={meta?.properties} />;
+};*/
 
-  return <>{Comp && <Comp {...meta?.properties} />}</>;
+const ComponentRenderer = ({
+  Component,
+  props,
+}: {
+  Component?: React.FC<any>;
+  props?: any;
+}) => {
+  if (!Component) return null;
+  return <Component {...props} />;
 };
 
 type DangerousRenderProps = {
   content?: string;
   style?: StyleMeta;
 };
-export const DangerousRenderer: React.FC<DangerousRenderProps> = ({
+/*export const DangerousRenderer: React.FC<DangerousRenderProps> = ({
   content,
   style,
 }) => {
@@ -56,7 +81,7 @@ export const DangerousRenderer: React.FC<DangerousRenderProps> = ({
       <div dangerouslySetInnerHTML={{ __html: dangerContent }} />
     </>
   );
-};
+};*/
 
 const SvgIcon = () => {
   const content = `<svg
@@ -108,7 +133,7 @@ export interface SvgMeta {
    */
   role?: string;
 }
-export const SvgRenderer: React.FC<SvgMeta> = ({
+/*export const SvgRenderer: React.FC<SvgMeta> = ({
   svg,
   className,
   style,
@@ -151,21 +176,21 @@ export const SvgRenderer: React.FC<SvgMeta> = ({
       style={toCSSProperties(style)}
     />
   );
-};
+};*/
 
-export const InputWithIcon = () => (
+/*export const InputWithIcon = () => (
   <Input
     className="w-full pl-10 pr-4 py-2 rounded-lg border focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
     placeholder="Search..."
     prefix={<SvgIcon />}
   />
-);
+);*/
 
 interface MyMeta {
   content: string;
   className: string;
 }
-export const MyCustomRenderer: React.FC<MyMeta> = (meta) => {
+/*export const MyCustomRenderer: React.FC<MyMeta> = (meta) => {
   const { panelControl } = useXingineContext();
   const { headerActionContext } = panelControl;
   const { content, className } = meta;
@@ -182,7 +207,7 @@ export const MyCustomRenderer: React.FC<MyMeta> = (meta) => {
       <DangerousRenderer content={content} />
     </div>
   );
-};
+};*/
 
 export interface ButtonMetaExtended extends ButtonMeta {
   scope: Record<string, unknown>;

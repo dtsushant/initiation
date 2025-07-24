@@ -15,8 +15,6 @@ import { CleanHeader } from "/@/initiation/layouts/custom/Component.utils.tsx";
 
 interface TailwindHeaderComponentProps {
   renderer?: LayoutComponentDetail;
-  panelControl: PanelControlBureau;
-  menuItems: any[];
 }
 
 export const CustomHeaderComponent: React.FC<TailwindHeaderComponentProps> = ({

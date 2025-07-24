@@ -1,6 +1,5 @@
-import { ProvisioneerProps } from 'xingine';
+import { ProvisioneerOptions } from 'xingine-nest';
 
-export const userProvisioneer: ProvisioneerProps = {
-  name: 'User',
-  description: 'Defines the user property ',
+export const userProvisioneer: ProvisioneerOptions = {
+  layout: 'tailwind',
 };

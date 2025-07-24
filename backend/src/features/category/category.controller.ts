@@ -40,11 +40,11 @@ export class CategoryController {
 
   @UseGuards(JwtAuthGuard)
   @UsePipes(new ValidationPipe())
-  @Commissar({
+  /*@Commissar({
     component: 'NewCategory',
     directive: CreateCategoryDto,
     operative: 'FormRenderer',
-  })
+  })*/
   @Post('/save')
   async create(
     @User('id') userId: string,

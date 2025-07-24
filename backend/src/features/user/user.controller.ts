@@ -44,7 +44,8 @@ import {
   userLogin,
 } from './constant/component/user.commissar';
 import { NestedCheckboxOption } from 'xingine/dist/core/component/form-meta-map';
-import { Provisioneer, SearchQuery } from 'xingine';
+import { SearchQuery } from 'xingine';
+import { Provisioneer } from 'xingine-nest';
 
 @ApiBearerAuth()
 @ApiTags('user')
@@ -77,20 +78,20 @@ export class UserController {
     return { msg: 'success' };
   }
 
-  @Commissar(addRole)
+  // @Commissar(addRole)
   @Post('addRole')
   async createRole(@Body() roleData: CreateRoleDto): Promise<{ msg: string }> {
     return this.userService.addUpdateRole(roleData);
   }
 
-  @Commissar(userDetail)
+  //  @Commissar(userDetail)
   @Get(':username')
   async userDetail(@Param() params: Record<string, string>): Promise<IUserRO> {
     console.log('the params', params);
     return this.userService.findByUsername(params.username);
   }
 
-  @Commissar(userList)
+  // @Commissar(userList)
   @Post('userList')
   async userList(@Body() query: SearchQuery): Promise<UserList[]> {
     console.log('the search query here is', query);
@@ -128,7 +129,7 @@ export class UserController {
     return this.userService.update(userId, userData);
   }
 
-  @Commissar(createUser)
+  // @Commissar(createUser)
   @ApiBody({
     description: 'Api to create user',
     schema: {

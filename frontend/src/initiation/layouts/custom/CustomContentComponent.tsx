@@ -3,20 +3,21 @@ import {
   DangerousRenderer,
   getDefaultInternalComponents,
   getLayoutComponentRegistryService,
+  RenderComponent,
+  toCSSClassName,
+  useAllSharedState,
+  useSharedState,
 } from "xingine-react";
-import { LayoutComponentDetail } from "xingine";
-import { RenderComponent } from "/@/initiation/layouts/custom/Component.utils.tsx";
+import { extrapolate, LayoutComponentDetail } from "xingine";
 
 interface TailwindContentComponentProps {
   renderer?: LayoutComponentDetail;
-  panelControl: any;
 }
 
 export const CustomContentComponent: React.FC<
   TailwindContentComponentProps
-> = ({ renderer, panelControl }) => {
+> = ({ renderer }) => {
   const registry = getLayoutComponentRegistryService();
-  const { darkMode } = panelControl;
   const compMap = getDefaultInternalComponents();
 
   const render = (component: LayoutComponentDetail) => {
@@ -29,6 +30,7 @@ export const CustomContentComponent: React.FC<
 
     return <RenderComponent {...component} />;
   };
+  const states = useAllSharedState(); // ✅ reactive!
 
   return <>{renderer ? render(renderer) : <></>}</>;
 };

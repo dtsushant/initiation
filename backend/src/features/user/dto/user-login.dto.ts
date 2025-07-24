@@ -1,8 +1,13 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsEmail, IsNotEmpty } from 'class-validator';
 import { IUserData, IUserRO } from '../user.interface';
-import { FormField } from 'xingine';
+import { FormClass, FormField } from 'xingine';
 
+@FormClass({
+  title: 'User Login',
+  submitLabel: 'Login',
+  action: 'login',
+})
 export class UserLoginDto {
   @FormField({
     name: 'user.email',
