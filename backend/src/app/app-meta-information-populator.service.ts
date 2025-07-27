@@ -16,11 +16,15 @@ export class AppMetaInformationPopulatorService {
   constructor(private readonly appService: AppService) {}
 
   async run(em: EntityManager): Promise<void> {
-    const moduleProperties = await this.appService.getModuleMetadata();
+    await this.registerLayouts();
     const apiPaths = await this.appService.getAllAPIPath();
     const modules = await this.loadAllModules(em, apiPaths);
     await this.loadAllPermission(em, apiPaths, modules);
     await this.loadSuper(em);
+  }
+
+  async registerLayouts(): Promise<void> {
+    return this.appService.registerLayout();
   }
 
   async loadAllModules(

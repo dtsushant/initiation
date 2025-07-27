@@ -1,7 +1,7 @@
 import { Controller, Get, Inject } from '@nestjs/common';
 import { AppService } from './app.service';
 import { PermissionGateKeeper } from '../shared/auth/auth-permit.decorator';
-import { LayoutRenderer, ModulePropertyOptions } from 'xingine';
+import { LayoutRenderer } from 'xingine';
 
 @Controller()
 export class AppController {
@@ -16,12 +16,6 @@ export class AppController {
     return 'Welcome!';
   }
 
-  @Get('modules')
-  @PermissionGateKeeper({ allowPeasants: true })
-  async enabledModules(): Promise<ModulePropertyOptions[]> {
-    return await this.appService.getModuleMetadata();
-  }
-
   @Get('commissars')
   @PermissionGateKeeper({ allowPeasants: true })
   async dispatchAllCommissars(): Promise<LayoutRenderer[]> {
@@ -31,9 +25,9 @@ export class AppController {
   @Get('lookup')
   @PermissionGateKeeper({ allowPeasants: true })
   async lookup(): Promise<{ label: string; value: string }[]> {
-    return (await this.appService.getModuleMetadata()).map((metaData) => ({
-      label: metaData.name,
-      value: metaData.name,
+    return (await this.appService.getAllLayoutRenderer()).map((metaData) => ({
+      label: metaData.type,
+      value: metaData.type,
     }));
   }
 }

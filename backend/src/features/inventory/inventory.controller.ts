@@ -18,8 +18,6 @@ import {
 import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
 import { User } from '../../shared/auth/auth-user.decorator';
-import { Commissar } from 'xingine-nest';
-import { Provisioneer } from 'xingine';
 import { InventoryService } from './inventory.service';
 import { InventoryDTO } from './entity/inventory.entity';
 import { PurchaseOrderDTO } from './entity/purchase-order.entity';
@@ -42,7 +40,6 @@ import { StockAdjustmentDto } from './dto/stock-adjustment.dto';
   StockAdjustmentDto,
 )
 @Controller('inventory')
-@Provisioneer({ name: 'Inventory' })
 export class InventoryController {
   constructor(private readonly inventoryService: InventoryService) {}
 

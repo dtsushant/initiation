@@ -66,7 +66,7 @@ class Identity {
   @FormField({
     label: 'Profile Picture',
     inputType: 'file',
-    required: true,
+    required: false,
     properties: {
       allowedFileTypes: ['.jpg', '.jpeg', '.png'],
       maxFileSizeMB: 5,
@@ -79,7 +79,7 @@ class Identity {
       fileSizeValidationMessage: 'File size must be less than 5MB',
     },
   })
-  profilePicture!: string;
+  profilePicture?: string;
 }
 
 class ContactInfo {

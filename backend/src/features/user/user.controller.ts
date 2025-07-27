@@ -35,14 +35,7 @@ import { CreateRoleDto } from './dto/create-role.dto';
 import { UserList } from './dto/user-list.dto';
 
 import { userProvisioneer } from './constant/component/user.provisioneer';
-import {
-  addRole,
-  createUser,
-  userAnalytics,
-  userDetail,
-  userList,
-  userLogin,
-} from './constant/component/user.commissar';
+import { userAnalytics, userLogin } from './constant/component/user.commissar';
 import { NestedCheckboxOption } from 'xingine/dist/core/component/form-meta-map';
 import { SearchQuery } from 'xingine';
 import { Provisioneer } from 'xingine-nest';

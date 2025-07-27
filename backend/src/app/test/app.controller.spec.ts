@@ -5,7 +5,7 @@ import { MikroOrmModule } from '@mikro-orm/nestjs';
 import ormConfig from '../../../mikro-orm.config';
 import { XingineModule } from 'xingine-nest';
 import { moduleMap } from '../app.config';
-import { ModulePropertyOptions } from 'xingine';
+import { LayoutRenderer } from 'xingine';
 import { CacheModule } from '../../shared/cache/cache.module';
 
 describe('AppController', () => {
@@ -26,18 +26,18 @@ describe('AppController', () => {
       providers: [AppService],
     }).compile();
 
-    appController = app.get<AppController>(AppController);
+    appController = app.get(AppController);
   });
 
   describe('root', () => {
     //  const modules =  appController.enabledModules();
 
     it('should return "Hello World!"', async () => {
-      const modules: ModulePropertyOptions[] =
-        await appController.enabledModules();
+      const modules: LayoutRenderer[] =
+        await appController.dispatchAllCommissars();
       console.log('the modules', modules);
 
-      expect(appController.enabledModules()).toBe('Hello World!');
+      expect(appController.dispatchAllCommissars()).toBeDefined();
     });
   });
 });

@@ -3,7 +3,7 @@ import { CreateRoleDto } from '../../dto/create-role.dto';
 import { UserCreateDto, UserDetailDto } from '../../dto/user-create.dto';
 import { UserList } from '../../dto/user-list.dto';
 import { UserLoginDto } from '../../dto';
-import { CommissarProperties, LayoutComponentDetailBuilder } from 'xingine';
+import { LayoutComponentDetailBuilder } from 'xingine';
 import { CommissarOptions } from 'xingine-nest';
 import { extractFormMetaFromClass } from '../../../../../.yalc/xingine';
 
@@ -91,7 +91,7 @@ export const userAnalytics: CommissarOptions = {
   component: chartComponent,
 };
 
-export const addRole: CommissarProperties = {
+/*export const addRole: CommissarProperties = {
   directive: CreateRoleDto,
   operative: 'FormRenderer',
   component: 'AddRole',
@@ -109,16 +109,16 @@ export const userList: CommissarProperties = {
 
 export const createUser: CommissarProperties = {
   directive: UserCreateDto,
-  /*dispatch: {
+  /!*dispatch: {
     formSubmissionResponse: {},
     onSuccessRedirectTo: {
       component: 'UserDetail',
       payloadNamePath: { username: 'user.username' },
     },
-  },*/
+  },*!/
   operative: 'FormRenderer',
   component: 'UserCreate',
-};
+};*/
 
 const formMeta = extractFormMetaFromClass(UserLoginDto);
 

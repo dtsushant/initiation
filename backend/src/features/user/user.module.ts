@@ -9,7 +9,6 @@ import { Group } from './entity/group.entity';
 import { Permission } from './entity/permission.entity';
 import { Role } from './entity/role.entity';
 import { UserPassword } from './entity/user-password.entity';
-import { USER_PERMISSIONS } from './constant/user.permissions';
 import { EntityClass } from '@mikro-orm/core';
 
 @Module({

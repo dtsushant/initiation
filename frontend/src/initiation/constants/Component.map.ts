@@ -9,6 +9,7 @@ import { ButtonRenderer } from "/@/initiation/components/ButtonRenderer.tsx";
 import { ChartRenderer } from "/@/initiation/components/ChartRenderer.tsx";
 import { FormRenderer } from "/@/initiation/components/FormRenderer.tsx";
 import { LinkRenderer } from "/@/initiation/components/LinkRenderer.tsx";
+import ImageRenderer from "/@/initiation/components/ImageRenderer.tsx";
 
 export const componentMap: Record<string, FC<unknown>> = {
   UserLogin,
@@ -21,4 +22,5 @@ export const componentMap: Record<string, FC<unknown>> = {
   ChartRenderer,
   FormRenderer,
   LinkRenderer,
+  ImageRenderer,
 };

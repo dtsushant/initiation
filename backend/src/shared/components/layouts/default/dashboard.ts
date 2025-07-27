@@ -1,4 +1,8 @@
-import { CommissarBuilder, LayoutComponentDetailBuilder } from 'xingine';
+import {
+  CommissarBuilder,
+  LayoutComponentDetail,
+  LayoutComponentDetailBuilder,
+} from 'xingine';
 
 const userFormFields = [
   {
@@ -250,6 +254,46 @@ const popupComponent = LayoutComponentDetailBuilder.create()
   )
   .build();
 
+const imageRendererExample: LayoutComponentDetail =
+  LayoutComponentDetailBuilder.create()
+    .withMeta('ImageRenderer', {
+      src: 'https://images.unsplash.com/photo-1551033406-611cf9a28f67?ixlib=rb-4.0.3&auto=format&fit=crop&w=800&q=80',
+      alt: 'Dashboard hero image',
+      width: '100%',
+      height: '200px',
+      objectFit: 'cover',
+      className: 'rounded-lg shadow-md transition-transform hover:scale-105',
+      loading: 'lazy',
+      placeholder: 'Loading dashboard image...',
+      fallbackSrc:
+        'https://via.placeholder.com/800x200/f0f0f0/999999?text=Dashboard+Image',
+      animation: {
+        type: 'fade',
+        duration: 300,
+        delay: 100,
+      },
+      onClick: () => {
+        console.log('Dashboard image clicked');
+      },
+      onLoad: () => {
+        console.log('Dashboard image loaded successfully');
+      },
+      onError: () => {
+        console.log('Dashboard image failed to load');
+      },
+      'data-testid': 'dashboard-hero-image',
+      'data-component': 'DashboardImageRenderer',
+      title: 'Click to view full dashboard analytics',
+      'aria-label': 'Dashboard analytics overview image',
+      style: {
+        borderRadius: '12px',
+        boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)',
+        border: '2px solid transparent',
+        transition: 'all 0.3s ease',
+      },
+    })
+    .build();
+
 // Create dashboard content with nested structure
 export const DEFAULT_DASHBOARD_COMMISAR = CommissarBuilder.create()
   .path('/home')
@@ -333,4 +377,5 @@ export const DEFAULT_DASHBOARD_COMMISAR = CommissarBuilder.create()
       ])
       .build(),
   )
+  .addChild(imageRendererExample)
   .build();

@@ -14,14 +14,12 @@ import { CategoryService } from './category.service';
 import { JwtAuthGuard } from '../../shared/auth/auth.guard';
 import { ValidationPipe } from '../../shared/pipes/validation.pipes';
 import { User } from '../../shared/auth/auth-user.decorator';
-import { Commissar } from 'xingine-nest';
-import { Provisioneer } from 'xingine';
+import { Provisioneer } from 'xingine-nest';
 
 @ApiBearerAuth()
 @ApiTags('categories')
 @ApiExtraModels(CreateCategoryDto)
 @Controller('categories')
-@Provisioneer({ name: 'Category' })
 export class CategoryController {
   constructor(private readonly categoryService: CategoryService) {}
 

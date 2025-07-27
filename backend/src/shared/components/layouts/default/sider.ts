@@ -53,6 +53,12 @@ const menuMeta: MenuMeta = {
       icon: settingsIcon,
       path: '/settings',
     },
+    {
+      key: 'login',
+      label: 'Login',
+      icon: settingsIcon,
+      path: '/users/users/login',
+    },
   ],
 };
 

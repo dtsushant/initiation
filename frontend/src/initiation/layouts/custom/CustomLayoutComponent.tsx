@@ -2,8 +2,6 @@ import React from "react";
 
 import {
   useXingineContext,
-  TailwindSidebarComponent,
-  TailwindFooterComponent,
   toCSSClassName,
   toCSSProperties,
   useSharedState,
@@ -78,12 +76,7 @@ export const CustomLayoutComponent: React.FC<TailwindLayoutProps> = ({
                   ? "bg-gray-800 border-t border-gray-700"
                   : "bg-white border-t border-gray-200"
               } shadow-sm`)}
-            >
-              <TailwindFooterComponent
-                renderer={layout.footer.meta}
-                panelControl={{}}
-              />
-            </footer>
+            ></footer>
           )}
         </div>
       </div>

@@ -54,7 +54,7 @@ describe('AppService (with real modules)', () => {
   });
 
   it('should return module metadata from InspectorService', async () => {
-    const metadata = await appService.getModuleMetadata();
+    const metadata = await appService.getAllLayoutRenderer();
     console.log('Module Metadata:', JSON.stringify(metadata, null, 2));
 
     expect(metadata).toBeDefined();
@@ -62,8 +62,8 @@ describe('AppService (with real modules)', () => {
     expect(metadata.length).toBeGreaterThan(0);
 
     for (const entry of metadata) {
-      expect(entry).toHaveProperty('name');
-      expect(entry).toHaveProperty('uiComponent');
+      expect(entry).toHaveProperty('type');
+      expect(entry).toHaveProperty('content');
     }
   });
 

@@ -32,10 +32,11 @@ describe('UserService Test', () => {
     it('should create user', async () => {
       await RequestContext.create(em.fork(), async () => {
         const user = await userService.create({
-          email: 'test@test.com',
-          password: 'test',
-          username: 'test@test.com',
-          roles: ['ROLE_SUPER'],
+          identity: {
+            email: 'test@test.com',
+            password: 'test',
+            username: 'test@test.com',
+          },
         });
         console.log('user', user);
       });
