@@ -5,21 +5,27 @@
       "type": "node",
       "request": "launch",
       "name": "Launch Backend",
-      "program": "${workspaceFolder}/backend/src/main.ts",
-      "preLaunchTask": "npm: start:backend",
-      "outFiles": ["${workspaceFolder}/backend/dist/**/*.js"],
-      "runtimeArgs": ["-r", "ts-node/register"],
-      "console": "integratedTerminal"
+      "preLaunchTask": "npm: start backend",
+      "console": "integratedTerminal",
+      "runtimeArgs": ["-r", "ts-node/register"]
     },
     {
       "type": "node",
       "request": "launch",
       "name": "Launch Frontend",
-      "program": "${workspaceFolder}/frontend/src/main.tsx",
-      "preLaunchTask": "npm: start:frontend",
-      "outFiles": ["${workspaceFolder}/frontend/dist/**/*.js"],
-      "runtimeArgs": ["-r", "ts-node/register"],
-      "console": "integratedTerminal"
+      "preLaunchTask": "npm: start frontend",
+      "console": "integratedTerminal",
+      "runtimeArgs": ["-r", "ts-node/register"]
+    }
+  ],
+  "compounds": [
+    {
+      "name": "Launch",
+      "configurations": [
+        "Launch Backend",
+        "Launch Frontend"
+      ],
+      "preLaunchTask": "docker-compose up"
     }
   ]
 }

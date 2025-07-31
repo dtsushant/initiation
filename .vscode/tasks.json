@@ -1,0 +1,59 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "npm: start backend",
+			"type": "shell",
+			"command": "npm run start",
+			"options": {
+				"cwd": "${workspaceFolder}/initiation/backend"
+			},
+			"isBackground": true,
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "Nest application successfully started|Server is running|Listening on|Compiled successfully"
+				}
+			}
+		},
+		{
+			"label": "npm: start frontend",
+			"type": "shell",
+			"command": "npm run start",
+			"options": {
+				"cwd": "${workspaceFolder}/initiation/frontend"
+			},
+			"isBackground": true,
+			"problemMatcher": {
+				"pattern": [
+					{
+						"regexp": ".",
+						"file": 1,
+						"location": 2,
+						"message": 3
+					}
+				],
+				"background": {
+					"activeOnStart": true,
+					"beginsPattern": ".",
+					"endsPattern": "Initiation|Compiled successfully|Running at|Local:"
+				}
+			}
+		},
+		{
+			"label": "docker-compose up",
+			"type": "shell",
+			"command": "docker-compose -f initiation/.devContainer/docker-compose.yml up -d",
+			"problemMatcher": []
+		}
+	]
+}

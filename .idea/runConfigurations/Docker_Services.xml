@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Docker Services" type="docker-deploy" factoryName="docker-compose.yml" server-name="Docker">
+    <deployment type="docker-compose.yml">
+      <settings>
+        <option name="envFilePath" value="" />
+        <option name="sourceFilePath" value=".devContainer/docker-compose.yml" />
+        <option name="commandLineOptions" value="--remove-orphans" />
+      </settings>
+    </deployment>
+    <method v="2" />
+    <option name="BeforeRunTask" enabled="true">
+      <option name="RunExternalTool" enabled="true">
+        <option name="actionId" value="$ToolAction$docker-compose.stop.services" />
+      </option>
+    </option>
+  </configuration>
+</component>

@@ -1,0 +1,8 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Full App" type="CompoundRunConfigurationType">
+    <toRun name="Docker Services" type="docker-deploy" />
+    <toRun name="Launch Backend" type="NodeJSConfigurationType" />
+    <toRun name="Launch Frontend" type="NodeJSConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>

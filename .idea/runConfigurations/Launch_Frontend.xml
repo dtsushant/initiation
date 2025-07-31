@@ -1,0 +1,15 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Launch Frontend" type="NodeJSConfigurationType" path-to-js-file="frontend/src/main.tsx" typescript-loader="bundled" working-dir="$PROJECT_DIR$/initiation/">
+    <method v="2">
+      <option name="NpmBeforeRunTask" enabled="true">
+        <package-json value="$PROJECT_DIR$/frontend/package.json" />
+        <command value="run" />
+        <scripts>
+          <script value="start" />
+        </scripts>
+        <node-interpreter value="project" />
+        <envs />
+      </option>
+    </method>
+  </configuration>
+</component>
